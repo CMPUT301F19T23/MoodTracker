@@ -1,5 +1,7 @@
 package com.example.moodtracker;
 
+import android.graphics.Color;
+
 /**
  * Object representing various information about an emotional state
  */
@@ -9,10 +11,10 @@ public class EmotionData {
     // then we can use things like :) for placeholders
     private int color; // implementation might change but I think android stores colors as integers
 
-    final public static EmotionData ANGRY_DATA = new EmotionData("Angry", ">:(", 0xFF0000); // color is red
-    final public static EmotionData HAPPY_DATA = new EmotionData("Happy", ":)", 0xFFFF00); // color is yellow
-    final public static EmotionData SAD_DATA = new EmotionData("Sad", ":(", 0x6DADAC); // color is pale blue
-    final public static EmotionData NEUTRAL_DATA = new EmotionData("Neutral", ":|", 0xCFCFCF); // color is light gray
+    final public static EmotionData ANGRY_DATA = new EmotionData("angry", ">:(", 0xFFFF0000); // color is red
+    final public static EmotionData HAPPY_DATA = new EmotionData("happy", ":)", 0xFFFFFF00); // color is yellow
+    final public static EmotionData SAD_DATA = new EmotionData("sad", ":(", 0xFF6DADAC); // color is pale blue
+    final public static EmotionData NEUTRAL_DATA = new EmotionData("neutral", ":|", 0xFFCFCFCF); // color is light gray
 
 
     /**

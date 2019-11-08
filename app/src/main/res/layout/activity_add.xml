@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context=".MainActivity">
+
+    <CheckBox
+        android:id="@+id/idAttach"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/buttonstyle"
+        android:padding="5dp"
+        android:text="Attach location" />
+
+    <LinearLayout
+        android:id="@+id/idMiddle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idAttach"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/idName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:hint="Event name"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/colorGray" />
+
+        <TextView
+            android:id="@+id/idDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:hint="2019-01-01"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/colorGray" />
+
+        <TextView
+            android:id="@+id/idTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:hint="16:35"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/colorGray" />
+
+        <Spinner
+            android:id="@+id/idSense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="11"
+            android:background="@drawable/xiala"
+            android:spinnerMode="dialog" />
+
+        <Spinner
+            android:id="@+id/idSituation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="11"
+            android:background="@drawable/xiala"
+            android:spinnerMode="dialog" />
+
+        <TextView
+            android:id="@+id/idOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/buttonstyle"
+            android:padding="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:text="Option"
+            android:textColor="#000000"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/idConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idMiddle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/buttonstyle"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:text="Confirm Adding"
+        android:textColor="#000000"
+        android:textSize="17sp" />
+
+</RelativeLayout>

@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">MoodTracker</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">java-event</string>
+    <string name="spinner1">select a mood</string>
+    <string name="spinner2">select a social situation</string>
 </resources>

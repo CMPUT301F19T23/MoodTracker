@@ -27,6 +27,12 @@ public class MoodEvent {
     //private Location location; // cannot yet implement. More research needed
     //private Participant owner; // waiting on Participant implementation.
 
+    private String id;
+    private boolean attach;
+    private String eventName;
+    private String situation;
+    private String image;
+    private String username;
     
     final private static ArrayList<EmotionData> MOOD_DATA = new ArrayList<>(Arrays.asList(
             ANGRY_DATA, HAPPY_DATA, SAD_DATA, NEUTRAL_DATA));
@@ -157,4 +163,51 @@ public class MoodEvent {
         return owner;
     }*/
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public boolean isAttach() {
+        return attach;
+    }
+
+    public void setAttach(boolean attach) {
+        this.attach = attach;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getSituation() {
+        return situation;
+    }
+
+    public void setSituation(String situation) {
+        this.situation = situation;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
