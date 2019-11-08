@@ -1,2 +1,1 @@
-include ':app'
-rootProject.name='MoodTracker'
+include ':app', ':multi_image_selector'
