@@ -8,4 +8,6 @@
     <color name="colorAccent1">#D81B60</color>
     <color name="colorBackground">#423C3C</color>
     <color name="colorText">#F8F6F6</color>
+    <color name="colorHappyMood">#9FC4DC39</color>
+    <color name="colorSadMood">#7EF43636</color>
 </resources>
