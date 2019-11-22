@@ -107,6 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                             });
                     HashMap<String, String> users = new HashMap<>();
+                    users.put("userType", "Participant");
                     users.put("UserName", username);
                     db.document(userPathStr + email)
                             .set(users)
