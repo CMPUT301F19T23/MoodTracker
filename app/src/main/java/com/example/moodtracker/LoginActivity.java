@@ -49,7 +49,12 @@ public class LoginActivity extends AppCompatActivity {
         emailField = findViewById(R.id.email_field);
         passwordField = findViewById(R.id.password_field);
 
+        Intent intent = getIntent();
+        String siEmail  = intent.getStringExtra(RegisterActivity.si_EMAIL);
+        String siPassword  = intent.getStringExtra(RegisterActivity.si_PASSWORD);
 
+        emailField.setText(siEmail);
+        passwordField.setText(siPassword);
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             intent.putExtra(EXTRA_USER, user.getDisplayName());
                             Log.d("Extra_user", user.getDisplayName());
+
                             startActivity(intent);
 
                         } else {
