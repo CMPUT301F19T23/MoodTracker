@@ -29,16 +29,14 @@ import static android.content.ContentValues.TAG;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText usernameField;
-    private EditText passwordField, cpassword;
+    private EditText passwordField;
     private EditText emailField;
 
     FirebaseAuth auth;
     FirebaseFirestore db;
 
     private String userPathStr;
-    public static final String si_PASSWORD = "com.example.moodtracker.siPASSWORD";
-    public static final String si_EMAIL = "com.example.moodtracker.siEMAIL";
-    public static final String si_USERNAME = "com.example.moodtracker.siUSERNAME";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
         usernameField = findViewById(R.id.username_field);
         passwordField = findViewById(R.id.password_field);
         emailField = findViewById(R.id.email_field);
-        cpassword = findViewById(R.id.confirm_password_field);
 
         Intent intent = getIntent();
         String newEmail  = intent.getStringExtra(LoginActivity.EXTRA_EMAIL);
@@ -70,15 +67,10 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if(validate()){
                     registerUser(email, username, password);
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    intent.putExtra(si_EMAIL, email);
-                    intent.putExtra(si_PASSWORD, password);
-                    startActivity(intent);
                 }
 
                 //Toast.makeText(RegisterActivity.this, "register success", Toast.LENGTH_SHORT).show();
-                //RegisterActivity.this.finish();
-
+                RegisterActivity.this.finish();
             }
         });
     }
@@ -94,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
                     FirebaseUser user = auth.getCurrentUser();
 
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                            .setDisplayName(email)
+                            .setDisplayName(username)
                             .build();
 
                     user.updateProfile(profileUpdates)
@@ -108,8 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
                             });
                     HashMap<String, String> users = new HashMap<>();
                     users.put("userType", "Participant");
-                    users.put("UserName", username);
-                    db.document(userPathStr + email)
+                    db.document(userPathStr + username)
                             .set(users)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -142,7 +133,7 @@ public class RegisterActivity extends AppCompatActivity {
         String name = usernameField.getText().toString();
         String email = emailField.getText().toString();
         String pwd = passwordField.getText().toString();
-        String confirm = cpassword.getText().toString();
+        //String confirm = cpassword.getText().toString();
         boolean valid = true;
 
         if (name.isEmpty()){
@@ -160,10 +151,10 @@ public class RegisterActivity extends AppCompatActivity {
             valid = false;
         }
 
-        if (confirm.isEmpty() || !pwd.equals(confirm)){
-            Toast.makeText(RegisterActivity.this, "Password does not match.", Toast.LENGTH_SHORT).show();
-            valid = false;
-        }
+        //if (confirm.isEmpty() || !pwd.equals(confirm)){
+        //    Toast.makeText(LoginReg.this, "Password does not match.", Toast.LENGTH_SHORT).show();
+        //    valid = false;
+        //}
 
         return valid;
     }

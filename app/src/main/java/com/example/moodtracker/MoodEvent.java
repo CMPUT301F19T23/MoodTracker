@@ -135,7 +135,7 @@ public class MoodEvent implements Serializable{
      * @return
      *          the mood emoji
      */
-    public String getEmoji() {
+    public int getEmoji() {
         return this.emotionData.getEmoji();
     }
 

@@ -1,7 +1,5 @@
 package com.example.moodtracker;
 
-import android.graphics.Color;
-
 /**
  * Object representing various information about an emotional state
  */
@@ -13,7 +11,7 @@ public class EmotionData {
 
     final public static EmotionData ANGRY_DATA = new EmotionData("angry", 0x1F620, 0xFFFF0000); // color is red
     final public static EmotionData HAPPY_DATA = new EmotionData("happy", 0x1F60A, 0xFFFFFF00); // color is yellow
-    final public static EmotionData SAD_DATA = new EmotionData("sad", 0x1F622, 0xFF6DADAC); // color is pale blue
+    final public static EmotionData SAD_DATA = new EmotionData("sad",0x1F622 , 0xFF6DADAC); // color is pale blue
     final public static EmotionData NEUTRAL_DATA = new EmotionData("neutral", 0x1F612, 0xFFCFCFCF); // color is light gray
 
 
