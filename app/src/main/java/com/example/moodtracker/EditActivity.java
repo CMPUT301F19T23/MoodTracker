@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +60,9 @@ public class EditActivity extends AppCompatActivity {
     private String userpath;
     private String username;
     private String moodpath;
-
+    
+    private RelativeLayout relativeLayout;
+    
     private FirebaseFirestore db;
 
     @Override
@@ -153,28 +156,53 @@ public class EditActivity extends AppCompatActivity {
 
     private void sens22() {
         String keshi = moodList.get(s1);
+        relativeLayout = findViewById(R.id.relativelayout);
         if (keshi.equals(EmotionData.ANGRY_DATA.getEmotion())) {
-            tvSense2.setText(EmotionData.ANGRY_DATA.getEmoji());
-            tvSense2.setBackgroundColor(EmotionData.ANGRY_DATA.getColor());
-
+           tvSense2.setText(new String(Character.toChars(EmotionData.ANGRY_DATA.getEmoji())));
+            relativeLayout.setBackgroundColor(EmotionData.ANGRY_DATA.getColor());
+            nameField.setBackgroundColor(0xFFFFFFFF);	
+            reasonField.setBackgroundColor(0xFFFFFFFF);	
+            dateField.setBackgroundColor(0xFFFFFFFF);	
+            timeField.setBackgroundColor(0xFFFFFFFF);	
+            moodSpinner.setBackgroundColor(0xFFFFFFFF);	
+            situationSpinner.setBackgroundColor(0xFFFFFFFF);
+            
         } else if (keshi.equals(EmotionData.HAPPY_DATA.getEmotion())) {
-            tvSense2.setText(EmotionData.HAPPY_DATA.getEmoji());
-            tvSense2.setBackgroundColor(EmotionData.HAPPY_DATA.getColor());
+            tvSense2.setText(new String(Character.toChars(EmotionData.HAPPY_DATA.getEmoji())));
+            relativeLayout.setBackgroundColor(EmotionData.HAPPY_DATA.getColor());
+            nameField.setBackgroundColor(0xFFFFFFFF);	
+            reasonField.setBackgroundColor(0xFFFFFFFF);	
+            dateField.setBackgroundColor(0xFFFFFFFF);	
+            timeField.setBackgroundColor(0xFFFFFFFF);	
+            moodSpinner.setBackgroundColor(0xFFFFFFFF);	
+            situationSpinner.setBackgroundColor(0xFFFFFFFF);
 
         } else if (keshi.equals(EmotionData.SAD_DATA.getEmotion())) {
-            tvSense2.setText(EmotionData.SAD_DATA.getEmoji());
-            tvSense2.setBackgroundColor(EmotionData.SAD_DATA.getColor());
+            tvSense2.setText(new String(Character.toChars(EmotionData.SAD_DATA.getEmoji())));
+            relativeLayout.setBackgroundColor(EmotionData.SAD_DATA.getColor());
+            nameField.setBackgroundColor(0xFFFFFFFF);	
+            reasonField.setBackgroundColor(0xFFFFFFFF);	
+            dateField.setBackgroundColor(0xFFFFFFFF);	
+            timeField.setBackgroundColor(0xFFFFFFFF);	
+            moodSpinner.setBackgroundColor(0xFFFFFFFF);	
+            situationSpinner.setBackgroundColor(0xFFFFFFFF);
 
         } else if (keshi.equals(EmotionData.NEUTRAL_DATA.getEmotion())) {
-            tvSense2.setText(EmotionData.NEUTRAL_DATA.getEmoji());
-            tvSense2.setBackgroundColor(EmotionData.NEUTRAL_DATA.getColor());
+            tvSense2.setText(new String(Character.toChars(EmotionData.NEUTRAL_DATA.getEmoji())));	
+            relativeLayout.setBackgroundColor(EmotionData.NEUTRAL_DATA.getColor());
+            nameField.setBackgroundColor(0xFFFFFFFF);	
+            reasonField.setBackgroundColor(0xFFFFFFFF);	
+            dateField.setBackgroundColor(0xFFFFFFFF);	
+            timeField.setBackgroundColor(0xFFFFFFFF);	
+            moodSpinner.setBackgroundColor(0xFFFFFFFF);	
+            situationSpinner.setBackgroundColor(0xFFFFFFFF);
 
         }
     }
 
     private void sens2() {
 
-        tvSense2.setText(selectedMoodEvent.getEmoji());
+        tvSense2.setText(new String(Character.toChars(selectedMoodEvent.getEmoji())));
         tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
 
         /*
