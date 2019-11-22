@@ -176,7 +176,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
             public void convertItem(ItemViewHolder helper, MoodEvent item) {
                 helper.setText(R.id.name_field, item.getName());
 
-                helper.setText(R.id.idImage, item.getEmoji());
+                helper.setText(R.id.idImage, new String(Character.toChars(item.getEmoji())));
                 helper.getView(R.id.name_field).setBackgroundColor(item.getColor());
                 /*
                 if (item.getEmotion().toLowerCase().equals("angry")) {
