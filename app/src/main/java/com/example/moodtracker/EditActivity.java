@@ -60,9 +60,9 @@ public class EditActivity extends AppCompatActivity {
     private String userpath;
     private String username;
     private String moodpath;
-
+    
     private RelativeLayout relativeLayout;
-
+    
     private FirebaseFirestore db;
 
     @Override
@@ -158,43 +158,43 @@ public class EditActivity extends AppCompatActivity {
         String keshi = moodList.get(s1);
         relativeLayout = findViewById(R.id.relativelayout);
         if (keshi.equals(EmotionData.ANGRY_DATA.getEmotion())) {
-            tvSense2.setText(new String(Character.toChars(EmotionData.ANGRY_DATA.getEmoji())));
+           tvSense2.setText(new String(Character.toChars(EmotionData.ANGRY_DATA.getEmoji())));
             relativeLayout.setBackgroundColor(EmotionData.ANGRY_DATA.getColor());
-            nameField.setBackgroundColor(0xFFFFFFFF);
-            reasonField.setBackgroundColor(0xFFFFFFFF);
-            dateField.setBackgroundColor(0xFFFFFFFF);
-            timeField.setBackgroundColor(0xFFFFFFFF);
-            moodSpinner.setBackgroundColor(0xFFFFFFFF);
+            nameField.setBackgroundColor(0xFFFFFFFF);	
+            reasonField.setBackgroundColor(0xFFFFFFFF);	
+            dateField.setBackgroundColor(0xFFFFFFFF);	
+            timeField.setBackgroundColor(0xFFFFFFFF);	
+            moodSpinner.setBackgroundColor(0xFFFFFFFF);	
             situationSpinner.setBackgroundColor(0xFFFFFFFF);
-
+            
         } else if (keshi.equals(EmotionData.HAPPY_DATA.getEmotion())) {
             tvSense2.setText(new String(Character.toChars(EmotionData.HAPPY_DATA.getEmoji())));
             relativeLayout.setBackgroundColor(EmotionData.HAPPY_DATA.getColor());
-            nameField.setBackgroundColor(0xFFFFFFFF);
-            reasonField.setBackgroundColor(0xFFFFFFFF);
-            dateField.setBackgroundColor(0xFFFFFFFF);
-            timeField.setBackgroundColor(0xFFFFFFFF);
-            moodSpinner.setBackgroundColor(0xFFFFFFFF);
+            nameField.setBackgroundColor(0xFFFFFFFF);	
+            reasonField.setBackgroundColor(0xFFFFFFFF);	
+            dateField.setBackgroundColor(0xFFFFFFFF);	
+            timeField.setBackgroundColor(0xFFFFFFFF);	
+            moodSpinner.setBackgroundColor(0xFFFFFFFF);	
             situationSpinner.setBackgroundColor(0xFFFFFFFF);
 
         } else if (keshi.equals(EmotionData.SAD_DATA.getEmotion())) {
             tvSense2.setText(new String(Character.toChars(EmotionData.SAD_DATA.getEmoji())));
             relativeLayout.setBackgroundColor(EmotionData.SAD_DATA.getColor());
-            nameField.setBackgroundColor(0xFFFFFFFF);
-            reasonField.setBackgroundColor(0xFFFFFFFF);
-            dateField.setBackgroundColor(0xFFFFFFFF);
-            timeField.setBackgroundColor(0xFFFFFFFF);
-            moodSpinner.setBackgroundColor(0xFFFFFFFF);
+            nameField.setBackgroundColor(0xFFFFFFFF);	
+            reasonField.setBackgroundColor(0xFFFFFFFF);	
+            dateField.setBackgroundColor(0xFFFFFFFF);	
+            timeField.setBackgroundColor(0xFFFFFFFF);	
+            moodSpinner.setBackgroundColor(0xFFFFFFFF);	
             situationSpinner.setBackgroundColor(0xFFFFFFFF);
 
         } else if (keshi.equals(EmotionData.NEUTRAL_DATA.getEmotion())) {
-            tvSense2.setText(new String(Character.toChars(EmotionData.NEUTRAL_DATA.getEmoji())));
+            tvSense2.setText(new String(Character.toChars(EmotionData.NEUTRAL_DATA.getEmoji())));	
             relativeLayout.setBackgroundColor(EmotionData.NEUTRAL_DATA.getColor());
-            nameField.setBackgroundColor(0xFFFFFFFF);
-            reasonField.setBackgroundColor(0xFFFFFFFF);
-            dateField.setBackgroundColor(0xFFFFFFFF);
-            timeField.setBackgroundColor(0xFFFFFFFF);
-            moodSpinner.setBackgroundColor(0xFFFFFFFF);
+            nameField.setBackgroundColor(0xFFFFFFFF);	
+            reasonField.setBackgroundColor(0xFFFFFFFF);	
+            dateField.setBackgroundColor(0xFFFFFFFF);	
+            timeField.setBackgroundColor(0xFFFFFFFF);	
+            moodSpinner.setBackgroundColor(0xFFFFFFFF);	
             situationSpinner.setBackgroundColor(0xFFFFFFFF);
 
         }
@@ -311,7 +311,7 @@ public class EditActivity extends AppCompatActivity {
                 }
                 reason = reasonField.getEditableText().toString();
                 if (!reason.isEmpty()) {
-                    String[] names = reason.split(" ");
+                    String[] names = name.split(" ");
                     if (names.length > 3) {
                         Toast.makeText(EditActivity.this, "word count is more than 3", Toast.LENGTH_SHORT).show();
                         return;
