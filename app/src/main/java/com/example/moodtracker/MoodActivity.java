@@ -24,6 +24,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class MoodActivity extends AppCompatActivity {
     TextView viewProfileButton;
     TextView logoutButton;
+    TextView followingButton;
     TextView  username_text_view;
     String userpath, username;
     private FirebaseFirestore db;
