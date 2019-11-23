@@ -174,7 +174,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
             @Override
             public void convertItem(ItemViewHolder helper, MoodEvent item) {
-                helper.setText(R.id.name_field, item.getName());
+                helper.setText(R.id.name_field, item.getName() + "\n" + MoodEvent.longFormat.format(item.getDate().getTime()));
 
                 helper.setText(R.id.idImage, new String(Character.toChars(item.getEmoji())));
                 helper.getView(R.id.name_field).setBackgroundColor(item.getColor());

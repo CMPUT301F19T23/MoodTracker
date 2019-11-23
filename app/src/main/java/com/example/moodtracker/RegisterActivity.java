@@ -36,8 +36,8 @@ public class RegisterActivity extends AppCompatActivity {
     FirebaseFirestore db;
 
     private String userPathStr;
-    public static final String si_PASSWORD = "com.example.moodtracker.siPASSWORD";
-    public static final String si_EMAIL = "com.example.moodtracker.siEMAIL";
+    public static final String si_PASSWORD = "com.example.moodtracker.siPASSWORD";	
+    public static final String si_EMAIL = "com.example.moodtracker.siEMAIL";	
     public static final String si_USERNAME = "com.example.moodtracker.siUSERNAME";
 
     @Override
@@ -70,15 +70,15 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if(validate()){
                     registerUser(email, username, password);
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    intent.putExtra(si_EMAIL, email);
-                    intent.putExtra(si_PASSWORD, password);
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);	
+                    intent.putExtra(si_EMAIL, email);	
+                    intent.putExtra(si_PASSWORD, password);	
                     startActivity(intent);
                 }
 
                 //Toast.makeText(RegisterActivity.this, "register success", Toast.LENGTH_SHORT).show();
                 //RegisterActivity.this.finish();
-
+                
             }
         });
     }
