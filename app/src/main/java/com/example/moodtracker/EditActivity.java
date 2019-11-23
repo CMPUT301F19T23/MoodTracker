@@ -311,7 +311,7 @@ public class EditActivity extends AppCompatActivity {
                 }
                 reason = reasonField.getEditableText().toString();
                 if (!reason.isEmpty()) {
-                    String[] names = reason.split(" ");
+                    String[] names = name.split(" ");
                     if (names.length > 3) {
                         Toast.makeText(EditActivity.this, "word count is more than 3", Toast.LENGTH_SHORT).show();
                         return;
