@@ -53,6 +53,19 @@
             android:padding="10dp"
             android:textColor="#ffffff"
             android:textColorHint="@color/colorGray" />
+            
+        <EditText	
+            android:id="@+id/confirm_password_field"	
+            android:layout_width="match_parent"	
+            android:layout_height="wrap_content"	
+            android:layout_marginTop="10dp"	
+            android:background="@drawable/text_border"	
+            android:gravity="center"	
+            android:hint="Confirm Password"	
+            android:inputType="textPassword"	
+            android:padding="10dp"	
+            android:textColor="#ffffff"	
+            android:textColorHint="@color/colorGray" />	
 
         <LinearLayout
             android:layout_width="match_parent"
