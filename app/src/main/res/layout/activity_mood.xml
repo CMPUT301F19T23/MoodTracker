@@ -73,6 +73,7 @@
         android:padding="10dp"
         android:text="Edit profile"
         android:textSize="17sp"
-        android:layout_alignParentRight="true" />
+        app:layout_constraintBottom_toBottomOf="parent"	      
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
