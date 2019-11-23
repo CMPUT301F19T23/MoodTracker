@@ -63,7 +63,7 @@ public class MoodActivity extends AppCompatActivity {
                 Intent intent = new Intent(MoodActivity.this, MoodHistoryActivity.class);
                 // Have to propagate information other classes need but we don't use
                 intent.putExtra(LoginActivity.EXTRA_USERPATH, userpath);
-                intent.putExtra(LoginActivity.EXTRA_USER, userpath);
+                intent.putExtra(LoginActivity.EXTRA_USER, username);
                 startActivity(intent);
             }
         });
