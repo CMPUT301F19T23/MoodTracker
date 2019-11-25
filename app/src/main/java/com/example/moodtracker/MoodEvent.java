@@ -45,7 +45,7 @@ public class MoodEvent implements Serializable{
 
     final public static EmotionData[] MOOD_DATA = {ANGRY_DATA, HAPPY_DATA, SAD_DATA, NEUTRAL_DATA};
 
-    MoodEvent(String name, long id, int situation, Calendar d, String emotion){
+    public MoodEvent(String name, long id, int situation, Calendar d, String emotion){
         this.name = name;
         this.id = id;
         this.situation = situation;
@@ -54,7 +54,7 @@ public class MoodEvent implements Serializable{
         this.reasonString = "";
     }
 
-    MoodEvent(String name, long id, int situation, Calendar d, String emotion, String rstr){
+    public MoodEvent(String name, long id, int situation, Calendar d, String emotion, String rstr){
         this.name = name;
         this.id = id;
         this.situation = situation;

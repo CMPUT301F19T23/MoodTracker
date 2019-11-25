@@ -6,33 +6,24 @@ import android.os.Bundle;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.DB.MoodWriter;
 import com.example.moodtracker.bean.ResUtil;
 import com.example.moodtracker.recycle.FooterViewHolder;
 import com.example.moodtracker.recycle.HeaderViewHolder;
 import com.example.moodtracker.recycle.ItemViewHolder;
 import com.example.moodtracker.recycle.MyRecycleAdapter;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
-
-import static android.content.ContentValues.TAG;
 
 public class MoodHistoryActivity extends AppCompatActivity {
 
@@ -44,13 +35,15 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
     private EditText searchField;
 
-    private String userpath;
-    private String username;
-    private String moodpath;
+    //private String userpath;
+    private String email;
+    //private String moodpath;
 
     public final static String EXTRA_MOOD = "com.example.moodtracker.EXTRA_MOOD";
 
-    private FirebaseFirestore db;
+    //private FirebaseFirestore db;
+
+    private MoodWriter moodWriter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +54,10 @@ public class MoodHistoryActivity extends AppCompatActivity {
         findViewById(R.id.create_mood_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent oldIntent = getIntent();
+
                 Intent intent = new Intent(MoodHistoryActivity.this, AddActivity.class);
-                intent.putExtra(LoginActivity.EXTRA_USERPATH, oldIntent.getStringExtra(LoginActivity.EXTRA_USERPATH));
-                intent.putExtra(LoginActivity.EXTRA_USER, oldIntent.getStringExtra(LoginActivity.EXTRA_USER));
+                //intent.putExtra(LoginActivity.EXTRA_USERPATH, userpath);
+                intent.putExtra(LoginActivity.EXTRA_USER, email);
                 startActivity(intent);
             }
         });
@@ -81,40 +74,23 @@ public class MoodHistoryActivity extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
-        username = intent.getStringExtra(LoginActivity.EXTRA_USER);
-        moodpath = userpath + username + "/" + "Moods/";
+        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
+        email = intent.getStringExtra(LoginActivity.EXTRA_USER);
+        //moodpath = userpath + email + "/" + "Moods/";
 
-        db = FirebaseFirestore.getInstance();
+        //db = FirebaseFirestore.getInstance();
+        moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
+        moodWriter.init(email);
 
-        db.collection(moodpath).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        moodWriter.getMoodEvents().observe(this, new Observer(){
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+            public void onChanged(Object o) {
                 moodEventList.clear();
-                for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                    Map map = doc.getData();
-                    long id = Long.parseLong(doc.getId());
-                    Calendar date = Calendar.getInstance();
-                    try {
-                        date.setTime(MoodEvent.longFormat.parse((String) map.get("mood_date")));
-                    } catch (ParseException ex) {
-                        ex.printStackTrace();
-                        Log.d(TAG, "Error in reading date");
-                        continue;
-                    }
-
-                    String name = (String) map.get("mood_name");
-                    String reason = (String) map.get("mood_reason_str");
-                    int situation = Integer.parseInt((String) map.get("mood_situation"));
-                    String emotion = (String) map.get("mood_emotion");
-
-                    moodEventList.add(new MoodEvent(name, id, situation, date, emotion, reason));
-                }
+                moodEventList.addAll((ArrayList<MoodEvent>)o);
                 filterMoods(searchField.getText().toString());
                 ResUtil.list = displayList;
             }
         });
-
 
     }
 
@@ -203,10 +179,9 @@ public class MoodHistoryActivity extends AppCompatActivity {
         recycleAdapter1.setOnClickListener(new MyRecycleAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Intent oldIntent = getIntent();
                 Intent intent = new Intent(MoodHistoryActivity.this, EditActivity.class);
-                intent.putExtra(LoginActivity.EXTRA_USERPATH, oldIntent.getStringExtra(LoginActivity.EXTRA_USERPATH));
-                intent.putExtra(LoginActivity.EXTRA_USER, oldIntent.getStringExtra(LoginActivity.EXTRA_USER));
+                //intent.putExtra(LoginActivity.EXTRA_USERPATH, userpath);
+                intent.putExtra(LoginActivity.EXTRA_USER, email);
                 intent.putExtra(EXTRA_MOOD, displayList.get(position).getId() + "");
                 startActivity(intent);
             }
@@ -227,13 +202,13 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
         for(MoodEvent mood : moodEventList){
             if(mood.getEmotion().equalsIgnoreCase(text)){
-                System.out.println("adding match");
+                //System.out.println("adding match");
                 displayList.add(mood);
             }
         }
 
-        System.out.println(displayList);
-        System.out.println();
+        //System.out.println(displayList);
+        //System.out.println();
 
         recycleAdapter1.notifyDataSetChanged();
     }

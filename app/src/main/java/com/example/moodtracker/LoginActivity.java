@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void attemptLogin(String email, String password){
+    public void attemptLogin(final String email, String password){
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -101,8 +101,8 @@ public class LoginActivity extends AppCompatActivity {
                             intent.putExtra(EXTRA_USERPATH, userPathStr);
                             Log.d("Extra_userpath", userPathStr);
 
-                            intent.putExtra(EXTRA_USER, user.getDisplayName());
-                            Log.d("Extra_user", user.getDisplayName());
+                            intent.putExtra(EXTRA_USER, email);
+                            Log.d("Extra_user", email);
                             startActivity(intent);
 
                         } else {

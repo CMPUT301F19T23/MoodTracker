@@ -21,18 +21,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
-import com.example.moodtracker.bean.ResUtil;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.DB.MoodWriter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -57,13 +54,20 @@ public class EditActivity extends AppCompatActivity {
 
     private MoodEvent selectedMoodEvent = null;
 
-    private String userpath;
-    private String username;
-    private String moodpath;
+    //private String userpath;
+    private String email;
+    //private String moodpath;
+    private long id;
 
     private RelativeLayout relativeLayout;
 
-    private FirebaseFirestore db;
+    //private FirebaseFirestore db;
+
+    private MoodWriter moodWriter;
+
+    private int editFailCount = 0;
+    private int retrieveFailCount = 0;
+    private boolean retrieveFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,20 +75,64 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         Intent intent = getIntent();
-        userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
-        username = intent.getStringExtra(LoginActivity.EXTRA_USER);
-        moodpath = userpath + username + "/" + "Moods/";
+        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
+        email = intent.getStringExtra(LoginActivity.EXTRA_USER);
+        //moodpath = userpath + email + "/" + "Moods/";
 
-        db = FirebaseFirestore.getInstance();
+        //db = FirebaseFirestore.getInstance();
+        moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
+        moodWriter.init(email);
+
+        moodWriter.getReturnVal().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                retrieveFlag = true;
+                selectedMoodEvent = moodWriter.createMoodEvent(id, (HashMap)o);
+            }
+        });
+
+        moodWriter.getSuccess().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                Boolean b = (Boolean)o;
+                if(retrieveFlag){
+                    retrieveFlag = false;
+                    if(b.booleanValue()){
+                        initData();
+                        sens2();
+                    }else{
+                        if(retrieveFailCount >= 1){
+                            // a bit janky, but have to do because null is returned on create
+                            Toast.makeText(EditActivity.this, "Couldn't load mood. Please try again.", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                        ++retrieveFailCount;
+                    }
+                }
+                else{
+                    if(b.booleanValue()){
+                        finish();
+                    }else{
+                        if(editFailCount >= 1){
+                            // a bit janky, but have to do because false is returned on create
+                            Toast.makeText(EditActivity.this, "Couldn't modify mood. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                        ++editFailCount;
+                    }
+                }
+            }
+        });
 
         //selectedMoodEvent = (MoodEvent) this.getIntent().getSerializableExtra("selectedMoodEvent");
-        long id = Long.parseLong(intent.getStringExtra(MoodHistoryActivity.EXTRA_MOOD));
-        for (int i = 0; i < ResUtil.list.size(); i++) {
-            if (ResUtil.list.get(i).getId() == id) {
-                selectedMoodEvent = ResUtil.list.get(i);
-                break;
-            }
-        }
+        id = Long.parseLong(intent.getStringExtra(MoodHistoryActivity.EXTRA_MOOD));
+//        for (int i = 0; i < ResUtil.list.size(); i++) {
+//            if (ResUtil.list.get(i).getId() == id) {
+//                selectedMoodEvent = ResUtil.list.get(i);
+//                break;
+//            }
+//        }
+
+        moodWriter.getMoodEvent(id);
 
         cal = Calendar.getInstance();
 
@@ -149,9 +197,7 @@ public class EditActivity extends AppCompatActivity {
         situationSpinner.setAdapter(situationAdapter);
         situationSpinner.setSelection(0);
 
-        initData();
 
-        sens2();
     }
 
     private void sens22() {
@@ -331,38 +377,29 @@ public class EditActivity extends AppCompatActivity {
                     return;
                 }
 
-                for (int i = 0; i < ResUtil.list.size(); i++) {
-                    if (ResUtil.list.get(i).getId() == selectedMoodEvent.getId()) {
-                        MoodEvent mood = ResUtil.list.get(i);
-                        mood.setAttach(attach);
-                        mood.setName(name);
-                        mood.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-                        mood.setEmotion(moodList.get(s1));
-                        mood.setSituation(MoodEvent.situationToInt(situationList.get(s2)));
-                        mood.setReasonString(reason);
-                        mood.setImage(image);
-                        updateMood(mood);
-                        break;
-                    }
-                }
+                moodWriter.updateMood(name, id, situationList.get(s2), cal, moodList.get(s1), reason);
 
-                finish();
+//                for (int i = 0; i < ResUtil.list.size(); i++) {
+//                    if (ResUtil.list.get(i).getId() == selectedMoodEvent.getId()) {
+//                        MoodEvent mood = ResUtil.list.get(i);
+//                        mood.setAttach(attach);
+//                        mood.setName(name);
+//                        mood.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+//                        mood.setEmotion(moodList.get(s1));
+//                        mood.setSituation(MoodEvent.situationToInt(situationList.get(s2)));
+//                        mood.setReasonString(reason);
+//                        mood.setImage(image);
+//                        updateMood(mood);
+//                        break;
+//                    }
+//                }
             }
         });
 
         findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < ResUtil.list.size(); i++) {
-                    if (ResUtil.list.get(i).getId() == selectedMoodEvent.getId()) {
-                        MoodEvent mood = ResUtil.list.get(i);
-                        deleteMood(mood);
-                        //ResUtil.list.remove(mood);
-                        break;
-                    }
-                }
-
-                finish();
+                moodWriter.deleteMoodEvent(id);
             }
         });
 
@@ -380,7 +417,7 @@ public class EditActivity extends AppCompatActivity {
             String s = MoodEvent.intToSituation(i);
             if(!s.equals("Error")){
                 situationList.add(s);
-            }
+            }else{break;}
         }
         situationList.add("select a social situation");
     }
@@ -420,53 +457,6 @@ public class EditActivity extends AppCompatActivity {
         } else {
             Log.d("OptionActivity", "放弃从相册选择");
         }
-    }
-
-    private void updateMood(MoodEvent mood){
-        HashMap<String, String> moodData = new HashMap<>();
-        moodData.put("mood_name", mood.getName());
-        moodData.put("mood_date", MoodEvent.longFormat.format(mood.getDate().getTime()));
-        moodData.put("mood_situation", mood.getSituation()+"");
-        moodData.put("mood_reason_str", mood.getReasonString());
-        moodData.put("mood_emotion", mood.getEmotion());
-
-        db.document(moodpath + mood.getId())
-                .set(moodData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Data modification successful");
-                        Toast.makeText(EditActivity.this, "Data addition successful.", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Data modification failed " + e.toString());
-                        Toast.makeText(EditActivity.this, "Data addition failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void deleteMood(MoodEvent mood){
-        db.document(moodpath + mood.getId())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Data deletion successful");
-                        Toast.makeText(EditActivity.this, "Data addition successful.", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Data deletion failed " + e.toString());
-                        Toast.makeText(EditActivity.this, "Data addition failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
     }
 
 }

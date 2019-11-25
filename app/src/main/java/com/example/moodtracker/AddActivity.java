@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 
-import android.util.Log;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,18 +19,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
-import com.example.moodtracker.bean.ResUtil;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.DB.MoodWriter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -50,23 +46,34 @@ public class AddActivity extends AppCompatActivity {
     private String reason = "";
     private String image = "";
 
-    private String userpath;
-    private String username;
-    private String moodpath;
+    //private String userpath;
+    private String email;
+    //private String moodpath;
+    private MoodWriter moodWriter;
+    //private FirebaseFirestore db;
 
-    private FirebaseFirestore db;
+    private int failCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
-        Intent intent = getIntent();
-        userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
-        username = intent.getStringExtra(LoginActivity.EXTRA_USER);
-        moodpath = userpath + username + "/" + "Moods/";
+        //long start = System.currentTimeMillis();
 
-        db = FirebaseFirestore.getInstance();
+        Intent intent = getIntent();
+        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
+        email = intent.getStringExtra(LoginActivity.EXTRA_USER);
+        //moodpath = userpath + email + "/" + "Moods/";
+        moodWriter =  ViewModelProviders.of(this).get(MoodWriter.class);
+        moodWriter.init(email);
+
+        //db = FirebaseFirestore.getInstance();
+        //System.out.println("ADD ACTIVITY ON CREATE MARKER 0 " + (System.currentTimeMillis()-start)/1000.0);
+
+
+
+        //System.out.println("ADD ACTIVITY ON CREATE MARKER 1 " + (System.currentTimeMillis()-start)/1000.0);
 
         cal = Calendar.getInstance();
 
@@ -79,7 +86,11 @@ public class AddActivity extends AppCompatActivity {
         dateField.setText(MoodEvent.dayFormat.format(cal.getTime()));
         timeField.setText(MoodEvent.timeFormat.format(cal.getTime()));
 
+        //System.out.println("ADD ACTIVITY ON CREATE MARKER 2 " + (System.currentTimeMillis()-start)/1000.0);
+
         initSpinnerData();
+
+        //System.out.println("ADD ACTIVITY ON CREATE MARKER 3 " + (System.currentTimeMillis()-start)/1000.0);
 
         moodSpinner = findViewById(R.id.mood_spinner);
         moodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -110,12 +121,8 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ;
-            }
-        });
+        //System.out.println("ADD ACTIVITY ON CREATE MARKER 4 " + (System.currentTimeMillis()-start)/1000.0);
+
 
         // 声明一个ArrayAdapter用于存放简单数据
         moodAdapter = new MyAdapter<>(
@@ -133,6 +140,8 @@ public class AddActivity extends AppCompatActivity {
         situationSpinner.setAdapter(situationAdapter);
         situationSpinner.setSelection(situationList.size() - 1, true);
 
+        //System.out.println("ADD ACTIVITY ON CREATE MARKER 5 " + (System.currentTimeMillis()-start)/1000.0);
+
         findViewById(R.id.option_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,12 +150,33 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
+        //System.out.println("ADD ACTIVITY ON CREATE MARKER 6 " + (System.currentTimeMillis()-start)/1000.0);
+
         findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onConfirm();
             }
         });
+
+        //System.out.println("ADD ACTIVITY ON CREATE MARKER 7 " + (System.currentTimeMillis()-start)/1000.0);
+        moodWriter.getSuccess().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                Boolean b = (Boolean)o;
+                if(b.booleanValue()){
+                    finish();
+                }else{
+                    if(failCount >= 1){
+                        // a bit janky, but have to do because false is returned on create
+                        Toast.makeText(AddActivity.this, "Couldn't save mood. Please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                    ++failCount;
+                }
+            }
+        });
+        //System.out.println("ADD ACTIVITY ON CREATE MARKER 9 " + (System.currentTimeMillis()-start)/1000.0);
+        //System.out.println("ADD ACTIVITY ON CREATE FINAL MARKER " + (System.currentTimeMillis()-start)/1000.0);
     }
 
     class MyAdapter<T> extends ArrayAdapter {
@@ -173,7 +203,7 @@ public class AddActivity extends AppCompatActivity {
             String s = MoodEvent.intToSituation(i);
             if(!s.equals("Error")){
                 situationList.add(s);
-            }
+            }else{break;}
         }
         situationList.add("select a social situation");
     }
@@ -196,54 +226,56 @@ public class AddActivity extends AppCompatActivity {
 
         String name = nameField.getEditableText().toString();
         if (name.isEmpty()) {
-            Toast.makeText(this, "name is empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddActivity.this, "name is empty", Toast.LENGTH_SHORT).show();
             return;
         }
         if (s1 == -1) {
-            Toast.makeText(this, "please choose a mood", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddActivity.this, "please choose a mood", Toast.LENGTH_SHORT).show();
             return;
         }
         if (s2 == -1) {
-            Toast.makeText(this, "please choose a social situation", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddActivity.this, "please choose a social situation", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        MoodEvent me = new MoodEvent(name, cal.getTimeInMillis(), MoodEvent.situationToInt(situationList.get(s2)), cal, moodList.get(s1), reason);
-        me.setAttach(attach);
-        me.setImage(image);
+        moodWriter.createAndWriteMood(name, cal, situationList.get(s2), moodList.get(s1), reason);
+        //TODO add next lines to createANdWriteMood
+        //me.setAttach(attach);
+        //me.setImage(image);
 
-        writeMoodToDB(me);
+
+        //writeMoodToDB(me);
 
         //ResUtil.list.add(me);
 
-        finish();
+        //finish();
     }
 
-    private void writeMoodToDB(MoodEvent mood){
-        HashMap<String, String> moodData = new HashMap<>();
-        moodData.put("mood_name", mood.getName());
-        moodData.put("mood_date", MoodEvent.longFormat.format(mood.getDate().getTime()));
-        moodData.put("mood_situation", mood.getSituation()+"");
-        moodData.put("mood_reason_str", mood.getReasonString());
-        moodData.put("mood_emotion", mood.getEmotion());
-
-        db.document(moodpath + mood.getId())
-                .set(moodData)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Data addition successful");
-                        Toast.makeText(AddActivity.this, "Data addition successful.", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Data addition failed " + e.toString());
-                        Toast.makeText(AddActivity.this, "Data addition failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
+//    private void writeMoodToDB(MoodEvent mood){
+//        HashMap<String, String> moodData = new HashMap<>();
+//        moodData.put("mood_name", mood.getName());
+//        moodData.put("mood_date", MoodEvent.longFormat.format(mood.getDate().getTime()));
+//        moodData.put("mood_situation", mood.getSituation()+"");
+//        moodData.put("mood_reason_str", mood.getReasonString());
+//        moodData.put("mood_emotion", mood.getEmotion());
+//
+//        db.document(moodpath + mood.getId())
+//                .set(moodData)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "Data addition successful");
+//                        Toast.makeText(AddActivity.this, "Data addition successful.", Toast.LENGTH_SHORT).show();
+//                        finish();
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d(TAG, "Data addition failed " + e.toString());
+//                        Toast.makeText(AddActivity.this, "Data addition failed", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
 
 }

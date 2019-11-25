@@ -37,8 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private String userPathStr;
     public static final String si_PASSWORD = "com.example.moodtracker.siPASSWORD";	
-    public static final String si_EMAIL = "com.example.moodtracker.siEMAIL";	
-    public static final String si_USERNAME = "com.example.moodtracker.siUSERNAME";
+    public static final String si_EMAIL = "com.example.moodtracker.siEMAIL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
