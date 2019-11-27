@@ -26,6 +26,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * This shows the friend's events details
+ * @author xuhf0429
+ */
+
 public class FriendEditActivity extends AppCompatActivity {
 
     private String username2 = null;

@@ -21,14 +21,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * This function sets the user's events list
+ * layout.
+ *
+ * @author xuhf0429
+ */
 public class MoodHistoryActivity extends AppCompatActivity {
 
-    private String username = null;
+    private String username = null; //no username since no user adds event
 
-    private RecyclerView mRecyclerView1 = null;
+    private RecyclerView mRecyclerView1 = null; //set the layout of event to be empty
 
     private MyRecycleAdapter<MoodEvent> recycleAdapter1 = null;
-    private List<MoodEvent> recycleList1 = new ArrayList<MoodEvent>();
+    private List<MoodEvent> recycleList1 = new ArrayList<MoodEvent>(); //set a list of mood events
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
         username = this.getIntent().getStringExtra("username");
 
+        //click on add new event button to switch into add event activity
         ((TextView) findViewById(R.id.idAdd)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,29 +53,31 @@ public class MoodHistoryActivity extends AppCompatActivity {
             }
         });
 
-        initRecycleView1();
+        initRecycleView1();// initialize the layout format
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        //resets the list
         recycleList1.clear();
 
+        //reset and get all data
         DataUtil.getAll(username, recycleList1);
         recycleAdapter1.notifyDataSetChanged();
     }
 
     public void initRecycleView1() {
-        //1.获取控件
+        //get controller
         mRecyclerView1 = (RecyclerView) findViewById(R.id.recycler_view1);
 
-        //2.设置布局方式
-        mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //线性布局
-        //mRecyclerView1.setLayoutManager(new GridLayoutManager(this, 3));  //网格布局
-        mRecyclerView1.setHasFixedSize(true);
+        //set layout format
+        mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //linearlayout
 
-        //3.设置适配器
+        mRecyclerView1.setHasFixedSize(true); //set fixed size for the layout
+
+        //set adapter
         mRecyclerView1.setAdapter(recycleAdapter1 = new MyRecycleAdapter<MoodEvent>(this,
                 -1, null,
                 -1, null,
@@ -83,6 +92,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
             }
 
             @Override
+            //set event details layout with their background colors associate with moods and names
             public void convertItem(ItemViewHolder helper, MoodEvent item) {
                 helper.setText(R.id.idName, item.getEventName());
 
@@ -91,6 +101,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
             }
         });
 
+        //switch to edit event activity
         recycleAdapter1.setOnClickListener(new MyRecycleAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -101,6 +112,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
             }
         });
 
+        //press on the button for long time
         recycleAdapter1.setOnLongClickListener(new MyRecycleAdapter.OnLongClickListener() {
             @Override
             public void onLongClick(View view, int position) {

@@ -20,18 +20,23 @@ import com.example.moodtracker.recycle.MyRecycleAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This function shows the list of user's friends
+ * @author xuhf0429
+ */
+
 public class FriendListActivity extends AppCompatActivity {
 
     private String username = null;
 
     private RecyclerView mRecyclerView1 = null;
 
-    private MyRecycleAdapter<String> recycleAdapter1 = null;
-    private List<String> recycleList1 = new ArrayList<String>();
+    private MyRecycleAdapter<String> recycleAdapter1 = null; //there is no friends added, thus no events available
+    private List<String> recycleList1 = new ArrayList<String>(); //set a list of friends
 
     private EditText etSearch;
 
-    private TextView tvAcceptDisplay;
+    private TextView tvAcceptDisplay; //show user to accept the participant
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +47,12 @@ public class FriendListActivity extends AppCompatActivity {
 
         etSearch = ((EditText) findViewById(R.id.idSearchContent));
 
+        //click on search button to search participant
         ((TextView) findViewById(R.id.idSearchBtn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String strSearchContent = etSearch.getEditableText().toString();
+                //check if search username is oneself or no user searched, or username does not exist in the data
                 if (strSearchContent.isEmpty()) {
                     Toast.makeText(FriendListActivity.this, "the search content is empty", Toast.LENGTH_SHORT).show();
                 } else if (strSearchContent.equals(username)) {
@@ -68,9 +75,11 @@ public class FriendListActivity extends AppCompatActivity {
 
         tvAcceptDisplay = ((TextView) findViewById(R.id.idAcceptDisplay));
 
+        //click on accept button
         ((TextView) findViewById(R.id.idAccept)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //if accept exists, then switch to the accept activity
                 if (!tvAcceptDisplay.getText().toString().equals("0")) {
                     Intent intent = new Intent(FriendListActivity.this, FriendAcceptActivity.class);
                     intent.putExtra("username", username);
@@ -79,6 +88,7 @@ public class FriendListActivity extends AppCompatActivity {
             }
         });
 
+        //click on view on map button to view event on current location
         ((TextView) findViewById(R.id.idViewOnMap)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,24 +103,26 @@ public class FriendListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        //resets the list
         recycleList1.clear();
 
+        //get the accepted users
         tvAcceptDisplay.setText(String.valueOf(DataUtil.getAskByUsername(username)));
 
+        //reset and get all data
         DataUtil.getFriends(username, recycleList1);
         recycleAdapter1.notifyDataSetChanged();
     }
 
     public void initRecycleView1() {
-        //1.获取控件
+        //get controller
         mRecyclerView1 = (RecyclerView) findViewById(R.id.recycler_view1);
 
-        //2.设置布局方式
-        mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //线性布局
-        //mRecyclerView1.setLayoutManager(new GridLayoutManager(this, 3));  //网格布局
-        mRecyclerView1.setHasFixedSize(true);
+        //set layout format
+        mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //linear layout
+        mRecyclerView1.setHasFixedSize(true);  //set fixed size for the layout
 
-        //3.设置适配器
+        //set adapter
         mRecyclerView1.setAdapter(recycleAdapter1 = new MyRecycleAdapter<String>(this,
                 -1, null,
                 -1, null,
@@ -126,10 +138,11 @@ public class FriendListActivity extends AppCompatActivity {
 
             @Override
             public void convertItem(ItemViewHolder helper, String item) {
-                helper.setText(R.id.idName, item);
+                helper.setText(R.id.idName, item); //set the layout for each friend
             }
         });
 
+        //click on the friend, switch to the friend's event list
         recycleAdapter1.setOnClickListener(new MyRecycleAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -140,6 +153,7 @@ public class FriendListActivity extends AppCompatActivity {
             }
         });
 
+        //press button long
         recycleAdapter1.setOnLongClickListener(new MyRecycleAdapter.OnLongClickListener() {
             @Override
             public void onLongClick(View view, int position) {

@@ -17,13 +17,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * This interface allows the user to view the image
+ * for the reason of an event
+ *
+ * @author xuhf0429
+ */
 public class OptionActivity extends AppCompatActivity {
 
     private final int REQUEST_IMAGE_PHOTO = 1001;
     private EditText etName;
     private ImageView ivImage;
 
-    private String image = "";
+    private String image = ""; //set image as empty since no image selected yet
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +51,13 @@ public class OptionActivity extends AppCompatActivity {
                         .start(OptionActivity.this, REQUEST_IMAGE_PHOTO);
                         */
 
+                //switch to the image shops.
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQUEST_IMAGE_PHOTO);
             }
         });
 
+        //save the created event
         ((TextView) findViewById(R.id.idSave)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +74,7 @@ public class OptionActivity extends AppCompatActivity {
                     }
                 }
 
+                //save stated reasons and selected images.
                 Intent intent = new Intent();
                 intent.putExtra("reason", etName.getEditableText().toString());
                 intent.putExtra("image", image);
@@ -78,9 +87,9 @@ public class OptionActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//从相册选择完图片
+        if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//select available images from the image shops
             /*
-            //压缩图片
+            //zip picture
             ArrayList<String> images = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
 
             image = images.get(0);
@@ -90,6 +99,7 @@ public class OptionActivity extends AppCompatActivity {
         }
     }
 
+    //handle images
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
@@ -99,14 +109,14 @@ public class OptionActivity extends AppCompatActivity {
         }
     };
 
-    // 调用android自带图库，显示选中的图片
+    // call the android photoshops, select an image
     private void showPic(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
                 if (uri != null) {
                     Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-                    //选择的就只是一张图片，所以cursor只有一条记录
+                    //select an image, thus the cursor has one record only
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
                             final String path = cursor.getString(cursor.getColumnIndex("_data"));//获取相册路径字段
@@ -115,7 +125,6 @@ public class OptionActivity extends AppCompatActivity {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    //Log.v(TAG, "打开相册获取的图片sd卡路径:" + path);
                                     Bitmap bitmap = BitmapFactory.decodeFile(path);
 
                                     Message msg = new Message();
@@ -129,7 +138,7 @@ public class OptionActivity extends AppCompatActivity {
                 }
             }
         } else {
-            Log.d("OptionActivity", "放弃从相册选择");
+            Log.d("OptionActivity", "give up on selecting images");
         }
     }
 

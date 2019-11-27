@@ -23,11 +23,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * This function brings the user to add a new event into his/her
+ * mood history.
+ * @author xuhf0429
+ */
+
 public class AddActivity extends AppCompatActivity {
 
-    private CheckBox cb;
+    private CheckBox cb;//fill the check in square box to attach the event to current location
 
-    int s1 = -1, s2 = -1;
+    int s1 = -1, s2 = -1; //set the indexes to be none since situation and mood are not selected
     private Spinner mSpinner1, mSpinner2;
     private List<String> mList1 = new ArrayList<String>();
     private List<String> mList2 = new ArrayList<String>();
@@ -36,10 +42,12 @@ public class AddActivity extends AppCompatActivity {
     private EditText etName;
     private TextView tvDate, tvTime;
 
+    //set the format ofthe date and time
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private Calendar cal = null;
 
+    //set reason and image to be empty since none of them selected
     private String reason = "";
     private String image = "";
 
@@ -101,19 +109,19 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        // 声明一个ArrayAdapter用于存放简单数据
+        // state arrayadapter to store simple data
         adapter1 = new Myadapter<String>(
                 AddActivity.this, android.R.layout.simple_spinner_item,
                 mList1);
-        // 把定义好的Adapter设定到spinner中
+        // set the defined adapter into mood spinner
         mSpinner1.setAdapter(adapter1);
         mSpinner1.setSelection(mList1.size() - 1, true);
 
-        // 声明一个ArrayAdapter用于存放简单数据
+        // state arrayadapter to store simple data
         adapter2 = new Myadapter<String>(
                 AddActivity.this, android.R.layout.simple_spinner_item,
                 mList2);
-        // 把定义好的Adapter设定到spinner中
+        // set the defined adapter into situation spinner
         mSpinner2.setAdapter(adapter2);
         mSpinner2.setSelection(mList2.size() - 1, true);
 
@@ -146,6 +154,7 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
+    //dealing with the spinners of situation and mood
     private void initSpinnerData() {
         //angry，happy，sad，neutral
         mList1.add(EmotionData.ANGRY_DATA.getEmotion());
@@ -165,13 +174,14 @@ public class AddActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //此处可以根据两个Code进行判断，本页面和结果页面跳过来的值
+        //compare the values of the two codes
         if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
             reason = data.getStringExtra("reason");
             image = data.getStringExtra("image");
         }
     }
 
+    //confirm adding
     private void onConfirm() {
         boolean attach = false;
         if (cb.isChecked()) {
@@ -183,6 +193,7 @@ public class AddActivity extends AppCompatActivity {
             Toast.makeText(this, "name is empty", Toast.LENGTH_SHORT).show();
             return;
         }
+        //if the situation or mood is not selected, then report error.
         if (s1 == -1) {
             Toast.makeText(this, "please choose a mood", Toast.LENGTH_SHORT).show();
             return;
@@ -192,6 +203,7 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
+        //add all data into the object
         MoodEvent me = new MoodEvent(cal, mList1.get(s1), reason);
         me.setId(cal.getTimeInMillis() + "");
         me.setAttach(attach);
@@ -200,6 +212,7 @@ public class AddActivity extends AppCompatActivity {
         me.setImage(image);
         me.setUsername(username);
 
+        //add the data.
         DataUtil.addData(me);
 
         finish();

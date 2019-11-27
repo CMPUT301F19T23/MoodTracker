@@ -26,14 +26,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * This function allows the user to view, edit, delete
+ * an event.
+ * @author xuhf0429
+ */
+
 public class EditActivity extends AppCompatActivity {
 
     private String username = null;
 
     private final int REQUEST_IMAGE_PHOTO = 1001;
-    private CheckBox cb;
+    private CheckBox cb;//fill the check in square box to attach the event to current location
 
-    int s1 = -1, s2 = -1;
+    int s1 = -1, s2 = -1;//set the indexes to be none since situation and mood are not selected
     private Spinner mSpinner1, mSpinner2;
     private List<String> mList1 = new ArrayList<String>();
     private List<String> mList2 = new ArrayList<String>();
@@ -42,16 +48,19 @@ public class EditActivity extends AppCompatActivity {
     private EditText etName, etReason;
     private TextView tvDate, tvTime;
 
+    //set the editable emoji
     private TextView tvSense2;
 
+    //set the format ofthe date and time
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private Calendar cal = null;
 
+    //set reason and image to be empty since none of them selected
     private String reason = "";
     private String image = "";
 
-    private MoodEvent bean = null;
+    private MoodEvent bean = null;//the mood event list is empty
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +70,9 @@ public class EditActivity extends AppCompatActivity {
         username = this.getIntent().getStringExtra("username");
 
         String id = this.getIntent().getStringExtra("bean");
-        bean = DataUtil.getMoodEvent(username, id);
+        bean = DataUtil.getMoodEvent(username, id);//link to the datas
 
-        cal = Calendar.getInstance();
+        cal = Calendar.getInstance();//get the current date and time
 
         cb = (CheckBox) findViewById(R.id.idAttach);
 
@@ -110,27 +119,28 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-        // 声明一个ArrayAdapter用于存放简单数据
+        // state arrayadapter to store simple data
         adapter1 = new Myadapter<String>(
                 EditActivity.this, android.R.layout.simple_spinner_item,
                 mList1);
-        // 把定义好的Adapter设定到spinner中
+        // set the defined adapter into mood spinner
         mSpinner1.setAdapter(adapter1);
         mSpinner1.setSelection(0);
 
-        // 声明一个ArrayAdapter用于存放简单数据
+        // state arrayadapter to store simple data
         adapter2 = new Myadapter<String>(
                 EditActivity.this, android.R.layout.simple_spinner_item,
                 mList2);
-        // 把定义好的Adapter设定到spinner中
+        // set the defined adapter into mood spinner
         mSpinner2.setAdapter(adapter2);
         mSpinner2.setSelection(0);
 
-        initData();
+        initData();//call initData() to initialize the data
 
         sens2();
     }
 
+    //set the layout of the events
     private void sens22() {
         String keshi = mList1.get(s1);
         if (keshi.equals(EmotionData.ANGRY_DATA.getEmotion())) {
@@ -159,6 +169,7 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
+    //return the datas
     class Myadapter<T> extends ArrayAdapter {
         public Myadapter(@NonNull Context context, int resource, @NonNull List<T> objects) {
             super(context, resource, objects);
@@ -167,7 +178,7 @@ public class EditActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             int i = super.getCount();
-            return i > 0 ? i - 1 : i;
+            return i > 0 ? i : i-1;
         }
     }
 
@@ -183,6 +194,7 @@ public class EditActivity extends AppCompatActivity {
         etName.setText(bean.getEventName());
         etReason.setText(bean.getReasonString());
 
+        //select the item in the mood spinner
         for (int i = 0; i < mList1.size(); i++) {
             if (mList1.get(i).equals(bean.getEmotion())) {
                 mSpinner1.setSelection(i);
@@ -190,6 +202,8 @@ public class EditActivity extends AppCompatActivity {
                 break;
             }
         }
+
+        //select the item in the situation spinner
         for (int i = 0; i < mList2.size(); i++) {
             if (mList2.get(i).equals(bean.getSituation())) {
                 mSpinner2.setSelection(i);
@@ -198,6 +212,7 @@ public class EditActivity extends AppCompatActivity {
             }
         }
 
+        //view the attached image for reason
         ((TextView) findViewById(R.id.idViewImage)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,6 +227,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        //change images
         ((TextView) findViewById(R.id.idChangeImage)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,6 +236,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        //save the changes
         ((TextView) findViewById(R.id.idSaveChange)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -233,6 +250,8 @@ public class EditActivity extends AppCompatActivity {
                     Toast.makeText(EditActivity.this, "name is empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                //check the reason conditions, if it is more than 3 words or 20 characters.
                 reason = etReason.getEditableText().toString();
                 if (!reason.isEmpty()) {
                     String[] names = name.split(" ");
@@ -246,6 +265,7 @@ public class EditActivity extends AppCompatActivity {
                     }
                 }
 
+                //if no situation or mood is selected
                 if (s1 == -1) {
                     Toast.makeText(EditActivity.this, "please choose a mood", Toast.LENGTH_SHORT).show();
                     return;
@@ -255,12 +275,14 @@ public class EditActivity extends AppCompatActivity {
                     return;
                 }
 
+                //update the details and save the updated data
                 DataUtil.updateMoodEvent(username, bean.getId(), attach, name, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), mList1.get(s1), mList2.get(s2), reason, image);
 
                 finish();
             }
         });
 
+        //delete an event
         ((TextView) findViewById(R.id.idDelete)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -291,21 +313,21 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //此处可以根据两个Code进行判断，本页面和结果页面跳过来的值
-        if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//从相册选择完图片
-            //压缩图片
+        //compare the values of the two codes
+        if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//select a photo from the pictures in the emulator
+            //zip picture
             showPic(resultCode, data);
         }
     }
 
-    // 调用android自带图库，显示选中的图片
+    // call the android photoshops, select an image
     private void showPic(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
                 if (uri != null) {
                     Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-                    //选择的就只是一张图片，所以cursor只有一条记录
+                    //select an image, thus the cursor has one record only
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
                             String path = cursor.getString(cursor.getColumnIndex("_data"));//获取相册路径字段
@@ -315,7 +337,7 @@ public class EditActivity extends AppCompatActivity {
                 }
             }
         } else {
-            Log.d("OptionActivity", "放弃从相册选择");
+            Log.d("OptionActivity", "give up on selecting images");
         }
     }
 

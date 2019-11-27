@@ -3,7 +3,7 @@ package me.nereo.multi_image_selector.bean;
 import android.text.TextUtils;
 
 /**
- * 图片实体
+ * image
  * Created by Nereo on 2015/4/7.
  */
 public class Image {
