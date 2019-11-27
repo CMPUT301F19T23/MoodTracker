@@ -4,31 +4,16 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import android.util.Log;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import com.example.moodtracker.bean.ResUtil;
-import com.example.moodtracker.bean.User;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-
-/**
- * This activity is the login activity, which allows the user to login using a given username and password.
- * @author xuhf0429
- */
+import com.example.moodtracker.bean.DataUtil;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -36,45 +21,19 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etUsername;
     private EditText etPassword;
 
-    public static final String EXTRA_USERPATH = "com.example.moodtracker.USERPATH"; // Filepath to get to the Users database
-    private String userPathStr = "Users/";
-    public static final String EXTRA_USER = "com.example.moodtracker.USER";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        for (int i = 1; i < 4; i++) {
+            DataUtil.register(i + "", i + "");
+        }
+
         request_permission();
 
         etUsername = (EditText) findViewById(R.id.idUsername);
         etPassword = (EditText) findViewById(R.id.idPassword);
-
-        FirebaseFirestore db;
-        final String TAG = "UserReg";
-        db = FirebaseFirestore.getInstance();
-        final CollectionReference collectionReference = db.collection("Users");
-
-
-
-        collectionReference.addSnapshotListener(new com.google.firebase.firestore.EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                ResUtil.listUser.clear();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    Log.d(TAG, String.valueOf(doc.getData().get("password")));
-                    String userName = doc.getId();
-                    String userPassword = (String) doc.getData().get("password");
-                    ResUtil.listUser.add(new User(userName, userPassword));
-                }
-
-            }
-        });
-
-
-
-
-
 
         ((TextView) findViewById(R.id.idLogin)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,17 +46,14 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                boolean bFind = false;
-                for (int i = 0; i < ResUtil.listUser.size(); i++) {
-                    if (ResUtil.listUser.get(i).getUsername().equals(username) && ResUtil.listUser.get(i).getPassword().equals(password)) {
-                        Intent intent = new Intent(LoginActivity.this, MoodActivity.class);
-                        startActivity(intent);
-                        bFind = true;
-                        break;
-                    }
-                }
+                if (DataUtil.login(username, password)) {
+                    etUsername.setText("");
+                    etPassword.setText("");
 
-                if (bFind == false) {
+                    Intent intent = new Intent(LoginActivity.this, MoodActivity.class);
+                    intent.putExtra("username", username);
+                    startActivity(intent);
+                } else {
                     Toast.makeText(LoginActivity.this, "username or password is error", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -107,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                intent.putExtra(EXTRA_USERPATH, userPathStr);
                 startActivity(intent);
             }
         });

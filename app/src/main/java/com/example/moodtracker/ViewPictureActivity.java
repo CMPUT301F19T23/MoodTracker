@@ -5,17 +5,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-/**
- * This is the activity that allows the user to see the photograph
- * by clicking on "view picture" button
- *
- * @author xuhf0429
- */
 
 public class ViewPictureActivity extends AppCompatActivity {
 
@@ -37,8 +28,6 @@ public class ViewPictureActivity extends AppCompatActivity {
 
         final String image = this.getIntent().getStringExtra("image");
         ivImage = (ImageView) findViewById(R.id.idImage);
-
-        //Glide.with(ViewPictureActivity.this.getApplicationContext()).load(image).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivImage);
 
         new Thread(new Runnable() {
             @Override

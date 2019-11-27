@@ -26,6 +26,12 @@
         <activity android:name=".EditActivity" />
         <activity android:name=".ViewPictureActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".FriendListActivity" />
+        <activity android:name=".FriendAcceptActivity" />
+        <activity android:name=".FriendAskActivity" />
+        <activity android:name=".FriendEditActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".MoodFriendHistoryActivity" />
     </application>
 
 </manifest>

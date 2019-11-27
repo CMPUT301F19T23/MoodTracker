@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,31 +16,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.moodtracker.bean.ResUtil;
+import com.example.moodtracker.bean.DataUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * This is the activity that allows the user to add a new event, if
- * the user clicks on "add new event" button, which allows the user to enter the name of
- * the event, and select the moods and the social situation of the events from
- * the dropdown list.
- *
- * @author xuhf0429
- */
-
 public class AddActivity extends AppCompatActivity {
 
     private CheckBox cb;
 
-    int s1 = -1, s2 = -1;//suppose there is no object in the spinner object
+    int s1 = -1, s2 = -1;
     private Spinner mSpinner1, mSpinner2;
     private List<String> mList1 = new ArrayList<String>();
     private List<String> mList2 = new ArrayList<String>();
@@ -48,19 +36,21 @@ public class AddActivity extends AppCompatActivity {
     private EditText etName;
     private TextView tvDate, tvTime;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");//set the current date and time
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");//set the correct formate of time
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private Calendar cal = null;
 
     private String reason = "";
     private String image = "";
 
-    private String loginUsername = null;
+    private String username = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+
+        username = this.getIntent().getStringExtra("username");
 
         cal = Calendar.getInstance();
 
@@ -75,7 +65,7 @@ public class AddActivity extends AppCompatActivity {
 
         initSpinnerData();
 
-        mSpinner1 = (Spinner) findViewById(R.id.idSense);//the first spinner object to be the moods
+        mSpinner1 = (Spinner) findViewById(R.id.idSense);
         mSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -90,7 +80,7 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        mSpinner2 = (Spinner) findViewById(R.id.idSituation);//the second spinner object to be the social situations
+        mSpinner2 = (Spinner) findViewById(R.id.idSituation);
         mSpinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -104,7 +94,6 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        //clicks on the confirm adding button
         ((TextView) findViewById(R.id.idConfirm)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,19 +101,19 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        // an ArrayAdapter storing simple datas
+        // 声明一个ArrayAdapter用于存放简单数据
         adapter1 = new Myadapter<String>(
                 AddActivity.this, android.R.layout.simple_spinner_item,
                 mList1);
-        // set well-defined ArrayAdapter into spinner object.
+        // 把定义好的Adapter设定到spinner中
         mSpinner1.setAdapter(adapter1);
         mSpinner1.setSelection(mList1.size() - 1, true);
 
-        // an ArrayAdapter storing simple datas
+        // 声明一个ArrayAdapter用于存放简单数据
         adapter2 = new Myadapter<String>(
                 AddActivity.this, android.R.layout.simple_spinner_item,
                 mList2);
-        // set well-defined ArrayAdapter into spinner object
+        // 把定义好的Adapter设定到spinner中
         mSpinner2.setAdapter(adapter2);
         mSpinner2.setSelection(mList2.size() - 1, true);
 
@@ -176,6 +165,7 @@ public class AddActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //此处可以根据两个Code进行判断，本页面和结果页面跳过来的值
         if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
             reason = data.getStringExtra("reason");
             image = data.getStringExtra("image");
@@ -208,8 +198,9 @@ public class AddActivity extends AppCompatActivity {
         me.setEventName(name);
         me.setSituation(mList2.get(s2));
         me.setImage(image);
+        me.setUsername(username);
 
-        ResUtil.list.add(me);
+        DataUtil.addData(me);
 
         finish();
     }

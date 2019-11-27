@@ -9,22 +9,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-/**
- * This is the activity for an user to have option to enter textual reason when adding an event, or
- * use a photograph to represent the reason.
- *
- * @author xuhf0429
- */
 
 public class OptionActivity extends AppCompatActivity {
 
@@ -108,12 +99,14 @@ public class OptionActivity extends AppCompatActivity {
         }
     };
 
+    // 调用android自带图库，显示选中的图片
     private void showPic(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
                 if (uri != null) {
                     Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                    //选择的就只是一张图片，所以cursor只有一条记录
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
                             final String path = cursor.getString(cursor.getColumnIndex("_data"));//获取相册路径字段
@@ -122,6 +115,7 @@ public class OptionActivity extends AppCompatActivity {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //Log.v(TAG, "打开相册获取的图片sd卡路径:" + path);
                                     Bitmap bitmap = BitmapFactory.decodeFile(path);
 
                                     Message msg = new Message();
@@ -135,7 +129,7 @@ public class OptionActivity extends AppCompatActivity {
                 }
             }
         } else {
-            Log.d("OptionActivity", "give up");
+            Log.d("OptionActivity", "放弃从相册选择");
         }
     }
 

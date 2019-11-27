@@ -1,36 +1,29 @@
 package com.example.moodtracker;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-
-
-
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.text.Editable;
+import android.text.TextWatcher;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import com.example.moodtracker.bean.DataUtil;
+import com.example.moodtracker.recycle.FooterViewHolder;
+import com.example.moodtracker.recycle.HeaderViewHolder;
+import com.example.moodtracker.recycle.ItemViewHolder;
+import com.example.moodtracker.recycle.MyRecycleAdapter;
 
-import com.example.moodtracker.bean.ResUtil;
-
-
-
-
-
-
-
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-/**
- * This activity is to allow the user view his/her history events.
- *
- * @author xuhf0429
- */
-
 public class MoodHistoryActivity extends AppCompatActivity {
+
+    private String username = null;
 
     private RecyclerView mRecyclerView1 = null;
 
@@ -42,10 +35,13 @@ public class MoodHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_history);
 
+        username = this.getIntent().getStringExtra("username");
+
         ((TextView) findViewById(R.id.idAdd)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MoodHistoryActivity.this, AddActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             }
         });
@@ -59,7 +55,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
         recycleList1.clear();
 
-        recycleList1.addAll(ResUtil.list);
+        DataUtil.getAll(username, recycleList1);
         recycleAdapter1.notifyDataSetChanged();
     }
 
@@ -92,25 +88,6 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
                 helper.setText(R.id.idImage, item.getEmoji());
                 helper.getView(R.id.idName).setBackgroundColor(item.getColor());
-                /*
-                if (item.getEmotion().toLowerCase().equals("angry")) {
-                    helper.setText(R.id.idImage, item.getEmoji());
-                    helper.getView(R.id.idName).setBackgroundColor(item.getColor());
-
-                } else if (item.getEmotion().toLowerCase().equals("happy")) {
-                    helper.setText(R.id.idImage, item.getEmoji());
-                    helper.getView(R.id.idName).setBackgroundColor(item.getColor());
-
-                } else if (item.getEmotion().toLowerCase().equals("sad")) {
-                    helper.setText(R.id.idImage, item.getEmoji());
-                    helper.getView(R.id.idName).setBackgroundColor(item.getColor());
-
-                } else if (item.getEmotion().toLowerCase().equals("neutral")) {
-                    helper.setText(R.id.idImage, item.getEmoji());
-                    helper.getView(R.id.idName).setBackgroundColor(item.getColor());
-
-                }
-                */
             }
         });
 
@@ -118,6 +95,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(MoodHistoryActivity.this, EditActivity.class);
+                intent.putExtra("username", username);
                 intent.putExtra("bean", recycleList1.get(position).getId());
                 startActivity(intent);
             }

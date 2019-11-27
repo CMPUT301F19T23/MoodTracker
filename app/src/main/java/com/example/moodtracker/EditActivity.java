@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,27 +19,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.moodtracker.bean.ResUtil;
+import com.example.moodtracker.bean.DataUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * This is the activity that allows the user to edit a given event, if
- * the user clicks on the event, which allows the user to re-enter the name of
- * the event, and select the moods and the social situation of the events from
- * the dropdown list, and updates the details if "save change" button is clicked.
- *
- * @author xuhf0429
- */
-
 public class EditActivity extends AppCompatActivity {
+
+    private String username = null;
 
     private final int REQUEST_IMAGE_PHOTO = 1001;
     private CheckBox cb;
@@ -69,14 +58,10 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        //bean = (MoodEvent) this.getIntent().getSerializableExtra("bean");
+        username = this.getIntent().getStringExtra("username");
+
         String id = this.getIntent().getStringExtra("bean");
-        for (int i = 0; i < ResUtil.list.size(); i++) {
-            if (ResUtil.list.get(i).getId().equals(id)) {
-                bean = ResUtil.list.get(i);
-                break;
-            }
-        }
+        bean = DataUtil.getMoodEvent(username, id);
 
         cal = Calendar.getInstance();
 
@@ -125,18 +110,19 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-
+        // 声明一个ArrayAdapter用于存放简单数据
         adapter1 = new Myadapter<String>(
                 EditActivity.this, android.R.layout.simple_spinner_item,
                 mList1);
-
+        // 把定义好的Adapter设定到spinner中
         mSpinner1.setAdapter(adapter1);
         mSpinner1.setSelection(0);
 
+        // 声明一个ArrayAdapter用于存放简单数据
         adapter2 = new Myadapter<String>(
                 EditActivity.this, android.R.layout.simple_spinner_item,
                 mList2);
-
+        // 把定义好的Adapter设定到spinner中
         mSpinner2.setAdapter(adapter2);
         mSpinner2.setSelection(0);
 
@@ -171,25 +157,6 @@ public class EditActivity extends AppCompatActivity {
         tvSense2.setText(bean.getEmoji());
         tvSense2.setBackgroundColor(bean.getColor());
 
-        /*
-        if (bean.getEmotion().toLowerCase().equals(EmotionData.ANGRY_DATA)) {
-            tvSense2.setText(bean.getEmoji());
-            tvSense2.setBackgroundColor(bean.getColor());
-
-        } else if (bean.getEmotion().toLowerCase().equals(EmotionData.HAPPY_DATA)) {
-            tvSense2.setText(bean.getEmoji());
-            tvSense2.setBackgroundColor(bean.getColor());
-
-        } else if (bean.getEmotion().toLowerCase().equals(EmotionData.SAD_DATA)) {
-            tvSense2.setText(bean.getEmoji());
-            tvSense2.setBackgroundColor(bean.getColor());
-
-        } else if (bean.getEmotion().toLowerCase().equals(EmotionData.NEUTRAL_DATA)) {
-            tvSense2.setText(bean.getEmoji());
-            tvSense2.setBackgroundColor(bean.getColor());
-
-        }
-        */
     }
 
     class Myadapter<T> extends ArrayAdapter {
@@ -248,15 +215,6 @@ public class EditActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.idChangeImage)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                MultiImageSelector.create()
-                        .showCamera(false)
-                        //.count(IMAGE_SIZE - originImages.size() + 1)
-                        .count(1)
-                        .multi()
-                        .start(EditActivity.this, REQUEST_IMAGE_PHOTO);
-                        */
-
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQUEST_IMAGE_PHOTO);
             }
@@ -297,18 +255,7 @@ public class EditActivity extends AppCompatActivity {
                     return;
                 }
 
-                for (int i = 0; i < ResUtil.list.size(); i++) {
-                    if (ResUtil.list.get(i).getId().equals(bean.getId())) {
-                        ResUtil.list.get(i).setAttach(attach);
-                        ResUtil.list.get(i).setEventName(name);
-                        ResUtil.list.get(i).setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-                        ResUtil.list.get(i).setEmotion(mList1.get(s1));
-                        ResUtil.list.get(i).setSituation(mList2.get(s2));
-                        ResUtil.list.get(i).setReasonString(reason);
-                        ResUtil.list.get(i).setImage(image);
-                        break;
-                    }
-                }
+                DataUtil.updateMoodEvent(username, bean.getId(), attach, name, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), mList1.get(s1), mList2.get(s2), reason, image);
 
                 finish();
             }
@@ -317,12 +264,7 @@ public class EditActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.idDelete)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < ResUtil.list.size(); i++) {
-                    if (ResUtil.list.get(i).getId().equals(bean.getId())) {
-                        ResUtil.list.remove(i);
-                        break;
-                    }
-                }
+                DataUtil.removeMoodEvent(username, bean.getId());
 
                 finish();
             }
@@ -349,34 +291,31 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        //此处可以根据两个Code进行判断，本页面和结果页面跳过来的值
         if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//从相册选择完图片
             //压缩图片
-            /*
-            ArrayList<String> images = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-
-            image = images.get(0);
-            */
-
             showPic(resultCode, data);
         }
     }
 
+    // 调用android自带图库，显示选中的图片
     private void showPic(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
                 if (uri != null) {
                     Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                    //选择的就只是一张图片，所以cursor只有一条记录
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
-                            String path = cursor.getString(cursor.getColumnIndex("_data"));
+                            String path = cursor.getString(cursor.getColumnIndex("_data"));//获取相册路径字段
                             image = path;
                         }
                     }
                 }
             }
         } else {
-            Log.d("OptionActivity", "give up");
+            Log.d("OptionActivity", "放弃从相册选择");
         }
     }
 
