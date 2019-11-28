@@ -3,6 +3,7 @@ package com.example.moodtracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,8 @@ public class FriendEditActivity extends AppCompatActivity {
     private MoodEvent moodEvent = null;
 
     private FriendMoodReader friendMoodReader;
+
+    private RelativeLayout relativeLayout;
 
     private int readerFailCount = 0;
     private boolean retrieveFlag = false;
@@ -112,8 +115,15 @@ public class FriendEditActivity extends AppCompatActivity {
     }
 
     private void sens2() {
+        relativeLayout = findViewById(R.id.relativelayout);
         tvSense2.setText(new String(Character.toChars(moodEvent.getEmoji())));
-        tvSense2.setBackgroundColor(moodEvent.getColor());
+        relativeLayout.setBackgroundColor(moodEvent.getColor());
+        etName.setBackgroundColor(0xFFFFFFFF);
+        etReason.setBackgroundColor(0xFFFFFFFF);
+        tvDate.setBackgroundColor(0xFFFFFFFF);
+        tvTime.setBackgroundColor(0xFFFFFFFF);
+        mSpinner1.setBackgroundColor(0xFFFFFFFF);
+        mSpinner2.setBackgroundColor(0xFFFFFFFF);
 
     }
 
