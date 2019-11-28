@@ -1,67 +1,110 @@
 package com.example.moodtracker;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.moodtracker.bean.DataUtil;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
-import java.util.List;
+import com.example.DB.FriendWriter;
 
-/**
- * This is for the user to accept or decline a follower
- * according to the username in the data
- *
- * @author xuhf0429
- */
+import java.util.ArrayList;
+
 public class FriendAcceptActivity extends AppCompatActivity {
 
-    private String username = null; //no username since no follower
+    private String username = null;
+    private String friendUsername = null;
+    private String email = null;
+    private ArrayList<String> friendRequestList;
+    private TextView friendUsernameField;
 
-    private TextView tvUsername; //make the username to be editable
+    private FriendWriter friendWriter;
+    private boolean adding = false;
+    private boolean deleting = false;
+    private int failCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_accept);
 
-        username = this.getIntent().getStringExtra("username"); //get the username with the intent
+        username = this.getIntent().getStringExtra("username");
+        email = this.getIntent().getStringExtra("email");
 
-        tvUsername = (TextView) findViewById(R.id.idFriend);
+        friendUsernameField = findViewById(R.id.friend_field);
 
-        final List<String> list = DataUtil.getAskListByUsername(username); //get list of user to follow according to usernames in the data
-        tvUsername.setText(list.get(0) + " asks to follow you"); //find the followers who would follow you in the data
+        friendRequestList = new ArrayList<>();
 
-        //click on accept button, the follower is accepted
-        ((TextView) findViewById(R.id.idAccept)).setOnClickListener(new View.OnClickListener() {
+        friendWriter = ViewModelProviders.of(this).get(FriendWriter.class);
+        friendWriter.init(email, username);
+
+        friendWriter.getFriendRequestList().observe(this, new Observer(){
             @Override
-            public void onClick(View v) {
-                DataUtil.insertFriendAccept(username, list.get(0)); //get the follower from his/her username
-                DataUtil.insertFriendAccept(list.get(0), username); //get the follower with username from the list in the data
-                DataUtil.deleteFriendAsk(username, list.get(0)); //delete the follower from the data according to the username
-                finish();
+            public void onChanged(Object o) {
+                friendRequestList.clear();
+                friendRequestList.addAll((ArrayList<String>)o);
+                if(friendRequestList.size() == 0){
+                    friendUsername = "";
+                }
+                else {
+                    friendUsername = friendRequestList.get(0);
+                }
+                friendUsernameField.setText(friendUsername + " asks to follow you");
             }
         });
 
-        //click on decline button, the follower is declined
-        ((TextView) findViewById(R.id.idDecline)).setOnClickListener(new View.OnClickListener() {
+        friendWriter.getSuccess().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                Boolean b = (Boolean)o;
+                if(b.booleanValue()){
+
+                }else {
+                    if(failCount >= 1){
+                       if(adding){
+                           Toast.makeText(FriendAcceptActivity.this, "Couldn't add friend. Check your connection.", Toast.LENGTH_SHORT).show();
+                       }else if(deleting){
+                           Toast.makeText(FriendAcceptActivity.this, "Couldn't delete friend request. Check your connection.", Toast.LENGTH_SHORT).show();
+                       }
+                    }
+                }
+            }
+        });
+
+
+        //final List<String> list = DataUtil.getAskListByUsername(username);
+
+
+        findViewById(R.id.view_following_request_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DataUtil.deleteFriendAsk(username, list.get(0)); //delete the follower by his/her username according to the data
-                finish();
+//                DataUtil.insertFriendAccept(username, list.get(0));
+//                DataUtil.insertFriendAccept(list.get(0), username);
+//                DataUtil.deleteFriendAsk(username, list.get(0));
+//                finish();
+                if(friendUsername.equals("")){
+                }else{
+                    adding = true;
+                    deleting = false;
+                    friendWriter.addFriend(friendUsername);
+                }
+            }
+        });
+
+        findViewById(R.id.idDecline).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                DataUtil.deleteFriendAsk(username, list.get(0));
+//                finish();
+                if(friendUsername.equals("")){
+                }else{
+                    adding = false;
+                    deleting = true;
+                    friendWriter.deleteFriendRequest(friendUsername);
+                }
             }
         });
 

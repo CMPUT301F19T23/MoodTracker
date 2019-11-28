@@ -13,17 +13,17 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/idSearchContent"
+            android:id="@+id/search_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/idSearchBtn"
+            android:layout_toLeftOf="@id/search_button"
             android:hint="Enter to search friends"
             android:padding="10dp"
             android:textColor="@color/colorWhite"
             android:textColorHint="@color/colorGray" />
 
         <TextView
-            android:id="@+id/idSearchBtn"
+            android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -38,7 +38,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/idAccept"
+        android:id="@+id/view_following_request_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/id1"
@@ -50,11 +50,11 @@
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/idAcceptDisplay"
+        android:id="@+id/friend_request_number_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/idAccept"
-        android:layout_alignTop="@id/idAccept"
+        android:layout_alignLeft="@id/view_following_request_button"
+        android:layout_alignTop="@id/view_following_request_button"
         android:background="@drawable/buttonstyle_cycle"
         android:gravity="center"
         android:padding="10dp"
@@ -66,7 +66,7 @@
         android:id="@+id/idAcceptBelow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/idAccept"
+        android:layout_below="@id/view_following_request_button"
         android:background="@drawable/text_border"
         android:gravity="center"
         android:paddingTop="8dp"
@@ -75,8 +75,8 @@
         android:textColor="@color/colorBlue"
         android:textSize="18sp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view1"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/friends_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/id2"
@@ -94,7 +94,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/idViewOnMap"
+            android:id="@+id/view_on_map_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"

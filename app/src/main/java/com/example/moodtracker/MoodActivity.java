@@ -2,44 +2,82 @@ package com.example.moodtracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-/**
- * This activity prompts the user to either select to
- * view his/her own events or to track his/her friends
- *
- * @author xuhf0429
- */
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;	
+import com.google.android.gms.tasks.Task;	
+import com.google.firebase.firestore.DocumentReference;	
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MoodActivity extends AppCompatActivity {
-
-    private String username = null;//there is no username signed up yet
-
+    TextView viewProfileButton;
+    TextView logoutButton;
+    TextView followingButton;	
+    TextView  username_text_view;	
+    String userpath, email;
+    private FirebaseFirestore db;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood);
+        viewProfileButton = findViewById(R.id.view_profile_button);
+        logoutButton = findViewById(R.id.log_out_button);
+        followingButton = findViewById(R.id.view_friends_mood_button);
+        username_text_view = findViewById(R.id.hello_username_text_view);	
+        db = FirebaseFirestore.getInstance();
 
-        username = this.getIntent().getStringExtra("username"); //save the username signed up, the data is stored
-
-        //click on View My Mood button
-        ((TextView) findViewById(R.id.idMyMoodHistory)).setOnClickListener(new View.OnClickListener() {
+        Intent oldIntent = getIntent();	
+        userpath = oldIntent.getStringExtra(LoginActivity.EXTRA_USERPATH);	
+        email = oldIntent.getStringExtra(LoginActivity.EXTRA_USER);
+        DocumentReference docRef = db.document(userpath + email);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View v) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        Log.i("LOGGER", "First " + document.getString("first"));
+                        String username_from_login = document.getString("userName");
+                        username_text_view.setText(username_from_login);
+                    }
+                }
+            }
+        });
+
+        viewProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent intent = new Intent(MoodActivity.this, MoodHistoryActivity.class);
-                intent.putExtra("username", username);
+                // Have to propagate information other classes need but we don't use
+                intent.putExtra(LoginActivity.EXTRA_USERPATH, userpath);
+                intent.putExtra(LoginActivity.EXTRA_USER, email);
                 startActivity(intent);
             }
         });
 
-        //click on View My Friend's Mood button
-        ((TextView) findViewById(R.id.idFriend)).setOnClickListener(new View.OnClickListener() {
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                Intent intent = new Intent(MoodActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        followingButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
                 Intent intent = new Intent(MoodActivity.this, FriendListActivity.class);
-                intent.putExtra("username", username);
+                intent.putExtra("username", username_text_view.getText().toString());
+                intent.putExtra("email", email);
                 startActivity(intent);
             }
         });

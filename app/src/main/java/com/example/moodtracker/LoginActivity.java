@@ -4,65 +4,107 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.moodtracker.bean.DataUtil;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.example.DB.LoginManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import static android.content.ContentValues.TAG;
 
 public class LoginActivity extends AppCompatActivity {
 
     private boolean bPermission = false;
-    private EditText etUsername;
-    private EditText etPassword;
+    private EditText emailField;
+    private EditText passwordField;
+    private int failCount = 0;
+
+    private LoginManager loginManager;
+
+    public static final String EXTRA_USERPATH = "com.example.moodtracker.USERPATH"; // Filepath to get to the Users database
+    private String userPathStr = "Users/";
+    public static final String EXTRA_USER = "com.example.moodtracker.USER";
+    public static final String EXTRA_EMAIL = "com.example.moodtracker.EMAIL";
+    public static final String EXTRA_PASSWORD = "com.example.moodtracker.PASSWORD";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        for (int i = 1; i < 4; i++) {
-            DataUtil.register(i + "", i + "");
-        }
+        //auth = FirebaseAuth.getInstance();
 
         request_permission();
 
-        etUsername = (EditText) findViewById(R.id.idUsername);
-        etPassword = (EditText) findViewById(R.id.idPassword);
+        emailField = findViewById(R.id.email_field);
+        passwordField = findViewById(R.id.password_field);
 
-        ((TextView) findViewById(R.id.idLogin)).setOnClickListener(new View.OnClickListener() {
+        Intent intent = getIntent();	
+        String siEmail  = intent.getStringExtra(RegisterActivity.si_EMAIL);	
+        String siPassword  = intent.getStringExtra(RegisterActivity.si_PASSWORD);
+
+        emailField.setText(siEmail);	
+        passwordField.setText(siPassword);
+
+        loginManager = ViewModelProviders.of(this).get(LoginManager.class);
+        loginManager.getSuccess().observe(this, new Observer(){
             @Override
-            public void onClick(View v) {
-                String username = etUsername.getEditableText().toString();
-                String password = etPassword.getEditableText().toString();
-
-                if (username.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "username or password is empty", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (DataUtil.login(username, password)) {
-                    etUsername.setText("");
-                    etPassword.setText("");
-
+            public void onChanged(Object o) {
+                Boolean b = (Boolean)o;
+                if(b.booleanValue()){
                     Intent intent = new Intent(LoginActivity.this, MoodActivity.class);
-                    intent.putExtra("username", username);
+                    intent.putExtra(EXTRA_USERPATH, userPathStr);
+                    intent.putExtra(EXTRA_USER, emailField.getText().toString());
                     startActivity(intent);
-                } else {
-                    Toast.makeText(LoginActivity.this, "username or password is error", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    if(failCount >= 1){
+                        // a bit janky, but have to do because false is returned on create
+                        Toast.makeText(LoginActivity.this, "Failed to sign in. Check email and password.", Toast.LENGTH_SHORT).show();
+                    }
+                    ++failCount;
                 }
             }
         });
 
-        ((TextView) findViewById(R.id.idCancel)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String email = emailField.getEditableText().toString().trim();
+                final String password = passwordField.getEditableText().toString();
+                Log.d("email", email);
+                Log.d("password", password);
+                if (email == null || password == null || email.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "username or password is empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                loginManager.logUserIn(email,password);
+            }
+        });
+
+         findViewById(R.id.sign_up_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String email = emailField.getEditableText().toString().trim();
+                final String password = passwordField.getEditableText().toString();
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                intent.putExtra(EXTRA_EMAIL, email);
+                intent.putExtra(EXTRA_PASSWORD, password);
+                intent.putExtra(EXTRA_USERPATH, userPathStr);
                 startActivity(intent);
             }
         });

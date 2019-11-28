@@ -21,7 +21,7 @@ import me.nereo.multi_image_selector.R;
 import me.nereo.multi_image_selector.bean.Image;
 
 /**
- * image Adapter
+ * 图片Adapter
  * Created by Nereo on 2015/4/7.
  * Updated by nereo on 2016/1/19.
  */

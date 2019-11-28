@@ -1,39 +1,24 @@
 package com.example.moodtracker;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.moodtracker.bean.DataUtil;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import com.example.DB.FriendMoodReader;
+
 import java.util.Calendar;
-import java.util.List;
-
-/**
- * This shows the friend's events details
- * @author xuhf0429
- */
+import java.util.HashMap;
 
 public class FriendEditActivity extends AppCompatActivity {
 
-    private String username2 = null;
+    private String friendUsername = null;
+    private long id;
 
     private final int REQUEST_IMAGE_PHOTO = 1001;
 
@@ -44,68 +29,119 @@ public class FriendEditActivity extends AppCompatActivity {
 
     private TextView tvSense2;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     private Calendar cal = null;
 
-    private MoodEvent bean = null;
+    private MoodEvent moodEvent = null;
+
+    private FriendMoodReader friendMoodReader;
+
+    private int readerFailCount = 0;
+    private boolean retrieveFlag = false;
+    private boolean initialized = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_edit);
 
-        username2 = this.getIntent().getStringExtra("username2");
+        friendUsername = this.getIntent().getStringExtra("friendUsername");
 
-        String id = this.getIntent().getStringExtra("bean");
-        bean = DataUtil.getMoodEvent(username2, id);
+        System.out.println("ID equal to: " + this.getIntent().getStringExtra("id"));
+        id = Long.parseLong(this.getIntent().getStringExtra("id"));
 
-        cal = Calendar.getInstance();
+        friendMoodReader = ViewModelProviders.of(this).get(FriendMoodReader.class);
+        friendMoodReader.init(friendUsername);
 
-        etReason = (TextView) findViewById(R.id.idReason);
+        friendMoodReader.getReturnVal().observe(this, new Observer(){
 
-        etName = (TextView) findViewById(R.id.idName);
-        tvDate = (TextView) findViewById(R.id.idDate);
-        tvTime = (TextView) findViewById(R.id.idTime);
+            @Override
+            public void onChanged(Object o) {
+                retrieveFlag = true;
+                moodEvent = friendMoodReader.createMoodEvent(id, (HashMap)o);
+            }
+        });
 
-        tvSense2 = (TextView) findViewById(R.id.idSense2);
+        friendMoodReader.getSuccess().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                Boolean b = (Boolean)o;
+                if(b.booleanValue()){
+                    if(!initialized){
+                        initialized = true;
+                        friendMoodReader.getMoodEvent(id);
+                    }else{
+                        if(retrieveFlag){
+                            retrieveFlag = false;
+                            cal = moodEvent.getDate();
 
-        tvDate.setText(dateFormat.format(cal.getTime()));
-        tvTime.setText(timeFormat.format(cal.getTime()));
+                            etReason = findViewById(R.id.idReason);
 
-        mSpinner1 = (TextView) findViewById(R.id.idSense);
+                            etName = findViewById(R.id.idName);
+                            tvDate = findViewById(R.id.idDate);
+                            tvTime = findViewById(R.id.idTime);
 
-        mSpinner2 = (TextView) findViewById(R.id.idSituation);
+                            tvSense2 = findViewById(R.id.idSense2);
 
-        initData();
+                            tvDate.setText(MoodEvent.dayFormat.format(cal.getTime()));
+                            tvTime.setText(MoodEvent.timeFormat.format(cal.getTime()));
 
-        sens2();
+                            mSpinner1 = findViewById(R.id.idSense);
+
+                            mSpinner2 = findViewById(R.id.idSituation);
+
+                            initData();
+
+                            sens2();
+                        }
+                    }
+                }else{
+                    if(readerFailCount >= 1){
+                        // a bit janky, but have to do because false is returned on create
+                        Toast.makeText(FriendEditActivity.this, "Couldn't load that user's data. Check your connection.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                    ++readerFailCount;
+                }
+            }
+        });
+
+        //moodEvent = DataUtil.getMoodEvent(friendUsername, id);
+
+
     }
 
     private void sens2() {
-
-        tvSense2.setText(bean.getEmoji());
-        tvSense2.setBackgroundColor(bean.getColor());
+        tvSense2.setText(new String(Character.toChars(moodEvent.getEmoji())));
+        tvSense2.setBackgroundColor(moodEvent.getColor());
 
     }
 
     private void initData() {
-        etName.setText(bean.getEventName());
-        etReason.setText(bean.getReasonString());
+        etName.setText(moodEvent.getName());
+        etReason.setText(moodEvent.getReasonString());
 
-        mSpinner1.setText(bean.getEmotion());
-        mSpinner2.setText(bean.getSituation());
+        mSpinner1.setText(moodEvent.getEmotion());
+        mSpinner2.setText(MoodEvent.intToSituation(moodEvent.getSituation()));
 
-        ((TextView) findViewById(R.id.idViewImage)).setOnClickListener(new View.OnClickListener() {
+        String reasonString = moodEvent.getReasonString();
+        if (reasonString == null || reasonString.isEmpty()){
+            etReason.setVisibility(View.GONE);
+        }else{
+            etReason.setVisibility(View.VISIBLE);
+            etReason.setText(reasonString);
+        }
+
+         findViewById(R.id.idViewImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bean.getImage().isEmpty()) {
+                if (moodEvent.getImage().isEmpty()) {
                     Toast.makeText(FriendEditActivity.this, "picture is not exist.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 Intent intent = new Intent(FriendEditActivity.this, ViewPictureActivity.class);
-                intent.putExtra("image", bean.getImage());
+                intent.putExtra("image", moodEvent.getImage());
                 startActivity(intent);
             }
         });

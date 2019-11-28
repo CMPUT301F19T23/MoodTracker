@@ -2,16 +2,19 @@ package com.example.moodtracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.moodtracker.bean.DataUtil;
-import com.example.moodtracker.bean.User;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.DB.FriendWriter;
+import com.example.DB.UserWriter;
 import com.example.moodtracker.recycle.FooterViewHolder;
 import com.example.moodtracker.recycle.HeaderViewHolder;
 import com.example.moodtracker.recycle.ItemViewHolder;
@@ -20,23 +23,25 @@ import com.example.moodtracker.recycle.MyRecycleAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This function shows the list of user's friends
- * @author xuhf0429
- */
-
 public class FriendListActivity extends AppCompatActivity {
 
     private String username = null;
+    private String friendUsername = null;
+    private String email = null;
 
     private RecyclerView mRecyclerView1 = null;
 
-    private MyRecycleAdapter<String> recycleAdapter1 = null; //there is no friends added, thus no events available
-    private List<String> recycleList1 = new ArrayList<String>(); //set a list of friends
+    private MyRecycleAdapter<String> recycleAdapter1 = null;
+    private List<String> recycleList1 = new ArrayList<String>();
 
-    private EditText etSearch;
+    private EditText searchField;
 
-    private TextView tvAcceptDisplay; //show user to accept the participant
+    private TextView friendRequestNumberDisplay;
+
+    private FriendWriter friendWriter;
+    private UserWriter userWriter;
+
+    private int failedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,52 +49,87 @@ public class FriendListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_friend_list);
 
         username = this.getIntent().getStringExtra("username");
+        email = this.getIntent().getStringExtra("email");
 
-        etSearch = ((EditText) findViewById(R.id.idSearchContent));
+        friendWriter = ViewModelProviders.of(this).get(FriendWriter.class);
+        friendWriter.init(email, username);
 
-        //click on search button to search participant
-        ((TextView) findViewById(R.id.idSearchBtn)).setOnClickListener(new View.OnClickListener() {
+        userWriter = ViewModelProviders.of(this).get(UserWriter.class);
+        userWriter.getSuccess().observe(this, new Observer(){
             @Override
-            public void onClick(View v) {
-                String strSearchContent = etSearch.getEditableText().toString();
-                //check if search username is oneself or no user searched, or username does not exist in the data
-                if (strSearchContent.isEmpty()) {
-                    Toast.makeText(FriendListActivity.this, "the search content is empty", Toast.LENGTH_SHORT).show();
-                } else if (strSearchContent.equals(username)) {
-                    Toast.makeText(FriendListActivity.this, "the search username is yourself", Toast.LENGTH_SHORT).show();
-                } else {
-                    String username2 = DataUtil.getUsernameByUsername(strSearchContent);
-                    if (null == username2) {
-                        Toast.makeText(FriendListActivity.this, strSearchContent + " is not exsit", Toast.LENGTH_SHORT).show();
-                    } else {
-                        etSearch.setText("");
+            public void onChanged(Object o) {
+                Boolean b = (Boolean)o;
+                if(b.booleanValue()){
+                    Toast.makeText(FriendListActivity.this, "That User doesn't exist.", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(FriendListActivity.this, FriendAskActivity.class);
-                        intent.putExtra("username", username);
-                        intent.putExtra("username2", username2);
-                        startActivity(intent);
+                }else{
+                    if(failedCount >= 1){
+                        // a bit janky, but have to do because false is returned on create
+
+                        if(userWriter.failDueToNotUnique()){
+                            searchField.setText("");
+                            Intent intent = new Intent(FriendListActivity.this, FriendAskActivity.class);
+                            intent.putExtra("email", email);
+                            intent.putExtra("username", username);
+                            intent.putExtra("friendUsername", friendUsername);
+                            startActivity(intent);
+                        }else{
+                            Toast.makeText(FriendListActivity.this, "Error. Check your connection.", Toast.LENGTH_SHORT).show();
+                        }
                     }
+                    ++failedCount;
                 }
             }
         });
 
-        tvAcceptDisplay = ((TextView) findViewById(R.id.idAcceptDisplay));
+        friendWriter.getFriendList().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                recycleList1.clear();
+                recycleList1.addAll((ArrayList<String>)o);
+                recycleAdapter1.notifyDataSetChanged();
+                //System.out.println("DATA SET CHANGING");
+            }
+        });
 
-        //click on accept button
-        ((TextView) findViewById(R.id.idAccept)).setOnClickListener(new View.OnClickListener() {
+        friendRequestNumberDisplay = findViewById(R.id.friend_request_number_display);
+
+        friendWriter.getFriendRequestList().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                friendRequestNumberDisplay.setText(((ArrayList<String>)o).size() + "");
+            }
+        });
+
+        searchField = findViewById(R.id.search_field);
+
+        findViewById(R.id.search_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if accept exists, then switch to the accept activity
-                if (!tvAcceptDisplay.getText().toString().equals("0")) {
+                friendUsername = searchField.getEditableText().toString();
+                if (friendUsername.isEmpty()) {
+                    Toast.makeText(FriendListActivity.this, "the search content is empty", Toast.LENGTH_SHORT).show();
+                } else if (friendUsername.equals(username)) {
+                    Toast.makeText(FriendListActivity.this, "the search username is yourself", Toast.LENGTH_SHORT).show();
+                } else {
+                    userWriter.checkUserExists(friendUsername);
+                }
+            }
+        });
+
+        findViewById(R.id.view_following_request_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!friendRequestNumberDisplay.getText().toString().equals("0")) {
                     Intent intent = new Intent(FriendListActivity.this, FriendAcceptActivity.class);
                     intent.putExtra("username", username);
+                    intent.putExtra("email", email);
                     startActivity(intent);
                 }
             }
         });
 
-        //click on view on map button to view event on current location
-        ((TextView) findViewById(R.id.idViewOnMap)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.view_on_map_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ;
@@ -103,26 +143,25 @@ public class FriendListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //resets the list
-        recycleList1.clear();
+        //recycleList1.clear();
 
-        //get the accepted users
-        tvAcceptDisplay.setText(String.valueOf(DataUtil.getAskByUsername(username)));
+        //friendRequestNumberDisplay.setText(String.valueOf(DataUtil.getAskByUsername(username)));
 
-        //reset and get all data
-        DataUtil.getFriends(username, recycleList1);
-        recycleAdapter1.notifyDataSetChanged();
+        // TODO updates friend list
+        //DataUtil.getFriends(username, recycleList1);
+        //recycleAdapter1.notifyDataSetChanged();
     }
 
     public void initRecycleView1() {
-        //get controller
-        mRecyclerView1 = (RecyclerView) findViewById(R.id.recycler_view1);
+        //1.获取控件
+        mRecyclerView1 = findViewById(R.id.friends_list);
 
-        //set layout format
-        mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //linear layout
-        mRecyclerView1.setHasFixedSize(true);  //set fixed size for the layout
+        //2.设置布局方式
+        mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //线性布局
+        //mRecyclerView1.setLayoutManager(new GridLayoutManager(this, 3));  //网格布局
+        mRecyclerView1.setHasFixedSize(true);
 
-        //set adapter
+        //3.设置适配器
         mRecyclerView1.setAdapter(recycleAdapter1 = new MyRecycleAdapter<String>(this,
                 -1, null,
                 -1, null,
@@ -138,22 +177,21 @@ public class FriendListActivity extends AppCompatActivity {
 
             @Override
             public void convertItem(ItemViewHolder helper, String item) {
-                helper.setText(R.id.idName, item); //set the layout for each friend
+                helper.setText(R.id.idName, item);
             }
         });
 
-        //click on the friend, switch to the friend's event list
         recycleAdapter1.setOnClickListener(new MyRecycleAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(FriendListActivity.this, MoodFriendHistoryActivity.class);
+                intent.putExtra("email", email);
                 intent.putExtra("username", username);
-                intent.putExtra("username2", recycleList1.get(position));
+                intent.putExtra("friendUsername", recycleList1.get(position));
                 startActivity(intent);
             }
         });
 
-        //press button long
         recycleAdapter1.setOnLongClickListener(new MyRecycleAdapter.OnLongClickListener() {
             @Override
             public void onLongClick(View view, int position) {

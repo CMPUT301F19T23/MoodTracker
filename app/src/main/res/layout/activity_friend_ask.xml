@@ -11,7 +11,7 @@
         android:id="@+id/idMiddle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/idConfirm"
+        android:layout_above="@id/confirm_button"
         android:layout_below="@id/idAttach"
         android:layout_marginTop="30dp"
         android:background="@color/colorWhite"
@@ -26,7 +26,7 @@
             android:src="@mipmap/image_face" />
 
         <TextView
-            android:id="@+id/idFriend"
+            android:id="@+id/friend_field"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
@@ -36,7 +36,7 @@
             android:textSize="30sp" />
 
         <TextView
-            android:id="@+id/idOption"
+            android:id="@+id/permission_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/buttonstyle_blue"
