@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.DB.MoodWriter;
-import com.example.moodtracker.bean.ResUtil;
 import com.example.moodtracker.recycle.FooterViewHolder;
 import com.example.moodtracker.recycle.HeaderViewHolder;
 import com.example.moodtracker.recycle.ItemViewHolder;
@@ -68,7 +67,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
         searchField.addTextChangedListener(new TextChangedListener<EditText>(searchField) {
             @Override
             public void onTextChanged(EditText target, Editable s) {
-                System.out.println(s.toString());
+                //System.out.println(s.toString());
                 filterMoods(s.toString());
             }
         });
@@ -88,7 +87,6 @@ public class MoodHistoryActivity extends AppCompatActivity {
                 moodEventList.clear();
                 moodEventList.addAll((ArrayList<MoodEvent>)o);
                 filterMoods(searchField.getText().toString());
-                ResUtil.list = displayList;
             }
         });
 
@@ -127,7 +125,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
     public void initRecycleView1() {
         //1.获取控件
-        mRecyclerView1 = findViewById(R.id.recycler_view1);
+        mRecyclerView1 = findViewById(R.id.friends_list);
 
         //2.设置布局方式
         mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //线性布局

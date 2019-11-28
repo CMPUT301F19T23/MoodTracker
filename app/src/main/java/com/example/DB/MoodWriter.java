@@ -29,10 +29,6 @@ public class MoodWriter extends DBCommunicator {
     private String moodpath;
     private boolean initalized = false;
 
-    public MutableLiveData<ArrayList<MoodEvent>> getMoodEvents() {
-        return moodEvents;
-    }
-
     final private MutableLiveData<ArrayList<MoodEvent>> moodEvents = new MutableLiveData<>(new ArrayList<MoodEvent>());
 
      public MoodWriter(Application application){
@@ -77,7 +73,7 @@ public class MoodWriter extends DBCommunicator {
                          //System.out.println("NULL REFERENCE, SKIPPING \n");
                          continue;
                      }
-                     moodEventList.add(me);
+                     moodEventList.add(0, me);
                  }
                  //System.out.println("END OF SNAPSHOTS \n");
                  moodEvents.setValue(moodEventList);
@@ -86,16 +82,20 @@ public class MoodWriter extends DBCommunicator {
 //         System.out.println("END LINKHISTORY");
      }
 
+    public MutableLiveData<ArrayList<MoodEvent>> getMoodEvents() {
+        return moodEvents;
+    }
+
     public MoodEvent createMoodEvent(String name, Calendar cal, String situation, String emotion, String reason){
         return new MoodEvent(name, Calendar.getInstance().getTimeInMillis(), MoodEvent.situationToInt(situation), cal, emotion, reason);
     }
 
     public MoodEvent createMoodEvent(long id, HashMap map){
          if(map == null){return null;}
-         System.out.println("CreateMoodEvent: " + map);
+         //System.out.println("CreateMoodEvent: " + map);
+        if(map.get("mood_date") == null){return null;}
         Calendar date = Calendar.getInstance();
         try {
-            if((String) map.get("mood_date") == null){return null;}
             date.setTime(MoodEvent.longFormat.parse((String) map.get("mood_date")));
         } catch (ParseException ex) {
             ex.printStackTrace();
@@ -141,7 +141,7 @@ public class MoodWriter extends DBCommunicator {
     }
 
     public void getMoodEvent(long id){
-         System.out.println("Starting getMoodEvent");
+         //System.out.println("Starting getMoodEvent");
          getData(moodpath, id+"");
     }
 
@@ -171,9 +171,9 @@ public class MoodWriter extends DBCommunicator {
 
     @Override
     protected void onSuccessfulDataRetrieval(Map<String, Object> map){
-        Log.d(TAG, "MoodEvent successfully retrieved" + ((HashMap)map).toString());
+        Log.d(TAG, "MoodEvent successfully retrieved" + map.toString());
         HashMap<String,String> hashMap = (HashMap) map;
-        System.out.print(hashMap);
+        //System.out.print(hashMap);
         returnVal.setValue(hashMap);
         success.setValue(new Boolean(true));
     }
@@ -183,6 +183,5 @@ public class MoodWriter extends DBCommunicator {
         Log.d(TAG, "MoodEvent retrieval failed: " + e.toString());
         returnVal.setValue(null);
         success.setValue(new Boolean(false));
-
     }
 }

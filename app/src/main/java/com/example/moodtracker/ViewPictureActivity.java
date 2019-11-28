@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ViewPictureActivity extends AppCompatActivity {
-
     ImageView ivImage;
 
     private Handler handler = new Handler() {

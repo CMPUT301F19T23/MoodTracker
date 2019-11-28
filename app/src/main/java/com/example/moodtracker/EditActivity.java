@@ -36,7 +36,7 @@ public class EditActivity extends AppCompatActivity {
     private final int REQUEST_IMAGE_PHOTO = 1001;
     private CheckBox cb;
 
-    int s1 = -1, s2 = -1;
+    int moodPos = -1, sitPos = -1;
     private Spinner moodSpinner, situationSpinner;
     private List<String> moodList = new ArrayList<String>();
     private List<String> situationList = new ArrayList<String>();
@@ -65,8 +65,7 @@ public class EditActivity extends AppCompatActivity {
 
     private MoodWriter moodWriter;
 
-    private int editFailCount = 0;
-    private int retrieveFailCount = 0;
+    private int failCount = 0;
     private boolean retrieveFlag = false;
 
     @Override
@@ -98,26 +97,29 @@ public class EditActivity extends AppCompatActivity {
                 if(retrieveFlag){
                     retrieveFlag = false;
                     if(b.booleanValue()){
+                        cal = selectedMoodEvent.getDate();
+                        dateField.setText(MoodEvent.dayFormat.format(cal.getTime()));
+                        timeField.setText(MoodEvent.timeFormat.format(cal.getTime()));
                         initData();
-                        sens2();
+                        sens22();
                     }else{
-                        if(retrieveFailCount >= 1){
+                        if(failCount >= 1){
                             // a bit janky, but have to do because null is returned on create
                             Toast.makeText(EditActivity.this, "Couldn't load mood. Please try again.", Toast.LENGTH_SHORT).show();
                             finish();
                         }
-                        ++retrieveFailCount;
+                        ++failCount;
                     }
                 }
                 else{
                     if(b.booleanValue()){
                         finish();
                     }else{
-                        if(editFailCount >= 1){
+                        if(failCount >= 1){
                             // a bit janky, but have to do because false is returned on create
                             Toast.makeText(EditActivity.this, "Couldn't modify mood. Please try again.", Toast.LENGTH_SHORT).show();
                         }
-                        ++editFailCount;
+                        ++failCount;
                     }
                 }
             }
@@ -134,8 +136,6 @@ public class EditActivity extends AppCompatActivity {
 
         moodWriter.getMoodEvent(id);
 
-        cal = Calendar.getInstance();
-
         cb = findViewById(R.id.idAttach);
 
         reasonField = findViewById(R.id.reason_field);
@@ -146,65 +146,15 @@ public class EditActivity extends AppCompatActivity {
 
         tvSense2 = findViewById(R.id.idSense2);
 
-        dateField.setText(MoodEvent.dayFormat.format(cal.getTime()));
-        timeField.setText(MoodEvent.timeFormat.format(cal.getTime()));
-
         initSpinnerData();
-
-        moodSpinner = findViewById(R.id.mood_spinner);
-        moodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position >= 0) {
-                    //String keshi = moodList.get(position);
-                    s1 = position;
-                    sens22();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        situationSpinner = findViewById(R.id.situation_spinner);
-        situationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position >= 0) {
-                    s2 = position;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        // 声明一个ArrayAdapter用于存放简单数据
-        moodAdapter = new MyAdapter<>(
-                EditActivity.this, android.R.layout.simple_spinner_item,
-                moodList);
-        // 把定义好的Adapter设定到spinner中
-        moodSpinner.setAdapter(moodAdapter);
-        moodSpinner.setSelection(0);
-
-        // 声明一个ArrayAdapter用于存放简单数据
-        situationAdapter = new MyAdapter<>(
-                EditActivity.this, android.R.layout.simple_spinner_item,
-                situationList);
-        // 把定义好的Adapter设定到spinner中
-        situationSpinner.setAdapter(situationAdapter);
-        situationSpinner.setSelection(0);
-
-
     }
 
     private void sens22() {
-        String keshi = moodList.get(s1);
+        String keshi = moodList.get(moodPos);
         relativeLayout = findViewById(R.id.relativelayout);
         if (keshi.equals(EmotionData.ANGRY_DATA.getEmotion())) {
             tvSense2.setText(new String(Character.toChars(EmotionData.ANGRY_DATA.getEmoji())));
+            tvSense2.setBackgroundColor(EmotionData.ANGRY_DATA.getColor());
             relativeLayout.setBackgroundColor(EmotionData.ANGRY_DATA.getColor());
             nameField.setBackgroundColor(0xFFFFFFFF);
             reasonField.setBackgroundColor(0xFFFFFFFF);
@@ -215,6 +165,7 @@ public class EditActivity extends AppCompatActivity {
 
         } else if (keshi.equals(EmotionData.HAPPY_DATA.getEmotion())) {
             tvSense2.setText(new String(Character.toChars(EmotionData.HAPPY_DATA.getEmoji())));
+            tvSense2.setBackgroundColor(EmotionData.HAPPY_DATA.getColor());
             relativeLayout.setBackgroundColor(EmotionData.HAPPY_DATA.getColor());
             nameField.setBackgroundColor(0xFFFFFFFF);
             reasonField.setBackgroundColor(0xFFFFFFFF);
@@ -225,6 +176,7 @@ public class EditActivity extends AppCompatActivity {
 
         } else if (keshi.equals(EmotionData.SAD_DATA.getEmotion())) {
             tvSense2.setText(new String(Character.toChars(EmotionData.SAD_DATA.getEmoji())));
+            tvSense2.setBackgroundColor(EmotionData.SAD_DATA.getColor());
             relativeLayout.setBackgroundColor(EmotionData.SAD_DATA.getColor());
             nameField.setBackgroundColor(0xFFFFFFFF);
             reasonField.setBackgroundColor(0xFFFFFFFF);
@@ -235,6 +187,7 @@ public class EditActivity extends AppCompatActivity {
 
         } else if (keshi.equals(EmotionData.NEUTRAL_DATA.getEmotion())) {
             tvSense2.setText(new String(Character.toChars(EmotionData.NEUTRAL_DATA.getEmoji())));
+            tvSense2.setBackgroundColor(EmotionData.NEUTRAL_DATA.getColor());
             relativeLayout.setBackgroundColor(EmotionData.NEUTRAL_DATA.getColor());
             nameField.setBackgroundColor(0xFFFFFFFF);
             reasonField.setBackgroundColor(0xFFFFFFFF);
@@ -285,6 +238,53 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        moodSpinner = findViewById(R.id.mood_spinner);
+        moodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position >= 0) {
+                    //String keshi = moodList.get(position);
+                    moodPos = position;
+                    sens22();
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        situationSpinner = findViewById(R.id.situation_spinner);
+        situationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position >= 0) {
+                    sitPos = position;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        // 声明一个ArrayAdapter用于存放简单数据
+        moodAdapter = new MyAdapter<>(
+                EditActivity.this, android.R.layout.simple_spinner_item,
+                moodList);
+        // 把定义好的Adapter设定到spinner中
+        moodSpinner.setAdapter(moodAdapter);
+        moodSpinner.setSelection(0);
+
+        // 声明一个ArrayAdapter用于存放简单数据
+        situationAdapter = new MyAdapter<>(
+                EditActivity.this, android.R.layout.simple_spinner_item,
+                situationList);
+        // 把定义好的Adapter设定到spinner中
+        situationSpinner.setAdapter(situationAdapter);
+        situationSpinner.setSelection(0);
+
         if (selectedMoodEvent.isAttach()) {
             cb.setChecked(true);
         } else {
@@ -299,14 +299,14 @@ public class EditActivity extends AppCompatActivity {
         for (int i = 0; i < moodList.size(); i++) {
             if (moodList.get(i).equals(selectedMoodEvent.getEmotion())) {
                 moodSpinner.setSelection(i);
-                s1 = i;
+                moodPos = i;
                 break;
             }
         }
         for (int i = 0; i < situationList.size(); i++) {
-            if (situationList.get(i).equals(selectedMoodEvent.getSituation())) {
+            if (situationList.get(i).equals(MoodEvent.intToSituation(selectedMoodEvent.getSituation()))) {
                 situationSpinner.setSelection(i);
-                s2 = i;
+                sitPos = i;
                 break;
             }
         }
@@ -315,7 +315,7 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (selectedMoodEvent.getImage().isEmpty()) {
-                    Toast.makeText(EditActivity.this, "picture is not exist.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditActivity.this, "picture does not exist.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -357,27 +357,27 @@ public class EditActivity extends AppCompatActivity {
                 }
                 reason = reasonField.getEditableText().toString();
                 if (!reason.isEmpty()) {
-                    String[] names = name.split(" ");
+                    String[] names = reason.split(" ");
                     if (names.length > 3) {
                         Toast.makeText(EditActivity.this, "word count is more than 3", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    if (name.length() > 20) {
+                    if (reason.length() > 20) {
                         Toast.makeText(EditActivity.this, "there are more than 20 characters", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }
 
-                if (s1 == -1) {
+                if (moodPos == -1) {
                     Toast.makeText(EditActivity.this, "please choose a mood", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (s2 == -1) {
+                if (sitPos == -1) {
                     Toast.makeText(EditActivity.this, "please choose a social situation", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                moodWriter.updateMood(name, id, situationList.get(s2), cal, moodList.get(s1), reason);
+                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason);
 
 //                for (int i = 0; i < ResUtil.list.size(); i++) {
 //                    if (ResUtil.list.get(i).getId() == selectedMoodEvent.getId()) {
@@ -385,8 +385,8 @@ public class EditActivity extends AppCompatActivity {
 //                        mood.setAttach(attach);
 //                        mood.setName(name);
 //                        mood.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-//                        mood.setEmotion(moodList.get(s1));
-//                        mood.setSituation(MoodEvent.situationToInt(situationList.get(s2)));
+//                        mood.setEmotion(moodList.get(moodPos));
+//                        mood.setSituation(MoodEvent.situationToInt(situationList.get(sitPos)));
 //                        mood.setReasonString(reason);
 //                        mood.setImage(image);
 //                        updateMood(mood);

@@ -14,7 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.example.DB.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -28,8 +31,9 @@ public class LoginActivity extends AppCompatActivity {
     private boolean bPermission = false;
     private EditText emailField;
     private EditText passwordField;
+    private int failCount = 0;
 
-    FirebaseAuth auth;
+    private LoginManager loginManager;
 
     public static final String EXTRA_USERPATH = "com.example.moodtracker.USERPATH"; // Filepath to get to the Users database
     private String userPathStr = "Users/";
@@ -42,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        auth = FirebaseAuth.getInstance();
+        //auth = FirebaseAuth.getInstance();
 
         request_permission();
 
@@ -51,11 +55,31 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent intent = getIntent();	
         String siEmail  = intent.getStringExtra(RegisterActivity.si_EMAIL);	
-        String siPassword  = intent.getStringExtra(RegisterActivity.si_PASSWORD);	
-
+        String siPassword  = intent.getStringExtra(RegisterActivity.si_PASSWORD);
 
         emailField.setText(siEmail);	
         passwordField.setText(siPassword);
+
+        loginManager = ViewModelProviders.of(this).get(LoginManager.class);
+        loginManager.getSuccess().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                Boolean b = (Boolean)o;
+                if(b.booleanValue()){
+                    Intent intent = new Intent(LoginActivity.this, MoodActivity.class);
+                    intent.putExtra(EXTRA_USERPATH, userPathStr);
+                    intent.putExtra(EXTRA_USER, emailField.getText().toString());
+                    startActivity(intent);
+                }
+                else{
+                    if(failCount >= 1){
+                        // a bit janky, but have to do because false is returned on create
+                        Toast.makeText(LoginActivity.this, "Failed to sign in. Check email and password.", Toast.LENGTH_SHORT).show();
+                    }
+                    ++failCount;
+                }
+            }
+        });
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "username or password is empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                attemptLogin(email,password);
+                loginManager.logUserIn(email,password);
             }
         });
 
@@ -84,36 +108,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-
-    public void attemptLogin(final String email, String password){
-        auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = auth.getCurrentUser();
-
-                            Intent intent = new Intent(LoginActivity.this, MoodActivity.class);
-
-                            intent.putExtra(EXTRA_USERPATH, userPathStr);
-                            Log.d("Extra_userpath", userPathStr);
-
-                            intent.putExtra(EXTRA_USER, email);
-                            Log.d("Extra_user", email);
-                            startActivity(intent);
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            // Set the UI so the user knows login failed
-                        }
-                    }
-                });
     }
 
     private void request_permission() {

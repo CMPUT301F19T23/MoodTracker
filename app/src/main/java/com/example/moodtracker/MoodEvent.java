@@ -35,7 +35,6 @@ public class MoodEvent implements Serializable{
     //private type reasonImg; // cannot yet implement. More research needed
     private EmotionData emotionData;
     //private Location location; // cannot yet implement. More research needed
-    //private Participant owner; // waiting on Participant implementation.
 
     private String name;
     private boolean attach;
@@ -180,10 +179,6 @@ public class MoodEvent implements Serializable{
 
     public void setLocation(Type location) {
         this.location = location;
-    }*/
-
-   /*public Participant getOwner() {
-        return owner;
     }*/
 
     public String getName() {

@@ -31,6 +31,7 @@ public class MoodActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mood);
         viewProfileButton = findViewById(R.id.view_profile_button);
         logoutButton = findViewById(R.id.log_out_button);
+        followingButton = findViewById(R.id.view_friends_mood_button);
         username_text_view = findViewById(R.id.hello_username_text_view);	
         db = FirebaseFirestore.getInstance();
 
@@ -45,7 +46,7 @@ public class MoodActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document != null) {
                         Log.i("LOGGER", "First " + document.getString("first"));
-                        String username_from_login = document.getString("UserName");
+                        String username_from_login = document.getString("userName");
                         username_text_view.setText(username_from_login);
                     }
                 }
@@ -62,10 +63,21 @@ public class MoodActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MoodActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        followingButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(MoodActivity.this, FriendListActivity.class);
+                intent.putExtra("username", username_text_view.getText().toString());
+                intent.putExtra("email", email);
                 startActivity(intent);
             }
         });
