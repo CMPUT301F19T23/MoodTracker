@@ -26,7 +26,7 @@ public class MoodEvent implements Serializable{
     final public static int SITUATION_CROWD = 3;
 
 
-    private Calendar date; 
+    private Calendar date; // date of event, formatted to include specific day and time of day fields
 
     private String reasonString;
     private EmotionData emotionData;
@@ -85,7 +85,7 @@ public class MoodEvent implements Serializable{
      * @return
      *          the date Calendar object
      */
-    public Calendar getDate(){
+    public Calendar getDate(){ 
         return this.date;
     }
 
