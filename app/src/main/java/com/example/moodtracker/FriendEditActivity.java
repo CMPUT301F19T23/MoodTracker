@@ -105,10 +105,6 @@ public class FriendEditActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //moodEvent = DataUtil.getMoodEvent(friendUsername, id);
-
-
     }
 
     private void sens2() {
