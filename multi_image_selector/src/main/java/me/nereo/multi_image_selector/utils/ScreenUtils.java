@@ -11,6 +11,11 @@ import android.view.WindowManager;
  */
 public class ScreenUtils {
 
+    /**
+     * returns each point forming the size of the screen
+     * @param context
+     * @return
+     */
     public static Point getScreenSize(Context context){
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();

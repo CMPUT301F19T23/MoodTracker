@@ -10,6 +10,12 @@ public class Image {
     public String name;
     public long time;
 
+    /**
+     * get path, name and time for an image
+     * @param path
+     * @param name
+     * @param time
+     */
     public Image(String path, String name, long time){
         this.path = path;
         this.name = name;

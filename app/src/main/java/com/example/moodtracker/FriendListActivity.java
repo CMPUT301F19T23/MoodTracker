@@ -26,17 +26,16 @@ import java.util.List;
 /**
  * Shows the friend list of the user
  */
-
 public class FriendListActivity extends AppCompatActivity {
 
     //set all item to be empty at initial
     private String username = null;
     private String friendUsername = null;
     private String email = null;
+
     private RecyclerView mRecyclerView1 = null;
+
     private MyRecycleAdapter<String> recycleAdapter1 = null;
-
-
     private List<String> recycleList1 = new ArrayList<String>(); //list of data
 
     private EditText searchField;
@@ -61,7 +60,7 @@ public class FriendListActivity extends AppCompatActivity {
         friendWriter = ViewModelProviders.of(this).get(FriendWriter.class);
         friendWriter.init(email, username);
 
-        userWriter = ViewModelProviders.of(this).get(UserWriter.class);  //asks userWriter object for data from UserWriter class
+        userWriter = ViewModelProviders.of(this).get(UserWriter.class); //asks userWriter object for data from UserWriter class
         userWriter.getSuccess().observe(this, new Observer(){
             @Override
             public void onChanged(Object o) {
@@ -139,26 +138,24 @@ public class FriendListActivity extends AppCompatActivity {
             }
         });
 
-        //click on view on map button
-        findViewById(R.id.view_on_map_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ;
-            }
-        });
-
         initRecycleView1(); //call the function to display the views of each activity
     }
 
+    @Override
     /**
      * Set the views of each friend activity
      */
+    protected void onResume() {
+        super.onResume();
+    }
+
     public void initRecycleView1() {
         //get controller
         mRecyclerView1 = findViewById(R.id.friends_list);
 
         //set layout format
         mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //linear layout
+
         mRecyclerView1.setHasFixedSize(true);
 
         //set adapter
@@ -201,9 +198,9 @@ public class FriendListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(FriendListActivity.this, MoodFriendHistoryActivity.class);
-                intent.putExtra("email", email); //remember email data from the friend list
-                intent.putExtra("username", username); //remember username data from friend list
-                intent.putExtra("friendUsername", recycleList1.get(position)); //remember the index item from friend list
+                intent.putExtra("email", email);
+                intent.putExtra("username", username);
+                intent.putExtra("friendUsername", recycleList1.get(position));
                 startActivity(intent);
             }
         });

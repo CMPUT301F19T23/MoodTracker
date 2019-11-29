@@ -18,6 +18,12 @@ public class FileUtils {
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
 
+    /**
+     * throw exception if context does not exist
+     * @param context
+     * @return
+     * @throws IOException
+     */
     public static File createTmpFile(Context context) throws IOException{
         File dir = null;
         if(TextUtils.equals(Environment.getExternalStorageState(), Environment.MEDIA_MOUNTED)) {

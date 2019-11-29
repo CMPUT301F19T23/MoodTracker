@@ -3,7 +3,6 @@ package com.example.moodtracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,11 +45,10 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_friend_history);
 
-        username = this.getIntent().getStringExtra("username"); //store username in the intent
+        username = this.getIntent().getStringExtra("username");//store username in the intent
         friendUsername = this.getIntent().getStringExtra("friendUsername"); //store friends' username in the intent
         email = this.getIntent().getStringExtra("email"); //store email in the intent
 
-        ((TextView)findViewById(R.id.idAcceptBelow)).setText(friendUsername.trim() + "'s History");
 
         friendWriter = ViewModelProviders.of(this).get(FriendWriter.class);
         friendWriter.init(email, username);
@@ -108,7 +106,19 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.view_on_map_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+
         initRecycleView1(); // set the view of the friends activity
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void initRecycleView1() {
@@ -117,6 +127,7 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
 
         //set layout format
         friendsList.setLayoutManager(new LinearLayoutManager(this));  //linear layout
+
         friendsList.setHasFixedSize(true);
 
         //set adapter
@@ -136,7 +147,7 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
 
             @Override
             /**
-             * set the footer view of the screen
+             * * set the footer view of the screen
              * @param helper
              * @param obj
              */

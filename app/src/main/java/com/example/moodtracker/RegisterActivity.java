@@ -31,8 +31,8 @@ public class RegisterActivity extends AppCompatActivity {
     private int writerFailCount = 0;
     private int registerFailCount = 0;
 
-    private RegisterManager registerManager;
-    private UserWriter userWriter;
+    private RegisterManager registerManager; //object for RegisterManager class
+    private UserWriter userWriter; //object for userWriter class
 
     private String userPathStr;
     public static final String si_PASSWORD = "com.example.moodtracker.siPASSWORD";	
@@ -49,16 +49,18 @@ public class RegisterActivity extends AppCompatActivity {
         cpassword = findViewById(R.id.confirm_password_field);
 
         Intent intent = getIntent();
-        String newEmail  = intent.getStringExtra(LoginActivity.EXTRA_EMAIL);
-        String newPassword  = intent.getStringExtra(LoginActivity.EXTRA_PASSWORD);
+        String newEmail  = intent.getStringExtra(LoginActivity.EXTRA_EMAIL); //get the email for login
+        String newPassword  = intent.getStringExtra(LoginActivity.EXTRA_PASSWORD); //get the password for login
         emailField.setText(newEmail);
         passwordField.setText(newPassword);
 
-        userPathStr = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
+        userPathStr = intent.getStringExtra(LoginActivity.EXTRA_USERPATH); //get the user path for registration
 
         registerManager = ViewModelProviders.of(this).get(RegisterManager.class);
         userWriter = ViewModelProviders.of(this).get(UserWriter.class);
         registerManager.init(" ", userWriter);
+
+        //asks userWriter if data registered successfully stored
         userWriter.getSuccess().observe(this, new Observer(){
             @Override
             public void onChanged(Object o) {
@@ -88,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-
+        //check if register success
         registerManager.getSuccess().observe(this, new Observer(){
             @Override
             public void onChanged(Object o) {
@@ -104,6 +106,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        //click on sign up button
         findViewById(R.id.sign_up_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

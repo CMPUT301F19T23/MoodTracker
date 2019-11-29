@@ -20,7 +20,6 @@ import java.util.concurrent.Semaphore;
 /**
  * This deals with storing or loading images
  */
-
 public class ImageLoader
 {
 	/**
@@ -36,7 +35,7 @@ public class ImageLoader
 	 */
 	private int mThreadCount = 1;
 	/**
-	 * scheduler of the queue
+	 *scheduler of the queue
 	 */
 	private Type mType = Type.LIFO;
 	/**
@@ -81,7 +80,7 @@ public class ImageLoader
 
 	/**
 	 * Singleton gets the instance
-	 * 
+	 *
 	 * @return
 	 */
 	public static ImageLoader getInstance()
@@ -136,7 +135,7 @@ public class ImageLoader
 						}
 					}
 				};
-				// release semaphore sign
+				//release semaphore sign
 				mSemaphore.release();
 				Looper.loop();
 			}
@@ -164,7 +163,7 @@ public class ImageLoader
 
 	/**
 	 * upload image
-	 * 
+	 *
 	 * @param path
 	 * @param imageView
 	 */
@@ -224,7 +223,6 @@ public class ImageLoader
 					holder.path = path;
 					Message message = Message.obtain();
 					message.obj = holder;
-					// Log.e("TAG", "mHandler.sendMessage(message);");
 					mHandler.sendMessage(message);
 					mPoolSemaphore.release();
 				}
@@ -232,17 +230,17 @@ public class ImageLoader
 		}
 
 	}
-	
+
 	/**
 	 * add task
-	 * 
+	 *
 	 * @param runnable
 	 */
 	private synchronized void addTask(Runnable runnable)
 	{
 		try
 		{
-
+			//set mPooThreadhander as null by asking sign
 			if (mPoolThreadHander == null)
 				mSemaphore.acquire();
 		} catch (InterruptedException e)
@@ -254,7 +252,7 @@ public class ImageLoader
 
 	/**
 	 * get task
-	 * 
+	 *
 	 * @return
 	 */
 	private synchronized Runnable getTask()
@@ -268,10 +266,10 @@ public class ImageLoader
 		}
 		return null;
 	}
-	
+
 	/**
 	 * singleton gets the instance pair
-	 * 
+	 *
 	 * @return
 	 */
 	public static ImageLoader getInstance(int threadCount, Type type)
@@ -294,7 +292,7 @@ public class ImageLoader
 	/**
 	 * Get the appropriate compression
 	 * width and based on the ImageView
-	 * 
+	 *
 	 * @param imageView
 	 * @return
 	 */
@@ -342,7 +340,7 @@ public class ImageLoader
 
 	/**
 	 * Add a picture to the LruCache
-	 * 
+	 *
 	 * @param key
 	 * @param bitmap
 	 */
@@ -358,7 +356,7 @@ public class ImageLoader
 	/**
 	 * Compute the inSampleSize to
 	 * compress the diagram
-	 * 
+	 *
 	 * @param options
 	 * @param reqWidth
 	 * @param reqHeight
@@ -385,7 +383,7 @@ public class ImageLoader
 	/**
 	 * According to the calculated inSampleSize,
 	 * the compressed image is obtained
-	 * 
+	 *
 	 * @param pathName
 	 * @param reqWidth
 	 * @param reqHeight
@@ -398,9 +396,11 @@ public class ImageLoader
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
 		BitmapFactory.decodeFile(pathName, options);
+
 		// Call the method defined above to compute the inSampleSize table
 		options.inSampleSize = calculateInSampleSize(options, reqWidth,
 				reqHeight);
+
 		// Parse the graph again with the obtained inSampleSize value
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
@@ -423,7 +423,7 @@ public class ImageLoader
 
 	/**
 	 * Reflection gets the maximum width and height set by the ImageView
-	 * 
+	 *
 	 * @param object
 	 * @param fieldName
 	 * @return

@@ -15,7 +15,6 @@ import com.example.DB.FriendWriter;
  * This activity makes the user to ask permission to
  * follow the other participants
  */
-
 public class FriendAskActivity extends AppCompatActivity {
 
     private String username = null;
@@ -39,7 +38,7 @@ public class FriendAskActivity extends AppCompatActivity {
         friendField.setText(friendUsername); //use username of the participant when searching friends
 
         friendWriter = ViewModelProviders.of(this).get(FriendWriter.class);
-        friendWriter.init(email, username); //write initial data of email and username into friend database
+        friendWriter.init(email, username);  //write initial data of email and username into friend database
 
         //click on permission button
         findViewById(R.id.permission_button).setOnClickListener(new View.OnClickListener() {

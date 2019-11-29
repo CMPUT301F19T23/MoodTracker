@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#000000"
     android:id="@+id/relativelayout"
-    tools:context=".MainActivity">
+    tools:context=".FriendEditActivity">
 
     <RelativeLayout
         android:id="@+id/idTop"

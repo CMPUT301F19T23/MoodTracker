@@ -13,7 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 /**
- * image selecting adapter
+ * Square Frame
  */
 public class MultiImageSelector {
 

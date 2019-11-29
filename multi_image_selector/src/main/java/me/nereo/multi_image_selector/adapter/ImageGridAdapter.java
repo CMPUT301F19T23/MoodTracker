@@ -55,7 +55,7 @@ public class ImageGridAdapter extends BaseAdapter {
         mGridWidth = width / column;
     }
     /**
-     * 显示选择指示器
+     * show selecting indicator
      * @param b
      */
     public void showSelectIndicator(boolean b) {
@@ -74,7 +74,7 @@ public class ImageGridAdapter extends BaseAdapter {
     }
 
     /**
-     * 选择某个图片，改变选择状态
+     * change selection status by selecting a new photo
      * @param image
      */
     public void select(Image image) {
@@ -87,7 +87,7 @@ public class ImageGridAdapter extends BaseAdapter {
     }
 
     /**
-     * 通过图片路径设置默认选择
+     * set default selection by image path
      * @param resultList
      */
     public void setDefaultSelected(ArrayList<String> resultList) {
@@ -114,7 +114,7 @@ public class ImageGridAdapter extends BaseAdapter {
     }
 
     /**
-     * 设置数据集
+     * set dataset
      * @param images
      */
     public void setData(List<Image> images) {
@@ -202,15 +202,15 @@ public class ImageGridAdapter extends BaseAdapter {
 
         void bindData(final Image data){
             if(data == null) return;
-            // 处理单选和多选状态
+            // handle with multi or single selection
             if(showSelectIndicator){
                 indicator.setVisibility(View.VISIBLE);
                 if(mSelectedImages.contains(data)){
-                    // 设置选中状态
+                    // set selected status
                     indicator.setImageResource(R.drawable.mis_btn_selected);
                     mask.setVisibility(View.VISIBLE);
                 }else{
-                    // 未选择
+                    // not selected
                     indicator.setImageResource(R.drawable.mis_btn_unselected);
                     mask.setVisibility(View.GONE);
                 }
@@ -219,7 +219,7 @@ public class ImageGridAdapter extends BaseAdapter {
             }
             File imageFile = new File(data.path);
             if (imageFile.exists()) {
-                // 显示图片
+                // show image
                 Picasso.with(mContext)
                         .load(imageFile)
                         .placeholder(R.drawable.mis_default_error)

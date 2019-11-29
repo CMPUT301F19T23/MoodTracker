@@ -20,7 +20,6 @@ import java.util.HashMap;
  * Shows the updates of the friend's events as the friend updated
  */
 
-
 public class FriendEditActivity extends AppCompatActivity {
 
     private String friendUsername = null; //friend username is empty at initial state
@@ -113,7 +112,6 @@ public class FriendEditActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     /**
@@ -129,6 +127,7 @@ public class FriendEditActivity extends AppCompatActivity {
         tvTime.setBackgroundColor(0xFFFFFFFF);
         mSpinner1.setBackgroundColor(0xFFFFFFFF);
         mSpinner2.setBackgroundColor(0xFFFFFFFF);
+
 
     }
 

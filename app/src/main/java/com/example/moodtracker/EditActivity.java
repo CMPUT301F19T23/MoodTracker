@@ -40,7 +40,6 @@ import java.util.List;
 public class EditActivity extends AppCompatActivity {
 
     private final int REQUEST_IMAGE_PHOTO = 1001;
-    private CheckBox cb; //fill the check in square box to attach the event to current location
 
     int moodPos = -1, sitPos = -1; //set the indexes to be none since situation and mood are not selected
     private Spinner moodSpinner, situationSpinner; //lists spinner for mood and situation
@@ -62,16 +61,17 @@ public class EditActivity extends AppCompatActivity {
     private MoodEvent selectedMoodEvent = null;
 
     private String email; //get user's email
-
     private long id; //index
 
     private RelativeLayout relativeLayout; //set the layout for events
-
 
     private MoodWriter moodWriter; //object of MoodWrite class
 
     private int failCount = 0; //initialize to 0 since no failures yet
     private boolean retrieveFlag = false;
+
+    private double latitude;
+    private double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +79,8 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit); //get email of the user from login activity
 
         Intent intent = getIntent();
-
         email = intent.getStringExtra(LoginActivity.EXTRA_USER); //store the email data from the login intent
-
+        
         moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
         moodWriter.init(email);
 
@@ -130,9 +129,9 @@ public class EditActivity extends AppCompatActivity {
 
         id = Long.parseLong(intent.getStringExtra(MoodHistoryActivity.EXTRA_MOOD));
 
-        moodWriter.getMoodEvent(id);  //write the mood event into database
 
-        cb = findViewById(R.id.idAttach);
+        moodWriter.getMoodEvent(id); //write the mood event into database
+
 
         reasonField = findViewById(R.id.reason_field);
 
@@ -144,7 +143,6 @@ public class EditActivity extends AppCompatActivity {
 
         initSpinnerData(); //show spinners
     }
-
     /**
      * Sets the layout outlook of the event
      */
@@ -234,7 +232,6 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
-                    //String keshi = moodList.get(position);
                     moodPos = position; //get the index of a mood
                     sens22(); //get its layout
 
@@ -260,11 +257,11 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-        // state array adapter to store simple data
+        //state array adapter to store simple data
         moodAdapter = new MyAdapter<>(
                 EditActivity.this, android.R.layout.simple_spinner_item,
                 moodList);
-        // set the defined adapter into mood spinner
+        //  set the defined adapter into mood spinner
         moodSpinner.setAdapter(moodAdapter);
         moodSpinner.setSelection(0);
 
@@ -272,16 +269,9 @@ public class EditActivity extends AppCompatActivity {
         situationAdapter = new MyAdapter<>(
                 EditActivity.this, android.R.layout.simple_spinner_item,
                 situationList);
-        // set the defined adapter into mood spinner
+        // set the defined adapter into situation spinner
         situationSpinner.setAdapter(situationAdapter);
         situationSpinner.setSelection(0);
-
-        //check if event is attached to current location
-        if (selectedMoodEvent.isAttach()) {
-            cb.setChecked(true);
-        } else {
-            cb.setChecked(false);
-        }
 
         image = selectedMoodEvent.getImage(); //get image of event
 
@@ -336,9 +326,6 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean attach = false;
-                if (cb.isChecked()) {
-                    attach = true;
-                }
 
                 //check if the name of the event is empty
                 String name = nameField.getEditableText().toString();
@@ -370,7 +357,7 @@ public class EditActivity extends AppCompatActivity {
                     return;
                 }
 
-                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason, image);
+                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason, image, latitude, longitude);
 
             }
         });
@@ -385,7 +372,8 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
-    //initialize the spinners since no mood or situation is selected
+    /**initialize the spinners since no mood or situation is selected
+     */
     private void initSpinnerData() {
         // this way, list dynamically grows as we add emotions
         for(int i = 0; i < MoodEvent.MOOD_DATA.length; ++i){
@@ -406,11 +394,9 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // requestCode and resultCode comparison
+        //此处可以根据两个Code进行判断，本页面和结果页面跳过来的值
         if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//select the image from the shop
             //zip image
-
-            image = data.getStringExtra("image");
             showPic(resultCode, data);
         }
     }
@@ -429,7 +415,7 @@ public class EditActivity extends AppCompatActivity {
                     //selected an image, cursor only has one record
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
-                            String path = cursor.getString(cursor.getColumnIndex("_data"));//获取相册路径字段
+                            String path = cursor.getString(cursor.getColumnIndex("_data"));//get the path field
                             image = path;
                         }
                     }

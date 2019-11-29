@@ -42,7 +42,6 @@ public class MoodActivity extends AppCompatActivity {
         followingButton = findViewById(R.id.view_friends_mood_button);
         username_text_view = findViewById(R.id.hello_username_text_view);
 
-
         //store data from login activity and into database
         Intent oldIntent = getIntent();	
         userpath = oldIntent.getStringExtra(LoginActivity.EXTRA_USERPATH);	

@@ -31,6 +31,10 @@ public class FolderAdapter extends BaseAdapter {
 
     int lastSelected = 0;
 
+    /**
+     * get the layout context
+     * @param context
+     */
     public FolderAdapter(Context context){
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -106,6 +110,10 @@ public class FolderAdapter extends BaseAdapter {
         return view;
     }
 
+    /**
+     * get the entire image size
+     * @return
+     */
     private int getTotalImageSize(){
         int result = 0;
         if(mFolders != null && mFolders.size()>0){
@@ -116,6 +124,10 @@ public class FolderAdapter extends BaseAdapter {
         return result;
     }
 
+    /**
+     * get the index of the selected image
+     * @param i
+     */
     public void setSelectIndex(int i) {
         if(lastSelected == i) return;
 
@@ -142,6 +154,10 @@ public class FolderAdapter extends BaseAdapter {
             view.setTag(this);
         }
 
+        /**
+         * get the data of the image
+         * @param data
+         */
         void bindData(Folder data) {
             if(data == null){
                 return;

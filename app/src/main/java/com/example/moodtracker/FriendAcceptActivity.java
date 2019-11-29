@@ -18,7 +18,6 @@ import java.util.ArrayList;
  * his/her followers. If accepted, the follower is added into
  * the user's friend list. Else the follower is deleted
  */
-
 public class FriendAcceptActivity extends AppCompatActivity {
 
     private String username = null;

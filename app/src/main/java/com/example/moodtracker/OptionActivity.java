@@ -23,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
  * have option to enter textual reason when adding
  * an event, or use a photograph to represent the reason.
  */
-
 public class OptionActivity extends AppCompatActivity {
 
     private final int REQUEST_IMAGE_PHOTO = 1001; //set the image size
@@ -44,9 +43,7 @@ public class OptionActivity extends AppCompatActivity {
         findViewById(R.id.option_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //switch to the media where to optionally select image
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                nameField.setText(intent.getStringExtra("reason"));
                 startActivityForResult(intent, REQUEST_IMAGE_PHOTO);
             }
         });
@@ -56,8 +53,9 @@ public class OptionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String name = nameField.getEditableText().toString().trim();
+
+                //check if the reason exceeds 3 words or more than 20 characters
                 if (!name.isEmpty()) {
-                    //check if the reason exceeds 3 words or more than 20 characters
                     String[] names = name.split(" ");
                     if (names.length > 3) {
                         Toast.makeText(OptionActivity.this, "word count is more than 3", Toast.LENGTH_SHORT).show();
@@ -89,8 +87,8 @@ public class OptionActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//select the image from the shop
-
             //zip image
+
             showPic(resultCode, data);
         }
     }
@@ -111,7 +109,7 @@ public class OptionActivity extends AppCompatActivity {
      */
     private void showPic(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) { //if the code of the image is correct
-            if (data != null) { //get stored data from the database
+            if (data != null) {  //get stored data from the database
                 Uri uri = data.getData();
                 if (uri != null) {
                     Cursor cursor = getContentResolver().query(uri, null, null, null, null); //cursor gets the record
@@ -124,7 +122,7 @@ public class OptionActivity extends AppCompatActivity {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-
+                                    //Log.v(TAG, "打开相册获取的图片sd卡路径:" + path);
                                     Bitmap bitmap = BitmapFactory.decodeFile(path);
 
                                     Message msg = new Message();
@@ -137,7 +135,7 @@ public class OptionActivity extends AppCompatActivity {
                     }
                 }
             }
-        } else {//if url is null, then cursor gets no data
+        } else { //if url is null, then cursor gets no data
             Log.d("OptionActivity", "give up selection");
         }
     }

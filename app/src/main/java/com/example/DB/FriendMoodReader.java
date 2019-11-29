@@ -79,15 +79,17 @@ public class FriendMoodReader extends DBCommunicator {
     }
 
     /**
-     * Create a MoodEvent object from the id and a hashmap representing the data in a MoodEvent
+     * Create a MoodEvent with a predetermined id, and with all of its data in a hashmap
+     * Meant to be used to construct MoodEvents that already exist from the database. If
+     * hashmap is invalid(eg, missing expected fields), will return null.
      * @param id
-     *      the id of the MoodEvent object
+     *      id representing the MoodEvent (time in milliseconds)
      * @param map
-     *      the hashmap storing the data representing the MoodEvent
+     *      hashmap containing all the MoodEvent's data
      * @return
-     *      the completed MoodEvent, or null if invalid objects were passed
+     *      the created MoodEvent, or null if there was a problem
      */
-     public MoodEvent createMoodEvent(long id, HashMap map){
+    public MoodEvent createMoodEvent(long id, HashMap map){
         if(map == null){return null;}
         if(map.get("mood_date") == null){return null;}
         Calendar date = Calendar.getInstance();
@@ -99,14 +101,30 @@ public class FriendMoodReader extends DBCommunicator {
             return null;
         }
 
+        if(map.get("mood_name") == null){return null;}
         String name = (String) map.get("mood_name");
+
+        if(map.get("mood_reason_str") == null){return null;}
         String reason = (String) map.get("mood_reason_str");
+
+        if(map.get("mood_situation") == null){return null;}
         int situation = Integer.parseInt((String) map.get("mood_situation"));
+
+        if(map.get("mood_emotion") == null){return null;}
         String emotion = (String) map.get("mood_emotion");
+
+        if(map.get("mood_image") == null){return null;}
         String image = (String) map.get("mood_image");
 
-        return new MoodEvent(name, id, situation, date, emotion, reason, image);
+        if(map.get("mood_latitude") == null){return null;}
+        double lat = Double.parseDouble((String) map.get("mood_latitude"));
+
+        if(map.get("mood_longitude") == null){return null;}
+        double lon = Double.parseDouble((String) map.get("mood_longitude"));
+
+        return new MoodEvent(name, id, situation, date, emotion, reason, image, lat, lon);
     }
+
 
     /**
      * Run a query to return a moodEvent with a known id

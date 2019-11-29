@@ -19,6 +19,9 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.DB.LoginManager;
 
+/**
+ * This function allows user to login with his/her account
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private boolean bPermission = false;
@@ -102,11 +105,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void request_permission() {
-        // 拍照及文件权限申请
+        // apply for permission of photograph and document
         if (ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // 权限还没有授予，进行申请
+            // application in progress
             ActivityCompat.requestPermissions(LoginActivity.this,
                     new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 3000);
         } else {
@@ -127,6 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                     bPermission = true;
                 }
                 break;
+
             default:
                 break;
         }

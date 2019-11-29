@@ -27,6 +27,7 @@ import java.util.List;
 /**
  * This function allows the user to view his/her event history
  */
+
 public class MoodHistoryActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView1 = null;
@@ -59,13 +60,23 @@ public class MoodHistoryActivity extends AppCompatActivity {
             }
         });
 
+        //click on view on map button
+        findViewById(R.id.view_on_map_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MoodHistoryActivity.this, MapsActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            }
+        });
+
         initRecycleView1();
 
         searchField = findViewById(R.id.search_field); //type in a certain mood to search for its events
         searchField.addTextChangedListener(new TextChangedListener<EditText>(searchField) {
             @Override
             public void onTextChanged(EditText target, Editable s) {
-                filterMoods(s.toString()); //call the function which filters the list
+                filterMoods(s.toString());
             }
         });
 
@@ -113,7 +124,9 @@ public class MoodHistoryActivity extends AppCompatActivity {
     }
 
     @Override
-    //resets every content
+    /**
+     * resets every content
+     */
     protected void onResume() {
         super.onResume();
     }
@@ -127,6 +140,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
         //set layout format
         mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //linear layout
+
         mRecyclerView1.setHasFixedSize(true);
 
         //set adapter
