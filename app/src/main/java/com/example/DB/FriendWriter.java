@@ -33,6 +33,7 @@ public class FriendWriter extends DBCommunicator {
     private String lastFriendUsername;
     private boolean queryIsRequest = false;
     private boolean initialized = false;
+    private boolean writingFriend = false;
 
     private MutableLiveData<ArrayList<String>> friendList;
 
@@ -116,11 +117,13 @@ public class FriendWriter extends DBCommunicator {
      */
     public void addFriendRequest(String friendUsername){
         queryIsRequest = true;
+        writingFriend = false;
         searchFor(dbStart, usernameField, friendUsername);
     }
 
     /**
-     * Runs a set query to add the friend's username to this user's friends collection.
+     * Runs a modified search looking for the User with friendUsername as their username.
+     * If that username exists, then call an insert of this user's username on the friend's friend collection.
      * Also deletes the friend request associated with this friend.
      * @param friendUsername
      *      username of the friend
@@ -130,7 +133,8 @@ public class FriendWriter extends DBCommunicator {
         lastFriendUsername = friendUsername;
         HashMap map = new HashMap();
         map.put("null", "null");
-        setData(friendPath + friendUsername, map);
+        writingFriend = true;
+        searchFor(dbStart, usernameField, friendUsername);
     }
 
     /**
@@ -187,7 +191,11 @@ public class FriendWriter extends DBCommunicator {
             Log.d(TAG, "Found Friend with email: " + document.getId());
             HashMap map = new HashMap();
             map.put("null", "null");
-            setData(dbStart + document.getId() + "/" + friendRequestTable + username, map);
+            if(writingFriend){
+                setData(dbStart + document.getId() + "/" + friendTable + username, map);
+            }else{
+                setData(dbStart + document.getId() + "/" + friendRequestTable + username, map);
+            }
             // assuming unique username property of database hasn't been violated, so we end after first doc
             return;
         }
