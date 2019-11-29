@@ -41,6 +41,7 @@ public class FriendWriter extends DBCommunicator {
 
     public FriendWriter(Application application) {
         super(application);
+        // just to avoid null pointer exceptions FriendWriter shouldn't be used without initializing.
         setUsernameAndEmail("null", "null");
         friendList = new MutableLiveData<>(new ArrayList<String>());
         friendRequestList = new MutableLiveData<>(new ArrayList<String>());

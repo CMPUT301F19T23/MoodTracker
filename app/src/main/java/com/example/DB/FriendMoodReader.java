@@ -38,6 +38,7 @@ public class FriendMoodReader extends DBCommunicator {
 
     public FriendMoodReader(Application application) {
         super(application);
+        // Shouldn't be used without initializing.
     }
 
     /**
@@ -86,12 +87,11 @@ public class FriendMoodReader extends DBCommunicator {
      * @return
      *      the completed MoodEvent, or null if invalid objects were passed
      */
-    public MoodEvent createMoodEvent(long id, HashMap map){
+     public MoodEvent createMoodEvent(long id, HashMap map){
         if(map == null){return null;}
-        System.out.println("CreateMoodEvent: " + map);
+        if(map.get("mood_date") == null){return null;}
         Calendar date = Calendar.getInstance();
         try {
-            if(map.get("mood_date") == null){return null;}
             date.setTime(MoodEvent.longFormat.parse((String) map.get("mood_date")));
         } catch (ParseException ex) {
             ex.printStackTrace();
@@ -103,7 +103,9 @@ public class FriendMoodReader extends DBCommunicator {
         String reason = (String) map.get("mood_reason_str");
         int situation = Integer.parseInt((String) map.get("mood_situation"));
         String emotion = (String) map.get("mood_emotion");
-        return new MoodEvent(name, id, situation, date, emotion, reason);
+        String image = (String) map.get("mood_image");
+
+        return new MoodEvent(name, id, situation, date, emotion, reason, image);
     }
 
     /**

@@ -39,6 +39,7 @@ public class OptionActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                nameField.setText(intent.getStringExtra("reason"));
                 startActivityForResult(intent, REQUEST_IMAGE_PHOTO);
             }
         });

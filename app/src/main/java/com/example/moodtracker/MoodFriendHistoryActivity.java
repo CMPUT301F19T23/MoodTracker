@@ -3,6 +3,7 @@ package com.example.moodtracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +45,7 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
         friendUsername = this.getIntent().getStringExtra("friendUsername");
         email = this.getIntent().getStringExtra("email");
 
+        ((TextView)findViewById(R.id.idAcceptBelow)).setText(friendUsername.trim() + "'s History");
 
         friendWriter = ViewModelProviders.of(this).get(FriendWriter.class);
         friendWriter.init(email, username);

@@ -125,6 +125,8 @@ public class AddActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddActivity.this, OptionActivity.class);
+                intent.putExtra("image", image);
+                intent.putExtra("reason", reason);
                 startActivityForResult(intent, 1001);
             }
         });
@@ -213,7 +215,7 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-        moodWriter.createAndWriteMood(name, cal, situationList.get(s2), moodList.get(s1), reason);
+        moodWriter.createAndWriteMood(name, cal, situationList.get(s2), moodList.get(s1), reason, image);
     }
 
 }

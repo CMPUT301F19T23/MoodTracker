@@ -366,22 +366,8 @@ public class EditActivity extends AppCompatActivity {
                     return;
                 }
 
-                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason);
+                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason, image);
 
-//                for (int i = 0; i < ResUtil.list.size(); i++) {
-//                    if (ResUtil.list.get(i).getId() == selectedMoodEvent.getId()) {
-//                        MoodEvent mood = ResUtil.list.get(i);
-//                        mood.setAttach(attach);
-//                        mood.setName(name);
-//                        mood.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-//                        mood.setEmotion(moodList.get(moodPos));
-//                        mood.setSituation(MoodEvent.situationToInt(situationList.get(sitPos)));
-//                        mood.setReasonString(reason);
-//                        mood.setImage(image);
-//                        updateMood(mood);
-//                        break;
-//                    }
-//                }
             }
         });
 
@@ -422,7 +408,7 @@ public class EditActivity extends AppCompatActivity {
 
             image = images.get(0);
             */
-
+            image = data.getStringExtra("image");
             showPic(resultCode, data);
         }
     }

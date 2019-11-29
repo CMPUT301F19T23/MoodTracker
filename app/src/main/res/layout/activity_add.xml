@@ -92,7 +92,7 @@
             android:padding="10dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:text="Option"
+            android:text="Optionial Info"
             android:textColor="#000000"
             android:textSize="17sp" />
 

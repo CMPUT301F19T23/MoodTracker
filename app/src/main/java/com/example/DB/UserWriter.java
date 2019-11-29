@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.QuerySnapshot;
@@ -18,23 +19,23 @@ import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Handles searches for users and creating their database entries
+ */
 public class UserWriter extends DBCommunicator {
     private String email;
     private boolean searchingForId = false;
+
     private MutableLiveData<String> id;
 
     private boolean failDueToNotUnique = false;
-
-    public boolean passDueToSearch() {
-        return passDueToSearch;
-    }
 
     private boolean passDueToSearch = false;
 
     public UserWriter(Application application) {
         super(application);
         id = new MutableLiveData<>("");
-        // just so we don't get null pointer exceptions, UserWriter shouldn't be used this way.
+        // just to avoid null pointer exceptions UserWriter shouldn't be used without initializing.
         setEmail("null");
     }
 
@@ -68,6 +69,12 @@ public class UserWriter extends DBCommunicator {
         searchingForId = false;
         getData(dbStart, id);
     }
+
+
+
+
+
+
 
     @Override
     protected boolean onSuccessfulSearchForAdd(QuerySnapshot qs){
@@ -148,8 +155,20 @@ public class UserWriter extends DBCommunicator {
         success.setValue(new Boolean(false));
     }
 
+
+
+
+
     public boolean failDueToNotUnique() {
         return failDueToNotUnique;
+    }
+
+    public boolean passDueToSearch() {
+        return passDueToSearch;
+    }
+
+    public LiveData<String> getId() {
+        return id;
     }
 
 }
