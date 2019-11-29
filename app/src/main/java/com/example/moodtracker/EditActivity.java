@@ -392,9 +392,12 @@ public class EditActivity extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * comparison between requestCodes and resultCode
+     */
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //此处可以根据两个Code进行判断，本页面和结果页面跳过来的值
+        //compare requestCode and resultCode
         if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//select the image from the shop
             //zip image
             showPic(resultCode, data);

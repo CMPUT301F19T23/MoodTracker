@@ -69,9 +69,9 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
     }
 
     private RecyclerView.ViewHolder createItemViewHolder(ViewGroup viewGroup) {
-        //2.实例化子布局
+        //Instantiate the sublayout
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(itemLayoutId, viewGroup, false);
-        //3.获得一个ViewHolder实例
+        //Get an instance of the ViewHolder
         return new ItemViewHolder(itemView);
     }
 
@@ -88,15 +88,12 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
 
     private void bindViewForHeader(RecyclerView.ViewHolder holder) {
         HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-        //headerViewHolder.iv_newsImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        //headerViewHolder.iv_newsImage.setImageResource(R.drawable.news_header);
 
         convertHeader(headerViewHolder, head);
     }
 
     private void bindViewForFooter(RecyclerView.ViewHolder holder) {
         FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
-        //footerViewHolder.tv_footer.setText("啊哈哈，这不是无底洞......");
 
         convertFooter(footerViewHolder, foot);
     }
@@ -120,7 +117,7 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
     @Override
     public int getItemCount() {
         //return mDatas.size();
-        return mDatas == null ? (iHeader + iFooter) : mDatas.size() + (iHeader + iFooter); //控制position的数目，因为加了一头一尾，所以这里的总数是我的新闻数+2
+        return mDatas == null ? (iHeader + iFooter) : mDatas.size() + (iHeader + iFooter); //control the number of position
     }
 
     protected T getItem(int position) {
@@ -156,7 +153,7 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
     }
 
     /**
-     * 手动添加长按事件
+     * press long
      */
     public interface OnLongClickListener {
         void onLongClick(View view, int position);
@@ -174,48 +171,9 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
             mOnLongClickListener.onLongClick(view, (int) view.getTag());
         }
 
-        // 消耗事件，否则长按逻辑执行完成后还会进入点击事件的逻辑处理
+        // consume time
         return true;
     }
 
-/*
-    //1.初始化自己的ViewHolder
-    static class NewsViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView tv_newsTitle;
-        public TextView tv_newsSource;
-        public TextView tv_newsPublishTime;
-
-        public NewsViewHolder(View itemView) {
-            super(itemView);
-            //获取子布局的控件实例
-            tv_newsTitle = (TextView) itemView.findViewById(R.id.news_title);
-            tv_newsSource = (TextView) itemView.findViewById(R.id.news_source);
-            tv_newsPublishTime = (TextView) itemView.findViewById(R.id.news_publishtime);
-        }
-    }
-
-    //初始化头view
-    static class HeaderViewHolder extends RecyclerView.ViewHolder {
-
-        ImageView iv_newsImage;
-
-        public HeaderViewHolder(View itemView) {
-            super(itemView);
-            iv_newsImage = (ImageView) itemView.findViewById(R.id.news_image);
-        }
-    }
-
-    //初始化尾view
-    static class FooterViewHolder extends RecyclerView.ViewHolder {
-
-        TextView tv_footer;
-
-        public FooterViewHolder(View itemView) {
-            super(itemView);
-            tv_footer = (TextView) itemView.findViewById(R.id.tv_footer);
-        }
-    }
-*/
 
 }

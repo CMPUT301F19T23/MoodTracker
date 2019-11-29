@@ -22,6 +22,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
+/**
+ * This function allows the users to view his/her own events and friend
+ * events on map.
+ */
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
     GoogleMap gMap;
 
@@ -69,6 +73,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         });
     }
 
+    /**
+     * Gets event details for a specific event according to type of mood
+     * @param moodEvents
+     */
     public void createMarkersOnMap(ArrayList<MoodEvent> moodEvents){
         for(int i=0; i < moodEvents.size(); i++){
             MoodEvent moodEvent = moodEvents.get(i);
