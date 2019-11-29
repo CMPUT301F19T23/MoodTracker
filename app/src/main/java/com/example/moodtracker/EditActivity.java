@@ -34,7 +34,6 @@ import java.util.List;
 public class EditActivity extends AppCompatActivity {
 
     private final int REQUEST_IMAGE_PHOTO = 1001;
-    private CheckBox cb;
 
     int moodPos = -1, sitPos = -1;
     private Spinner moodSpinner, situationSpinner;
@@ -128,7 +127,6 @@ public class EditActivity extends AppCompatActivity {
 
         moodWriter.getMoodEvent(id);
 
-        cb = findViewById(R.id.idAttach);
 
         reasonField = findViewById(R.id.reason_field);
 
@@ -256,12 +254,6 @@ public class EditActivity extends AppCompatActivity {
         situationSpinner.setAdapter(situationAdapter);
         situationSpinner.setSelection(0);
 
-        if (selectedMoodEvent.isAttach()) {
-            cb.setChecked(true);
-        } else {
-            cb.setChecked(false);
-        }
-
         image = selectedMoodEvent.getImage();
 
         nameField.setText(selectedMoodEvent.getName());
@@ -309,9 +301,6 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean attach = false;
-                if (cb.isChecked()) {
-                    attach = true;
-                }
 
                 String name = nameField.getEditableText().toString();
                 if (name.isEmpty()) {
@@ -340,7 +329,7 @@ public class EditActivity extends AppCompatActivity {
                     return;
                 }
 
-                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason, latitude, longitude);
+                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason, image, latitude, longitude);
 
             }
         });

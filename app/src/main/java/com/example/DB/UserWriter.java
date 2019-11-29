@@ -39,10 +39,23 @@ public class UserWriter extends DBCommunicator {
         setEmail("null");
     }
 
+    /**
+     * Set the email of this user
+     * @param email
+     *      the email address of the user
+     */
     public void setEmail(String email){
         this.email = email;
     }
 
+    /**
+     * Runs an addIfUnique query on username and a hashmap containing usertype and username.
+     * If there aren't any entries already with that
+     * @param username
+     *      the username of the user to be created
+     * @param usertype
+     *      the user type of the user to be created
+     */
     private void createUser(String username, String usertype){
         HashMap<String, String> user = new HashMap<>();
         user.put(usertypeField, usertype);

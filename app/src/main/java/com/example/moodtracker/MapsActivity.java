@@ -1,6 +1,7 @@
 package com.example.moodtracker;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
@@ -134,9 +135,21 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             gMap.setOnMyLocationButtonClickListener(this);
             gMap.setOnMyLocationClickListener(this);
         } else {
-            // Show rationale and request permission.
+            ActivityCompat.requestPermissions(MapsActivity.this,
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION}, 101);
         }
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+        if(requestCode == 101){
+            if(permissions.length == 1 &&
+                permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                gMap.setMyLocationEnabled(true);
+            }
+        }
     }
 
     // My Location layer and the My Location button to show user

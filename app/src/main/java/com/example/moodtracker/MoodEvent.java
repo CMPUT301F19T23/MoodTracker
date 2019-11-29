@@ -58,7 +58,7 @@ public class MoodEvent implements Serializable{
         this.date = d;
         this.setEmotion(emotion);
         this.reasonString = rstr;
-        image = image;
+        this.image = image;
         this.latitude = lat;
         this.longitude = lon;
     }

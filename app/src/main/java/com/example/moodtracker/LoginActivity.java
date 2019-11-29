@@ -127,6 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                     bPermission = true;
                 }
                 break;
+
             default:
                 break;
         }
