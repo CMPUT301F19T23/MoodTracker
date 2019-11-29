@@ -26,9 +26,6 @@ public class RegisterActivity extends AppCompatActivity {
     private String password;
     private int failCount = 0;
 
-    //FirebaseAuth auth;
-    //FirebaseFirestore db;
-
     private RegisterManager registerManager;
     private UserWriter userWriter;
 
@@ -40,9 +37,6 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-//        db = FirebaseFirestore.getInstance();
-//        auth = FirebaseAuth.getInstance();
 
         usernameField = findViewById(R.id.username_field);
         passwordField = findViewById(R.id.password_field);
@@ -100,73 +94,12 @@ public class RegisterActivity extends AppCompatActivity {
                     registerManager.setUsername(username);
                     userWriter.setEmail(email);
                     userWriter.checkUserExists(username);
-//                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-//                    intent.putExtra(si_EMAIL, email);
-//                    intent.putExtra(si_PASSWORD, password);
-//                    startActivity(intent);
                 }
 
-                //Toast.makeText(RegisterActivity.this, "register success", Toast.LENGTH_SHORT).show();
-                //RegisterActivity.this.finish();
-                
+
             }
         });
     }
-
-//    public void registerUser(final String email, final String username, final String password){
-//        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//            @Override
-//            public void onComplete(@NonNull Task<AuthResult> task) {
-//                if (task.isSuccessful()) {
-//                    //we will store the additional fields in firebase database
-//
-//                    Log.d(TAG, "createUserWithEmail:success");
-//                    FirebaseUser user = auth.getCurrentUser();
-//
-//                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-//                            .setDisplayName(email)
-//                            .build();
-//
-//                    user.updateProfile(profileUpdates)
-//                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<Void> task) {
-//                                    if (task.isSuccessful()) {
-//                                        Log.d(TAG, "User profile updated.");
-//                                    }
-//                                }
-//                            });
-//                    HashMap<String, String> users = new HashMap<>();
-//                    users.put("userType", "Participant");
-//                    users.put("UserName", username);
-//                    db.document(userPathStr + email)
-//                            .set(users)
-//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//                                    Log.d(TAG, "Data addition successful");
-//                                    Toast.makeText(RegisterActivity.this, "Data addition successful.", Toast.LENGTH_SHORT).show();
-//                                }
-//                            })
-//                            .addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                    Log.d(TAG, "Data addition failed " + e.toString());
-//                                    Toast.makeText(RegisterActivity.this, "Data addition failed", Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
-//
-//                }
-//                else{
-//                    Log.d(TAG, "Failed to create user");
-//                    Toast.makeText(RegisterActivity.this, task.getException().getMessage(),
-//                            Toast.LENGTH_LONG).show();
-//                }
-//            }
-//
-//        });
-//
-//    }
 
     public boolean validate(){
         String name = usernameField.getText().toString();
