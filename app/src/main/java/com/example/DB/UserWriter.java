@@ -64,31 +64,53 @@ public class UserWriter extends DBCommunicator {
         addIfUnique(dbStart, usernameField, username, email, user);
     }
 
+    /**
+     * Call create user with usertype equal to participant
+     * @param username
+     *      the username of the user to be created
+     */
     public void createParticipant(String username){
             createUser(username, participant);
     }
 
+    /**
+     * Run a search for query on a given username
+     * @param username
+     *      Username of user to be searched
+     */
     public void checkUserExists(String username){
         searchingForId = false;
         searchFor(dbStart, usernameField, username);
     }
 
+    /**
+     * Runs a modified search that puts the id of a document into the id LiveData object
+     * @param username
+     *      Username of user to be searched
+     */
     public void getIdFromUsername(String username){
         searchingForId = true;
         searchFor(dbStart, usernameField, username);
     }
 
+    /**
+     * Runs a get Data query on id
+     * @param id
+     *      the id(email address) to search through
+     */
     public void getUsernameFromId(String id){
         searchingForId = false;
         getData(dbStart, id);
     }
 
 
-
-
-
-
-
+    /**
+     * Called when a n addIfUnique query meets a breakpoint and did not encounter any errors
+     * @param qs
+     *      the QuerySnapshot holding information about the query.
+     * @return
+     *      Whether or not qs is empty
+     */
     @Override
     protected boolean onSuccessfulSearchForAdd(QuerySnapshot qs){
         if(qs.size() != 0){
@@ -102,6 +124,8 @@ public class UserWriter extends DBCommunicator {
         return true;
     }
 
+    /** Called if an addIfUnique query encounters an error.
+     */
     @Override
     protected void onFailedSearchForAdd(@NonNull Exception e){
         Log.d(TAG, "Error getting documents: " + e.toString());
@@ -109,6 +133,9 @@ public class UserWriter extends DBCommunicator {
         success.setValue(new Boolean(false));
     }
 
+    /**
+     * Called when a set operation occurs without encountering errors
+     */
     @Override
     protected void onSuccessfulAddition(){
         Log.d(TAG, "User Successfully created");
@@ -116,6 +143,9 @@ public class UserWriter extends DBCommunicator {
         success.setValue(new Boolean(true));
     }
 
+    /**
+     * Called when a set data query encounters an error.
+     */
     @Override
     protected void onFailedAddition(@NonNull Exception e){
         Log.d(TAG, "User creation failed " + e.toString());
@@ -123,6 +153,9 @@ public class UserWriter extends DBCommunicator {
         success.setValue(new Boolean(false));
     }
 
+    /**
+     *Called when a search query runs and doesn't encounter an exception
+     */
     @Override
     protected void onSuccessfulSearch(QuerySnapshot qs){
         if(!searchingForId){
@@ -148,6 +181,9 @@ public class UserWriter extends DBCommunicator {
         }
     }
 
+    /**
+     * Called when a search query encounters an exception
+     */
     @Override
     protected void onFailedSearch(@NonNull Exception e){
         Log.d(TAG, "Error getting documents: " + e.toString());
@@ -155,6 +191,10 @@ public class UserWriter extends DBCommunicator {
         success.setValue(new Boolean(false));
     }
 
+    /** Called when a get data query runs and doesn't encounter an error
+     * @param map
+     *      HashMap containing the data that was retrieved.
+     */
     protected void onSuccessfulDataRetrieval(Map<String, Object> map){
         Log.d(TAG, "Username successfully retrieved");
         HashMap<String,String> hashMap = (HashMap) map;
@@ -162,6 +202,9 @@ public class UserWriter extends DBCommunicator {
         success.setValue(new Boolean(true));
     }
 
+    /**
+     * Called when a get data query runs and encounters an error
+     */
     protected void onFailedDataRetrieval(@NonNull Exception e){
         Log.d(TAG, "Couldn't find User with that ID: " + e.toString());
         returnVal.setValue(null);
@@ -169,17 +212,28 @@ public class UserWriter extends DBCommunicator {
     }
 
 
-
-
-
+    /**
+     * Allows UI to have better distinguish between various situations
+     * @return
+     *      returns whether or not the last relevant operation failed checking to see if something was unique
+     */
     public boolean failDueToNotUnique() {
         return failDueToNotUnique;
     }
 
+    /**
+     * Allows UI to have better distinguish between various situations
+     * @return
+     *      returns whether or not the last relevant operation passed during a search query
+     */
     public boolean passDueToSearch() {
         return passDueToSearch;
     }
 
+    /**
+     * Returns access to a changing object thaat holds the last id read from getIdFromUsername queries.
+     * @return
+     */
     public LiveData<String> getId() {
         return id;
     }
