@@ -37,15 +37,6 @@ public class OptionActivity extends AppCompatActivity {
          findViewById(R.id.option_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                MultiImageSelector.create()
-                        .showCamera(false)
-                        //.count(IMAGE_SIZE - originImages.size() + 1)
-                        .count(1)
-                        .multi()
-                        .start(OptionActivity.this, REQUEST_IMAGE_PHOTO);
-                        */
-
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQUEST_IMAGE_PHOTO);
             }
