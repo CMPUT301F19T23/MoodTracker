@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:padding="5dp"
-        android:text="Explanation for Reason:"
+        android:text="Reason for Mood:"
         android:textColor="#ffffff"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -48,7 +48,7 @@
             android:padding="10dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:text="Select Photograph"
+            android:text="Select New Photograph"
             android:textColor="#000000"
             android:textSize="17sp" />
 

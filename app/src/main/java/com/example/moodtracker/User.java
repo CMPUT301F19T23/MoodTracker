@@ -1,5 +1,9 @@
 package com.example.moodtracker;
 
+/**
+ * This gets and sets the username and emails
+ * of an user
+ */
 public class User {
     private String username;
     private String email;

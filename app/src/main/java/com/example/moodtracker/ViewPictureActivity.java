@@ -1,7 +1,5 @@
 package com.example.moodtracker;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,6 +9,11 @@ import android.os.Message;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+/**
+ * This activity allows user to view his/her
+ * image for the reason of an event
+ */
 
 public class ViewPictureActivity extends AppCompatActivity {
     ImageView ivImage;
@@ -30,7 +33,7 @@ public class ViewPictureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_picture);
 
         final String image = this.getIntent().getStringExtra("image");
-        ivImage = (ImageView) findViewById(R.id.idImage);
+        ivImage = findViewById(R.id.idImage);
 
         //Glide.with(ViewPictureActivity.this.getApplicationContext()).load(image).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivImage);
 

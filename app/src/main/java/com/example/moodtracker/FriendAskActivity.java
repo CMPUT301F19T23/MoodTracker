@@ -11,12 +11,17 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.DB.FriendWriter;
 
+/**
+ * This activity makes the user to ask permission to
+ * follow the other participants
+ */
+
 public class FriendAskActivity extends AppCompatActivity {
 
     private String username = null;
-    private String friendUsername = null;
+    private String friendUsername = null; //no username
     private String email = null;
-    private FriendWriter friendWriter;
+    private FriendWriter friendWriter; //object of FriendWriter class
     private int failCount = 0;
 
     private TextView friendField;
@@ -31,11 +36,12 @@ public class FriendAskActivity extends AppCompatActivity {
         email = this.getIntent().getStringExtra("email");
 
         friendField = findViewById(R.id.friend_field);
-        friendField.setText(friendUsername);
+        friendField.setText(friendUsername); //use username of the participant when searching friends
 
         friendWriter = ViewModelProviders.of(this).get(FriendWriter.class);
-        friendWriter.init(email, username);
+        friendWriter.init(email, username); //write initial data of email and username into friend database
 
+        //click on permission button
         findViewById(R.id.permission_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

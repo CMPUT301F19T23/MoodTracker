@@ -4,10 +4,9 @@ package com.example.moodtracker;
  * Object representing various information about an emotional state
  */
 public class EmotionData {
-    private String emotion; // eg angry, sad, happy etc
-    private int emoji; // I believe that emoji are now part of unicode, but even if I'm wrong
-    // then we can use things like :) for placeholders
-    private int color; // implementation might change but I think android stores colors as integers
+    private String emotion;
+    private int emoji; // int instead of string to represent unicode characters
+    private int color;
 
     final public static EmotionData ANGRY_DATA = new EmotionData("angry", 0x1F620, 0xFFFF0000); // color is red
     final public static EmotionData HAPPY_DATA = new EmotionData("happy", 0x1F60A, 0xFFFFFF00); // color is yellow
@@ -27,7 +26,7 @@ public class EmotionData {
     /**
      * Get the emoji component of this object
      * @return
-     *          the emoji as a string
+     *          the emoji as an int
      */
     public int getEmoji() {
         return emoji;

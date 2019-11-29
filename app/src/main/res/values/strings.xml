@@ -2,5 +2,4 @@
     <string name="app_name">java-event</string>
     <string name="spinner1">select a mood</string>
     <string name="spinner2">select a social situation</string>
-    <string name="title_activity_maps">Map</string>
 </resources>

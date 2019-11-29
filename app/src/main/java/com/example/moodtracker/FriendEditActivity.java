@@ -16,31 +16,36 @@ import com.example.DB.FriendMoodReader;
 import java.util.Calendar;
 import java.util.HashMap;
 
+/**
+ * Shows the updates of the friend's events as the friend updated
+ */
+
+
 public class FriendEditActivity extends AppCompatActivity {
 
-    private String friendUsername = null;
-    private long id;
+    private String friendUsername = null; //friend username is empty at initial state
+    private long id; //index of the friend list
 
     private final int REQUEST_IMAGE_PHOTO = 1001;
 
-    private TextView mSpinner1, mSpinner2;
+    private TextView mSpinner1, mSpinner2; //spinner lists of mood and situation
 
     private TextView etName, etReason;
     private TextView tvDate, tvTime;
 
-    private TextView tvSense2;
+    private TextView tvSense2; //set the color and emoji
 
-    private Calendar cal = null;
+    private Calendar cal = null; //no event added so no date and time set
 
-    private MoodEvent moodEvent = null;
+    private MoodEvent moodEvent = null; //no event available
 
-    private FriendMoodReader friendMoodReader;
-
-    private RelativeLayout relativeLayout;
+    private FriendMoodReader friendMoodReader; //object of FriendMoodReader
 
     private int readerFailCount = 0;
     private boolean retrieveFlag = false;
     private boolean initialized = false;
+
+    private RelativeLayout relativeLayout;
 
 
     @Override
@@ -48,10 +53,10 @@ public class FriendEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_edit);
 
-        friendUsername = this.getIntent().getStringExtra("friendUsername");
+        friendUsername = this.getIntent().getStringExtra("friendUsername"); //get friend's username
 
         System.out.println("ID equal to: " + this.getIntent().getStringExtra("id"));
-        id = Long.parseLong(this.getIntent().getStringExtra("id"));
+        id = Long.parseLong(this.getIntent().getStringExtra("id")); //get the friend index
 
         friendMoodReader = ViewModelProviders.of(this).get(FriendMoodReader.class);
         friendMoodReader.init(friendUsername);
@@ -109,11 +114,11 @@ public class FriendEditActivity extends AppCompatActivity {
             }
         });
 
-        //moodEvent = DataUtil.getMoodEvent(friendUsername, id);
-
-
     }
 
+    /**
+     * set the layout for each friend event
+     */
     private void sens2() {
         relativeLayout = findViewById(R.id.relativelayout);
         tvSense2.setText(new String(Character.toChars(moodEvent.getEmoji())));
@@ -127,6 +132,9 @@ public class FriendEditActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * initialize the data edited by the friend
+     */
     private void initData() {
         etName.setText(moodEvent.getName());
         etReason.setText(moodEvent.getReasonString());
@@ -134,6 +142,8 @@ public class FriendEditActivity extends AppCompatActivity {
         mSpinner1.setText(moodEvent.getEmotion());
         mSpinner2.setText(MoodEvent.intToSituation(moodEvent.getSituation()));
 
+        //if textual reason does not exist, then show nothing for the field
+        //if exists, then show the reason
         String reasonString = moodEvent.getReasonString();
         if (reasonString == null || reasonString.isEmpty()){
             etReason.setVisibility(View.GONE);
@@ -142,7 +152,8 @@ public class FriendEditActivity extends AppCompatActivity {
             etReason.setText(reasonString);
         }
 
-         findViewById(R.id.idViewImage).setOnClickListener(new View.OnClickListener() {
+        //click on view image button
+        findViewById(R.id.idViewImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (moodEvent.getImage().isEmpty()) {

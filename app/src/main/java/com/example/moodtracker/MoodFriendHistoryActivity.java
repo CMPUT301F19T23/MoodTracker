@@ -3,6 +3,7 @@ package com.example.moodtracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,10 +22,15 @@ import com.example.moodtracker.recycle.MyRecycleAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This activity allows users to view their
+ * friend's events
+ */
+
 public class MoodFriendHistoryActivity extends AppCompatActivity {
     private String username = null, friendUsername = null, email = null;
 
-    private RecyclerView friendsList = null;
+    private RecyclerView friendsList = null; //set friend list to be empty at initial
 
     private FriendWriter friendWriter;
     private FriendMoodReader friendMoodReader;
@@ -32,18 +38,19 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
     private int writerFailCount = 0;
     private int readerFailCount = 0;
 
-    private MyRecycleAdapter<MoodEvent> recycleAdapter1 = null;
-    private List<MoodEvent> recycleList1 = new ArrayList<>();
+    private MyRecycleAdapter<MoodEvent> recycleAdapter1 = null; //no item in the history
+    private List<MoodEvent> recycleList1 = new ArrayList<>(); //list of friend item
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_friend_history);
 
-        username = this.getIntent().getStringExtra("username");
-        friendUsername = this.getIntent().getStringExtra("friendUsername");
-        email = this.getIntent().getStringExtra("email");
+        username = this.getIntent().getStringExtra("username"); //store username in the intent
+        friendUsername = this.getIntent().getStringExtra("friendUsername"); //store friends' username in the intent
+        email = this.getIntent().getStringExtra("email"); //store email in the intent
 
+        ((TextView)findViewById(R.id.idAcceptBelow)).setText(friendUsername.trim() + "'s History");
 
         friendWriter = ViewModelProviders.of(this).get(FriendWriter.class);
         friendWriter.init(email, username);
@@ -90,10 +97,10 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
                 recycleList1.clear();
                 recycleList1.addAll((ArrayList<MoodEvent>)o);
                 recycleAdapter1.notifyDataSetChanged();
-                //System.out.println("DATA SET CHANGING");
             }
         });
 
+        //click on stop following button
         findViewById(R.id.stop_following_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,43 +108,47 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
             }
         });
 
-        initRecycleView1();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//
-//        recycleList1.clear();
-//
-//        DataUtil.getAll(friendUsername, recycleList1);
-//        recycleAdapter1.notifyDataSetChanged();
+        initRecycleView1(); // set the view of the friends activity
     }
 
     public void initRecycleView1() {
-        //1.获取控件
+        //get controller
         friendsList = findViewById(R.id.friends_list);
 
-        //2.设置布局方式
-        friendsList.setLayoutManager(new LinearLayoutManager(this));  //线性布局
-        //friendsList.setLayoutManager(new GridLayoutManager(this, 3));  //网格布局
+        //set layout format
+        friendsList.setLayoutManager(new LinearLayoutManager(this));  //linear layout
         friendsList.setHasFixedSize(true);
 
-        //3.设置适配器
+        //set adapter
         friendsList.setAdapter(recycleAdapter1 = new MyRecycleAdapter<MoodEvent>(this,
                 -1, null,
                 -1, null,
                 R.layout.item_mood_friend_history, recycleList1) {
 
             @Override
+            /**
+             * set the header view of the screen
+             * @param helper
+             * @param obj
+             */
             public void convertHeader(HeaderViewHolder helper, Object obj) {
             }
 
             @Override
+            /**
+             * set the footer view of the screen
+             * @param helper
+             * @param obj
+             */
             public void convertFooter(FooterViewHolder helper, Object obj) {
             }
 
             @Override
+            /**
+             * set and get data for each event item
+             * @param item
+             * @param helper
+             */
             public void convertItem(ItemViewHolder helper, MoodEvent item) {
                 helper.setText(R.id.idName, item.getName() + "\n" + MoodEvent.longFormat.format(item.getDate().getTime()));
                 helper.setText(R.id.idImage, new String(Character.toChars(item.getEmoji())));
@@ -148,6 +159,7 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
             }
         });
 
+        //click on and friend item
         recycleAdapter1.setOnClickListener(new MyRecycleAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -158,6 +170,7 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
             }
         });
 
+        //press for long period
         recycleAdapter1.setOnLongClickListener(new MyRecycleAdapter.OnLongClickListener() {
             @Override
             public void onLongClick(View view, int position) {

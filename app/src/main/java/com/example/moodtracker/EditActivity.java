@@ -31,54 +31,57 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This function allows the user to edit own event details,
+ * when clicking on save change button, every changed contents are
+ * updated into database
+ */
+
 public class EditActivity extends AppCompatActivity {
 
     private final int REQUEST_IMAGE_PHOTO = 1001;
-    private CheckBox cb;
+    private CheckBox cb; //fill the check in square box to attach the event to current location
 
-    int moodPos = -1, sitPos = -1;
-    private Spinner moodSpinner, situationSpinner;
+    int moodPos = -1, sitPos = -1; //set the indexes to be none since situation and mood are not selected
+    private Spinner moodSpinner, situationSpinner; //lists spinner for mood and situation
     private List<String> moodList = new ArrayList<String>();
     private List<String> situationList = new ArrayList<String>();
-    private MyAdapter<String> moodAdapter, situationAdapter;
+    private MyAdapter<String> moodAdapter, situationAdapter; //adapters that stores spinners of moods and situations
 
     private EditText nameField, reasonField;
     private TextView dateField, timeField;
 
-    private TextView tvSense2;
+    private TextView tvSense2; //set the editable emoji
 
     private Calendar cal = null;
 
+    //set reason and image to be empty since none of them selected
     private String reason = "";
     private String image = "";
 
     private MoodEvent selectedMoodEvent = null;
 
-    //private String userpath;
-    private String email;
-    //private String moodpath;
-    private long id;
+    private String email; //get user's email
 
-    private RelativeLayout relativeLayout;
+    private long id; //index
 
-    //private FirebaseFirestore db;
+    private RelativeLayout relativeLayout; //set the layout for events
 
-    private MoodWriter moodWriter;
 
-    private int failCount = 0;
+    private MoodWriter moodWriter; //object of MoodWrite class
+
+    private int failCount = 0; //initialize to 0 since no failures yet
     private boolean retrieveFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit);
+        setContentView(R.layout.activity_edit); //get email of the user from login activity
 
         Intent intent = getIntent();
-        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
-        email = intent.getStringExtra(LoginActivity.EXTRA_USER);
-        //moodpath = userpath + email + "/" + "Moods/";
 
-        //db = FirebaseFirestore.getInstance();
+        email = intent.getStringExtra(LoginActivity.EXTRA_USER); //store the email data from the login intent
+
         moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
         moodWriter.init(email);
 
@@ -125,16 +128,9 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-        //selectedMoodEvent = (MoodEvent) this.getIntent().getSerializableExtra("selectedMoodEvent");
         id = Long.parseLong(intent.getStringExtra(MoodHistoryActivity.EXTRA_MOOD));
-//        for (int i = 0; i < ResUtil.list.size(); i++) {
-//            if (ResUtil.list.get(i).getId() == id) {
-//                selectedMoodEvent = ResUtil.list.get(i);
-//                break;
-//            }
-//        }
 
-        moodWriter.getMoodEvent(id);
+        moodWriter.getMoodEvent(id);  //write the mood event into database
 
         cb = findViewById(R.id.idAttach);
 
@@ -146,12 +142,16 @@ public class EditActivity extends AppCompatActivity {
 
         tvSense2 = findViewById(R.id.idSense2);
 
-        initSpinnerData();
+        initSpinnerData(); //show spinners
     }
 
+    /**
+     * Sets the layout outlook of the event
+     */
     private void sens22() {
-        String keshi = moodList.get(moodPos);
+        String keshi = moodList.get(moodPos); //get the item in the mood list by indexes
         relativeLayout = findViewById(R.id.relativelayout);
+        //check event item their layout looks
         if (keshi.equals(EmotionData.ANGRY_DATA.getEmotion())) {
             tvSense2.setText(new String(Character.toChars(EmotionData.ANGRY_DATA.getEmoji())));
             tvSense2.setBackgroundColor(EmotionData.ANGRY_DATA.getColor());
@@ -199,32 +199,20 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets the general background layout for all events
+     * associate with different moods
+     */
     private void sens2() {
 
         tvSense2.setText(new String(Character.toChars(selectedMoodEvent.getEmoji())));
         tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        /*
-        if (selectedMoodEvent.getEmotion().toLowerCase().equals(EmotionData.ANGRY_DATA)) {
-            tvSense2.setText(selectedMoodEvent.getEmoji());
-            tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        } else if (selectedMoodEvent.getEmotion().toLowerCase().equals(EmotionData.HAPPY_DATA)) {
-            tvSense2.setText(selectedMoodEvent.getEmoji());
-            tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        } else if (selectedMoodEvent.getEmotion().toLowerCase().equals(EmotionData.SAD_DATA)) {
-            tvSense2.setText(selectedMoodEvent.getEmoji());
-            tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        } else if (selectedMoodEvent.getEmotion().toLowerCase().equals(EmotionData.NEUTRAL_DATA)) {
-            tvSense2.setText(selectedMoodEvent.getEmoji());
-            tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        }
-        */
     }
 
+    /**
+     * Stores all datas
+     * @param <T>
+     */
     class MyAdapter<T> extends ArrayAdapter {
         public MyAdapter(@NonNull Context context, int resource, @NonNull List<T> objects) {
             super(context, resource, objects);
@@ -237,6 +225,9 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * get items of mood and situation spinners by indexes
+     */
     private void initData() {
         moodSpinner = findViewById(R.id.mood_spinner);
         moodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -244,8 +235,8 @@ public class EditActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
                     //String keshi = moodList.get(position);
-                    moodPos = position;
-                    sens22();
+                    moodPos = position; //get the index of a mood
+                    sens22(); //get its layout
 
                 }
             }
@@ -260,7 +251,7 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
-                    sitPos = position;
+                    sitPos = position; //get the index of a situation
                 }
             }
 
@@ -269,33 +260,35 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-        // 声明一个ArrayAdapter用于存放简单数据
+        // state array adapter to store simple data
         moodAdapter = new MyAdapter<>(
                 EditActivity.this, android.R.layout.simple_spinner_item,
                 moodList);
-        // 把定义好的Adapter设定到spinner中
+        // set the defined adapter into mood spinner
         moodSpinner.setAdapter(moodAdapter);
         moodSpinner.setSelection(0);
 
-        // 声明一个ArrayAdapter用于存放简单数据
+        // state array adapter to store simple data
         situationAdapter = new MyAdapter<>(
                 EditActivity.this, android.R.layout.simple_spinner_item,
                 situationList);
-        // 把定义好的Adapter设定到spinner中
+        // set the defined adapter into mood spinner
         situationSpinner.setAdapter(situationAdapter);
         situationSpinner.setSelection(0);
 
+        //check if event is attached to current location
         if (selectedMoodEvent.isAttach()) {
             cb.setChecked(true);
         } else {
             cb.setChecked(false);
         }
 
-        image = selectedMoodEvent.getImage();
+        image = selectedMoodEvent.getImage(); //get image of event
 
         nameField.setText(selectedMoodEvent.getName());
         reasonField.setText(selectedMoodEvent.getReasonString());
 
+        //select the item in the mood spinner
         for (int i = 0; i < moodList.size(); i++) {
             if (moodList.get(i).equals(selectedMoodEvent.getEmotion())) {
                 moodSpinner.setSelection(i);
@@ -303,6 +296,8 @@ public class EditActivity extends AppCompatActivity {
                 break;
             }
         }
+
+        //select the item in the situation spinner
         for (int i = 0; i < situationList.size(); i++) {
             if (situationList.get(i).equals(MoodEvent.intToSituation(selectedMoodEvent.getSituation()))) {
                 situationSpinner.setSelection(i);
@@ -311,6 +306,7 @@ public class EditActivity extends AppCompatActivity {
             }
         }
 
+        //view the attached image for reason
         findViewById(R.id.idViewImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -325,23 +321,17 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        //click on change image button
         findViewById(R.id.idChangeImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                MultiImageSelector.create()
-                        .showCamera(false)
-                        //.count(IMAGE_SIZE - originImages.size() + 1)
-                        .count(1)
-                        .multi()
-                        .start(EditActivity.this, REQUEST_IMAGE_PHOTO);
-                        */
 
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQUEST_IMAGE_PHOTO);
             }
         });
 
+        //click on save change button
         findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -350,11 +340,14 @@ public class EditActivity extends AppCompatActivity {
                     attach = true;
                 }
 
+                //check if the name of the event is empty
                 String name = nameField.getEditableText().toString();
                 if (name.isEmpty()) {
                     Toast.makeText(EditActivity.this, "name is empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                //check the reason conditions, if it is more than 3 words or 20 characters.
                 reason = reasonField.getEditableText().toString();
                 if (!reason.isEmpty()) {
                     String[] names = reason.split(" ");
@@ -368,34 +361,21 @@ public class EditActivity extends AppCompatActivity {
                     }
                 }
 
-                if (moodPos == -1) {
+                if (moodPos == -1) {// if no mood selected
                     Toast.makeText(EditActivity.this, "please choose a mood", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (sitPos == -1) {
+                if (sitPos == -1) {// if no situation selected
                     Toast.makeText(EditActivity.this, "please choose a social situation", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason);
+                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason, image);
 
-//                for (int i = 0; i < ResUtil.list.size(); i++) {
-//                    if (ResUtil.list.get(i).getId() == selectedMoodEvent.getId()) {
-//                        MoodEvent mood = ResUtil.list.get(i);
-//                        mood.setAttach(attach);
-//                        mood.setName(name);
-//                        mood.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-//                        mood.setEmotion(moodList.get(moodPos));
-//                        mood.setSituation(MoodEvent.situationToInt(situationList.get(sitPos)));
-//                        mood.setReasonString(reason);
-//                        mood.setImage(image);
-//                        updateMood(mood);
-//                        break;
-//                    }
-//                }
             }
         });
 
+        //click on the delete button
         findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -405,6 +385,7 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
+    //initialize the spinners since no mood or situation is selected
     private void initSpinnerData() {
         // this way, list dynamically grows as we add emotions
         for(int i = 0; i < MoodEvent.MOOD_DATA.length; ++i){
@@ -425,27 +406,27 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //此处可以根据两个Code进行判断，本页面和结果页面跳过来的值
-        if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//从相册选择完图片
-            //压缩图片
-            /*
-            ArrayList<String> images = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+        // requestCode and resultCode comparison
+        if (requestCode == REQUEST_IMAGE_PHOTO && resultCode == RESULT_OK) {//select the image from the shop
+            //zip image
 
-            image = images.get(0);
-            */
-
+            image = data.getStringExtra("image");
             showPic(resultCode, data);
         }
     }
 
-    // 调用android自带图库，显示选中的图片
+    /**
+     * call android photo store, show the selected image
+     * @param resultCode
+     * @param data
+     */
     private void showPic(int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {//if the code of the image is correct
             if (data != null) {
-                Uri uri = data.getData();
+                Uri uri = data.getData();//get stored data from the database
                 if (uri != null) {
                     Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-                    //选择的就只是一张图片，所以cursor只有一条记录
+                    //selected an image, cursor only has one record
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
                             String path = cursor.getString(cursor.getColumnIndex("_data"));//获取相册路径字段
@@ -454,8 +435,8 @@ public class EditActivity extends AppCompatActivity {
                     }
                 }
             }
-        } else {
-            Log.d("OptionActivity", "放弃从相册选择");
+        } else {//if url is null, then cursor gets no data
+            Log.d("OptionActivity", "give up selection");
         }
     }
 

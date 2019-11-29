@@ -13,17 +13,23 @@ import com.example.DB.FriendWriter;
 
 import java.util.ArrayList;
 
+/**
+ * activity to make users to accept
+ * his/her followers. If accepted, the follower is added into
+ * the user's friend list. Else the follower is deleted
+ */
+
 public class FriendAcceptActivity extends AppCompatActivity {
 
     private String username = null;
-    private String friendUsername = null;
+    private String friendUsername = null; //no username
     private String email = null;
-    private ArrayList<String> friendRequestList;
+    private ArrayList<String> friendRequestList; //list of requests
     private TextView friendUsernameField;
 
-    private FriendWriter friendWriter;
-    private boolean adding = false;
-    private boolean deleting = false;
+    private FriendWriter friendWriter; // set friend writer object
+    private boolean adding = false; //not adding
+    private boolean deleting = false; //not deleting
     private int failCount = 0;
 
     @Override
@@ -36,10 +42,10 @@ public class FriendAcceptActivity extends AppCompatActivity {
 
         friendUsernameField = findViewById(R.id.friend_field);
 
-        friendRequestList = new ArrayList<>();
+        friendRequestList = new ArrayList<>(); //list of request
 
-        friendWriter = ViewModelProviders.of(this).get(FriendWriter.class);
-        friendWriter.init(email, username);
+        friendWriter = ViewModelProviders.of(this).get(FriendWriter.class); //write informations into databse
+        friendWriter.init(email, username); //initialize the friend's email and username into the database
 
         friendWriter.getFriendRequestList().observe(this, new Observer(){
             @Override
@@ -74,17 +80,10 @@ public class FriendAcceptActivity extends AppCompatActivity {
             }
         });
 
-
-        //final List<String> list = DataUtil.getAskListByUsername(username);
-
-
+        //click on accept button
         findViewById(R.id.view_following_request_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                DataUtil.insertFriendAccept(username, list.get(0));
-//                DataUtil.insertFriendAccept(list.get(0), username);
-//                DataUtil.deleteFriendAsk(username, list.get(0));
-//                finish();
                 if(friendUsername.equals("")){
                 }else{
                     adding = true;
@@ -94,11 +93,10 @@ public class FriendAcceptActivity extends AppCompatActivity {
             }
         });
 
+        //click on decline button
         findViewById(R.id.idDecline).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                DataUtil.deleteFriendAsk(username, list.get(0));
-//                finish();
                 if(friendUsername.equals("")){
                 }else{
                     adding = false;
