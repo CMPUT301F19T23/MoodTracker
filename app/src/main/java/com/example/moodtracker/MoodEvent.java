@@ -26,17 +26,10 @@ public class MoodEvent implements Serializable{
     final public static int SITUATION_CROWD = 3;
 
 
-    private Calendar date; // date of event, formatted to include specific day and time of day fields
-    /*I suspect you'll need to read up on Calendar objects especially for the UI
-    https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html
-    https://www.mkyong.com/java/java-date-and-calendar-examples/
-    Calendars are abstract, instantiate with GregorianCalendar (see examples in MoodEventTest)
-    */
+    private Calendar date; 
 
     private String reasonString;
-    //private type reasonImg; // cannot yet implement. More research needed
     private EmotionData emotionData;
-    //private Location location; // cannot yet implement. More research needed
 
     private String name;
     private boolean attach;
@@ -58,13 +51,14 @@ public class MoodEvent implements Serializable{
     }
 
 
-    public MoodEvent(String name, long id, int situation, Calendar d, String emotion, String rstr, double lat, double lon){
+    public MoodEvent(String name, long id, int situation, Calendar d, String emotion, String rstr, String image, double lat, double lon){
         this.name = name;
         this.id = id;
         this.situation = situation;
         this.date = d;
         this.setEmotion(emotion);
         this.reasonString = rstr;
+        image = image;
         this.latitude = lat;
         this.longitude = lon;
     }
@@ -171,22 +165,6 @@ public class MoodEvent implements Serializable{
     public void setReasonString(String reasonString) {
         this.reasonString = reasonString;
     }
-
-    /*public Type getReasonImg() {
-        return reasonImg;
-    }
-
-    public void setReasonString(Type reasonImg) {
-        this.reasonImg = reasonImg;
-    }*/
-
-   /*public Type getLocation() {
-        return location;
-    }
-
-    public void setLocation(Type location) {
-        this.location = location;
-    }*/
 
     public String getName() {
         return name;
