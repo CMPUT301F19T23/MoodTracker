@@ -313,7 +313,7 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-        moodWriter.createAndWriteMood(name, cal, situationList.get(s2), moodList.get(s1), reason, latitude, longitude);
+        moodWriter.createAndWriteMood(name, cal, situationList.get(s2), moodList.get(s1), reason, image, latitude, longitude);
         //TODO add next lines to createANdWriteMood
     }
 
