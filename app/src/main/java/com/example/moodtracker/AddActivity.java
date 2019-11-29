@@ -72,12 +72,8 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
-        //long start = System.currentTimeMillis();
-
         Intent intent = getIntent();
-        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
         email = intent.getStringExtra(LoginActivity.EXTRA_USER);
-        //moodpath = userpath + email + "/" + "Moods/";
         moodWriter =  ViewModelProviders.of(this).get(MoodWriter.class);
         moodWriter.init(email);
 
@@ -91,18 +87,14 @@ public class AddActivity extends AppCompatActivity {
 
         dateField.setText(MoodEvent.dayFormat.format(cal.getTime()));
         timeField.setText(MoodEvent.timeFormat.format(cal.getTime()));
-
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 2 " + (System.currentTimeMillis()-start)/1000.0);
-
+        
         initSpinnerData();
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 3 " + (System.currentTimeMillis()-start)/1000.0);
         moodSpinner = findViewById(R.id.mood_spinner);
         moodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
-                    //String keshi = moodList.get(position);
                     s1 = position;
                 }
             }
@@ -126,9 +118,6 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 4 " + (System.currentTimeMillis()-start)/1000.0);
-
-
         // 声明一个ArrayAdapter用于存放简单数据
         moodAdapter = new MyAdapter<>(
                 AddActivity.this, android.R.layout.simple_spinner_item,
@@ -145,8 +134,6 @@ public class AddActivity extends AppCompatActivity {
         situationSpinner.setAdapter(situationAdapter);
         situationSpinner.setSelection(situationList.size() - 1, true);
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 5 " + (System.currentTimeMillis()-start)/1000.0);
-
         findViewById(R.id.option_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,8 +142,6 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 6 " + (System.currentTimeMillis()-start)/1000.0);
-
         findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,7 +149,6 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 7 " + (System.currentTimeMillis()-start)/1000.0);
         moodWriter.getSuccess().observe(this, new Observer(){
             @Override
             public void onChanged(Object o) {
@@ -314,7 +298,6 @@ public class AddActivity extends AppCompatActivity {
         }
 
         moodWriter.createAndWriteMood(name, cal, situationList.get(s2), moodList.get(s1), reason, image, latitude, longitude);
-        //TODO add next lines to createANdWriteMood
     }
 
 }
