@@ -7,12 +7,15 @@ import android.view.Display;
 import android.view.WindowManager;
 
 /**
- *  屏幕工具
- * Created by nereo on 15/11/19.
- * Updated by nereo on 2016/1/19.
+ * Screen Tools
  */
 public class ScreenUtils {
 
+    /**
+     * returns each point forming the size of the screen
+     * @param context
+     * @return
+     */
     public static Point getScreenSize(Context context){
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();

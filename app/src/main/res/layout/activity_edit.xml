@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    tools:context=".MainActivity">
+    android:id="@+id/relativelayout"
+    tools:context=".EditActivity">
 
     <RelativeLayout
         android:id="@+id/idTop"
@@ -18,17 +19,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:padding="5dp"
-            android:text="hello" />
+            android:text="hello"
+            android:textColor="#000000"
+            android:textSize="30dp" />
 
-        <CheckBox
-            android:id="@+id/idAttach"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/buttonstyle"
-            android:padding="5dp"
-            android:text="Attach location again" />
     </RelativeLayout>
 
     <LinearLayout
@@ -43,7 +39,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/idName"
+            android:id="@+id/name_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -51,11 +47,11 @@
             android:gravity="center"
             android:hint="Event name"
             android:padding="10dp"
-            android:textColor="#ffffff"
+            android:textColor="#000000"
             android:textColorHint="@color/colorGray" />
 
         <TextView
-            android:id="@+id/idDate"
+            android:id="@+id/date_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -63,11 +59,11 @@
             android:gravity="center"
             android:hint="2019-01-01"
             android:padding="10dp"
-            android:textColor="#ffffff"
+            android:textColor="#000000"
             android:textColorHint="@color/colorGray" />
 
         <TextView
-            android:id="@+id/idTime"
+            android:id="@+id/time_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -75,11 +71,11 @@
             android:gravity="center"
             android:hint="16:35"
             android:padding="10dp"
-            android:textColor="#ffffff"
+            android:textColor="#000000"
             android:textColorHint="@color/colorGray" />
 
         <EditText
-            android:id="@+id/idReason"
+            android:id="@+id/reason_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -88,11 +84,11 @@
             android:hint="Less than 20 char or 3 words"
             android:maxLength="20"
             android:padding="10dp"
-            android:textColor="#ffffff"
+            android:textColor="#000000"
             android:textColorHint="@color/colorGray" />
 
         <Spinner
-            android:id="@+id/idSense"
+            android:id="@+id/mood_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -101,7 +97,7 @@
             android:spinnerMode="dialog" />
 
         <Spinner
-            android:id="@+id/idSituation"
+            android:id="@+id/situation_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -128,7 +124,9 @@
                 android:paddingEnd="10dp"
                 android:text="View Picture"
                 android:textColor="#000000"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="5dp" />
 
             <TextView
                 android:id="@+id/idChangeImage"
@@ -144,7 +142,9 @@
                 android:paddingEnd="10dp"
                 android:text="Change Picture"
                 android:textColor="#000000"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="5dp" />
         </RelativeLayout>
 
     </LinearLayout>
@@ -156,7 +156,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/idSaveChange"
+            android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -168,10 +168,11 @@
             android:paddingBottom="10dp"
             android:text="Save Changes"
             android:textColor="#000000"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:layout_alignParentLeft="true" />
 
         <TextView
-            android:id="@+id/idDelete"
+            android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -183,6 +184,7 @@
             android:paddingBottom="10dp"
             android:text="Delete"
             android:textColor="#000000"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 </RelativeLayout>

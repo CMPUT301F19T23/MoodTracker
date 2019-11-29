@@ -1,4 +1,4 @@
-package com.example.moodtracker;
+package com.example.moodtracker.recycle;
 
 import android.content.Context;
 
@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 /**
- * This is to set the layout of each a screen.
- * @param <T> the datas into memory
+ *This activtiy returns the data the adapter of each list
+ * @param <T>
  */
 public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener, View.OnLongClickListener {
 
@@ -22,8 +22,8 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
     private int iHeader = 0, iFooter = 0;
 
     protected List<T> mDatas;
-    private static final int HEADER_TYPE = 0;  //头
-    private static final int FOOTER_TYPE = -1; //尾
+    private static final int HEADER_TYPE = 0;  //header
+    private static final int FOOTER_TYPE = -1; //tailer
     private static final int ITEM_TYPE = 1;  //
 
     public MyRecycleAdapter(Context context, int headerLayoutId, Object head, int footerLayoutId, Object foot,
@@ -69,9 +69,9 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
     }
 
     private RecyclerView.ViewHolder createItemViewHolder(ViewGroup viewGroup) {
-        //2.实例化子布局
+        //Instantiate the sublayout
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(itemLayoutId, viewGroup, false);
-        //3.获得一个ViewHolder实例
+        //Get an instance of the ViewHolder
         return new ItemViewHolder(itemView);
     }
 
@@ -88,8 +88,6 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
 
     private void bindViewForHeader(RecyclerView.ViewHolder holder) {
         HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-        //headerViewHolder.iv_newsImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        //headerViewHolder.iv_newsImage.setImageResource(R.drawable.news_header);
 
         convertHeader(headerViewHolder, head);
     }
@@ -119,7 +117,7 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
     @Override
     public int getItemCount() {
         //return mDatas.size();
-        return mDatas == null ? (iHeader + iFooter) : mDatas.size() + (iHeader + iFooter);
+        return mDatas == null ? (iHeader + iFooter) : mDatas.size() + (iHeader + iFooter); //control the number of position
     }
 
     protected T getItem(int position) {
@@ -155,7 +153,7 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
     }
 
     /**
-     * 手动添加长按事件
+     * press long
      */
     public interface OnLongClickListener {
         void onLongClick(View view, int position);
@@ -173,47 +171,9 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
             mOnLongClickListener.onLongClick(view, (int) view.getTag());
         }
 
+        // consume time
         return true;
     }
 
-/*
-    //1.初始化自己的ViewHolder
-    static class NewsViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView tv_newsTitle;
-        public TextView tv_newsSource;
-        public TextView tv_newsPublishTime;
-
-        public NewsViewHolder(View itemView) {
-            super(itemView);
-            //获取子布局的控件实例
-            tv_newsTitle = (TextView) itemView.findViewById(R.id.news_title);
-            tv_newsSource = (TextView) itemView.findViewById(R.id.news_source);
-            tv_newsPublishTime = (TextView) itemView.findViewById(R.id.news_publishtime);
-        }
-    }
-
-    //初始化头view
-    static class HeaderViewHolder extends RecyclerView.ViewHolder {
-
-        ImageView iv_newsImage;
-
-        public HeaderViewHolder(View itemView) {
-            super(itemView);
-            iv_newsImage = (ImageView) itemView.findViewById(R.id.news_image);
-        }
-    }
-
-    //初始化尾view
-    static class FooterViewHolder extends RecyclerView.ViewHolder {
-
-        TextView tv_footer;
-
-        public FooterViewHolder(View itemView) {
-            super(itemView);
-            tv_footer = (TextView) itemView.findViewById(R.id.tv_footer);
-        }
-    }
-*/
 
 }

@@ -11,14 +11,19 @@ import java.io.IOException;
 import static android.os.Environment.MEDIA_MOUNTED;
 
 /**
- * 文件操作类
- * Created by Nereo on 2015/4/8.
+ * File Operator Class
  */
 public class FileUtils {
 
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
 
+    /**
+     * throw exception if context does not exist
+     * @param context
+     * @return
+     * @throws IOException
+     */
     public static File createTmpFile(Context context) throws IOException{
         File dir = null;
         if(TextUtils.equals(Environment.getExternalStorageState(), Environment.MEDIA_MOUNTED)) {

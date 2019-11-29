@@ -52,8 +52,6 @@ import me.nereo.multi_image_selector.utils.ScreenUtils;
 
 /**
  * Multi image selector Fragment
- * Created by Nereo on 2015/4/7.
- * Updated by nereo on 2016/5/18.
  */
 public class MultiImageSelectorFragment extends Fragment {
 

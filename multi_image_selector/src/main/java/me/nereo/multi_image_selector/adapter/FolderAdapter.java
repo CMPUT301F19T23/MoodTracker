@@ -17,6 +17,9 @@ import java.util.List;
 import me.nereo.multi_image_selector.R;
 import me.nereo.multi_image_selector.bean.Folder;
 
+/**
+ * Folder Adapter
+ */
 public class FolderAdapter extends BaseAdapter {
 
     private Context mContext;
@@ -28,6 +31,10 @@ public class FolderAdapter extends BaseAdapter {
 
     int lastSelected = 0;
 
+    /**
+     * get the layout context
+     * @param context
+     */
     public FolderAdapter(Context context){
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -35,7 +42,7 @@ public class FolderAdapter extends BaseAdapter {
     }
 
     /**
-     * 设置数据集
+     * set datasets
      * @param folders
      */
     public void setData(List<Folder> folders) {
@@ -103,6 +110,10 @@ public class FolderAdapter extends BaseAdapter {
         return view;
     }
 
+    /**
+     * get the entire image size
+     * @return
+     */
     private int getTotalImageSize(){
         int result = 0;
         if(mFolders != null && mFolders.size()>0){
@@ -113,6 +124,10 @@ public class FolderAdapter extends BaseAdapter {
         return result;
     }
 
+    /**
+     * get the index of the selected image
+     * @param i
+     */
     public void setSelectIndex(int i) {
         if(lastSelected == i) return;
 
@@ -139,6 +154,10 @@ public class FolderAdapter extends BaseAdapter {
             view.setTag(this);
         }
 
+        /**
+         * get the data of the image
+         * @param data
+         */
         void bindData(Folder data) {
             if(data == null){
                 return;
@@ -151,7 +170,7 @@ public class FolderAdapter extends BaseAdapter {
                 size.setText("*"+mContext.getResources().getString(R.string.mis_photo_unit));
             }
             if (data.cover != null) {
-                // 显示图片
+                //show image
                 Picasso.with(mContext)
                         .load(new File(data.cover.path))
                         .placeholder(R.drawable.mis_default_error)

@@ -1,4 +1,4 @@
-package com.example.moodtracker;
+package com.example.moodtracker.recycle;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,56 +17,60 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
+/**
+ * This deals with storing or loading images
+ */
 public class ImageLoader
 {
 	/**
-	 * 图片缓存的核心类
+	 * the core of lru cache
 	 */
 	private LruCache<String, Bitmap> mLruCache;
 	/**
-	 * 线程�?
+	 * thread
 	 */
 	private ExecutorService mThreadPool;
 	/**
-	 * 线程池的线程数量，默认为1
+	 * set default value of number of thread
 	 */
 	private int mThreadCount = 1;
 	/**
-	 * 队列的调度方�?
+	 *scheduler of the queue
 	 */
 	private Type mType = Type.LIFO;
 	/**
-	 * 任务队列
+	 * task queue
 	 */
 	private LinkedList<Runnable> mTasks;
 	/**
-	 * 轮询的线�?
+	 * line of polling
 	 */
 	private Thread mPoolThread;
 	private Handler mPoolThreadHander;
 
 	/**
-	 * 运行在UI线程的handler，用于给ImageView设置图片
+	 * handler running in the UI thread that
+	 * sets up the image for the ImageView
 	 */
 	private Handler mHandler;
 
 	/**
-	 * 引入�?��值为1的信号量，防止mPoolThreadHander未初始化完成
+	 * introduce a semaphore with a value of 1
+	 * to prevent the mPoolThreadHander
+	 * from being initialized
 	 */
 	private volatile Semaphore mSemaphore = new Semaphore(1);
 
 	/**
-	 * 引入�?��值为1的信号量，由于线程池内部也有�?��阻塞线程，防止加入任务的速度过快，使LIFO效果不明�?
+	 * Introduce a semaphore with a value of 1,
+	 * since the thread pool also has a value of 1.
 	 */
 	private volatile Semaphore mPoolSemaphore;
 
 	private static ImageLoader mInstance;
 
 	/**
-	 * 队列的调度方�?
-	 * 
-	 * @author zhy
-	 * 
+	 *The scheduler of the queue
 	 */
 	public enum Type
 	{
@@ -75,8 +79,8 @@ public class ImageLoader
 
 
 	/**
-	 * 单例获得该实例对�?
-	 * 
+	 * Singleton gets the instance
+	 *
 	 * @return
 	 */
 	public static ImageLoader getInstance()
@@ -110,7 +114,7 @@ public class ImageLoader
 			{
 				try
 				{
-					// 请求�?��信号�?
+					// asks for semaphore sign
 					mSemaphore.acquire();
 				} catch (InterruptedException e)
 				{
@@ -131,14 +135,14 @@ public class ImageLoader
 						}
 					}
 				};
-				// 释放�?��信号�?
+				//release semaphore sign
 				mSemaphore.release();
 				Looper.loop();
 			}
 		};
 		mPoolThread.start();
 
-		// 获取应用程序�?��可用内存
+		// Get the application to free memory
 		int maxMemory = (int) Runtime.getRuntime().maxMemory();
 		int cacheSize = maxMemory / 8;
 		mLruCache = new LruCache<String, Bitmap>(cacheSize)
@@ -158,8 +162,8 @@ public class ImageLoader
 	}
 
 	/**
-	 * 加载图片
-	 * 
+	 * upload image
+	 *
 	 * @param path
 	 * @param imageView
 	 */
@@ -167,7 +171,7 @@ public class ImageLoader
 	{
 		// set tag
 		imageView.setTag(path);
-		// UI线程
+		// UI thread
 		if (mHandler == null)
 		{
 			mHandler = new Handler()
@@ -219,7 +223,6 @@ public class ImageLoader
 					holder.path = path;
 					Message message = Message.obtain();
 					message.obj = holder;
-					// Log.e("TAG", "mHandler.sendMessage(message);");
 					mHandler.sendMessage(message);
 					mPoolSemaphore.release();
 				}
@@ -227,17 +230,17 @@ public class ImageLoader
 		}
 
 	}
-	
+
 	/**
-	 * 添加�?��任务
-	 * 
+	 * add task
+	 *
 	 * @param runnable
 	 */
 	private synchronized void addTask(Runnable runnable)
 	{
 		try
 		{
-			// 请求信号量，防止mPoolThreadHander为null
+			//set mPooThreadhander as null by asking sign
 			if (mPoolThreadHander == null)
 				mSemaphore.acquire();
 		} catch (InterruptedException e)
@@ -248,8 +251,8 @@ public class ImageLoader
 	}
 
 	/**
-	 * 取出�?��任务
-	 * 
+	 * get task
+	 *
 	 * @return
 	 */
 	private synchronized Runnable getTask()
@@ -263,10 +266,10 @@ public class ImageLoader
 		}
 		return null;
 	}
-	
+
 	/**
-	 * 单例获得该实例对�?
-	 * 
+	 * singleton gets the instance pair
+	 *
 	 * @return
 	 */
 	public static ImageLoader getInstance(int threadCount, Type type)
@@ -287,8 +290,9 @@ public class ImageLoader
 
 
 	/**
-	 * 根据ImageView获得适当的压缩的宽和�?
-	 * 
+	 * Get the appropriate compression
+	 * width and based on the ImageView
+	 *
 	 * @param imageView
 	 * @return
 	 */
@@ -326,7 +330,8 @@ public class ImageLoader
 	}
 
 	/**
-	 * 从LruCache中获取一张图片，如果不存在就返回null�?
+	 * Get an image from the LruCache
+	 * and return the null if it doesn't exist
 	 */
 	private Bitmap getBitmapFromLruCache(String key)
 	{
@@ -334,8 +339,8 @@ public class ImageLoader
 	}
 
 	/**
-	 * �?ruCache中添加一张图�?
-	 * 
+	 * Add a picture to the LruCache
+	 *
 	 * @param key
 	 * @param bitmap
 	 */
@@ -349,8 +354,9 @@ public class ImageLoader
 	}
 
 	/**
-	 * 计算inSampleSize，用于压缩图�?
-	 * 
+	 * Compute the inSampleSize to
+	 * compress the diagram
+	 *
 	 * @param options
 	 * @param reqWidth
 	 * @param reqHeight
@@ -359,14 +365,14 @@ public class ImageLoader
 	private int calculateInSampleSize(BitmapFactory.Options options,
                                       int reqWidth, int reqHeight)
 	{
-		// 源图片的宽度
+		// The width of the source image
 		int width = options.outWidth;
 		int height = options.outHeight;
 		int inSampleSize = 1;
 
 		if (width > reqWidth && height > reqHeight)
 		{
-			// 计算出实际宽度和目标宽度的比�?
+			// Calculate the ratio of the actual width to the target width
 			int widthRatio = Math.round((float) width / (float) reqWidth);
 			int heightRatio = Math.round((float) width / (float) reqWidth);
 			inSampleSize = Math.max(widthRatio, heightRatio);
@@ -375,8 +381,9 @@ public class ImageLoader
 	}
 
 	/**
-	 * 根据计算的inSampleSize，得到压缩后图片
-	 * 
+	 * According to the calculated inSampleSize,
+	 * the compressed image is obtained
+	 *
 	 * @param pathName
 	 * @param reqWidth
 	 * @param reqHeight
@@ -385,14 +392,16 @@ public class ImageLoader
 	private Bitmap decodeSampledBitmapFromResource(String pathName,
                                                    int reqWidth, int reqHeight)
 	{
-		// 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
+		// First parse set inJustDecodeBounds to true to get the picture size
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
 		BitmapFactory.decodeFile(pathName, options);
-		// 调用上面定义的方法计算inSampleSize�?
+
+		// Call the method defined above to compute the inSampleSize table
 		options.inSampleSize = calculateInSampleSize(options, reqWidth,
 				reqHeight);
-		// 使用获取到的inSampleSize值再次解析图�?
+
+		// Parse the graph again with the obtained inSampleSize value
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
 		
@@ -413,8 +422,8 @@ public class ImageLoader
 	}
 
 	/**
-	 * 反射获得ImageView设置的最大宽度和高度
-	 * 
+	 * Reflection gets the maximum width and height set by the ImageView
+	 *
 	 * @param object
 	 * @param fieldName
 	 * @return

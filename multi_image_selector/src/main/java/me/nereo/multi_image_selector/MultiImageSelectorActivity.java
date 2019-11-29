@@ -19,9 +19,6 @@ import java.util.ArrayList;
 
 /**
  * Multi image selector
- * Created by Nereo on 2015/4/7.
- * Updated by nereo on 2016/1/19.
- * Updated by nereo on 2016/5/18.
  */
 public class MultiImageSelectorActivity extends AppCompatActivity
         implements MultiImageSelectorFragment.Callback{

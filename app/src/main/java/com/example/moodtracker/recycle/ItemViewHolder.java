@@ -1,4 +1,4 @@
-package com.example.moodtracker;
+package com.example.moodtracker.recycle;
 
 import android.graphics.Bitmap;
 
@@ -11,20 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * This returns the image view from the footer
- * @author xuhf0429
+ * This activity handles with item in a list
  */
-
-public class FooterViewHolder extends RecyclerView.ViewHolder {
+public class ItemViewHolder extends RecyclerView.ViewHolder {
     private final SparseArray<View> mViews;
 
-    private View mConvertView;
+    public View mConvertView;
 
     /**
-     * return the footer view
-     * @param itemView item in the footer view
+     * set view for item
+     * @param itemView
      */
-    public FooterViewHolder(@NonNull View itemView) {
+    public ItemViewHolder(@NonNull View itemView) {
         super(itemView);
 
         this.mConvertView = itemView;
@@ -32,10 +30,10 @@ public class FooterViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * get the data of the index
+     * set view
      * @param viewId
-     * @param <T> the data set storing data in memory
-     * @return the data of the indexed object
+     * @param <T>
+     * @return
      */
     public <T extends View> T getView(int viewId) {
         View view = mViews.get(viewId);
@@ -47,7 +45,7 @@ public class FooterViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Get the data of the view
+     * set textview
      * @param viewId
      * @param text
      * @return
@@ -59,7 +57,7 @@ public class FooterViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Returns the data of the view
+     * set image view
      * @param viewId
      * @param drawableId
      * @return
@@ -72,7 +70,7 @@ public class FooterViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     *
+     * set general view of images
      * @param viewId
      * @param bm
      * @return
@@ -84,7 +82,7 @@ public class FooterViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     *
+     * Set image view from url
      * @param viewId
      * @param url
      * @return

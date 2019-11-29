@@ -11,15 +11,11 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * This is the activity that allows the user to see the photograph
- * by clicking on "view picture" button
- *
- * @author xuhf0429
+ * This activity allows user to view his/her
+ * image for the reason of an event
  */
-
 public class ViewPictureActivity extends AppCompatActivity {
-
-    ImageView ivImage;
+    ImageView ivImage; //set image view for images
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -35,11 +31,10 @@ public class ViewPictureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
 
-        final String image = this.getIntent().getStringExtra("image");
-        ivImage = (ImageView) findViewById(R.id.idImage);
+        final String image = this.getIntent().getStringExtra("image"); //get image from intent
+        ivImage = findViewById(R.id.idImage);
 
-        //Glide.with(ViewPictureActivity.this.getApplicationContext()).load(image).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivImage);
-
+        //store images
         new Thread(new Runnable() {
             @Override
             public void run() {

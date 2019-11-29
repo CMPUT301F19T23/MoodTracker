@@ -3,14 +3,19 @@ package me.nereo.multi_image_selector.bean;
 import android.text.TextUtils;
 
 /**
- * 图片实体
- * Created by Nereo on 2015/4/7.
+ * Image Entity
  */
 public class Image {
     public String path;
     public String name;
     public long time;
 
+    /**
+     * get path, name and time for an image
+     * @param path
+     * @param name
+     * @param time
+     */
     public Image(String path, String name, long time){
         this.path = path;
         this.name = name;
