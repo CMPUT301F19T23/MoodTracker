@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "258815783580",
-    "firebase_url": "https://listystore-f3854.firebaseio.com",
-    "project_id": "listystore-f3854",
-    "storage_bucket": "listystore-f3854.appspot.com"
+    "project_number": "165099054831",
+    "firebase_url": "https://moodtracker-6dc20.firebaseio.com",
+    "project_id": "moodtracker-6dc20",
+    "storage_bucket": "moodtracker-6dc20.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:258815783580:android:aeae11b8455396c2c83359",
+        "mobilesdk_app_id": "1:165099054831:android:037dd2ce95a0ed6807dd1a",
         "android_client_info": {
-          "package_name": "com.example.moodtracker"
+          "package_name": "com.cz"
         }
       },
       "oauth_client": [
         {
-          "client_id": "258815783580-ibvtkqc87c1iflrln11b8dfkdmf2ls8u.apps.googleusercontent.com",
+          "client_id": "165099054831-9cb5bqntob2f6u09617sphpgpbclvbe4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDRErFTeeDJmVK_bFiEtsXby_t96cPiF-4"
+          "current_key": "AIzaSyCq1Ge64wS6Keelx4aD7x0JdiipwrLD6IM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "258815783580-ibvtkqc87c1iflrln11b8dfkdmf2ls8u.apps.googleusercontent.com",
+              "client_id": "165099054831-9cb5bqntob2f6u09617sphpgpbclvbe4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -37,27 +37,27 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:258815783580:android:11ffe56b396e85e2c83359",
+        "mobilesdk_app_id": "1:165099054831:android:933036cecc74b3e707dd1a",
         "android_client_info": {
-          "package_name": "com.example.simpleparadox.listycity"
+          "package_name": "com.example.moodtracker"
         }
       },
       "oauth_client": [
         {
-          "client_id": "258815783580-ibvtkqc87c1iflrln11b8dfkdmf2ls8u.apps.googleusercontent.com",
+          "client_id": "165099054831-9cb5bqntob2f6u09617sphpgpbclvbe4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDRErFTeeDJmVK_bFiEtsXby_t96cPiF-4"
+          "current_key": "AIzaSyCq1Ge64wS6Keelx4aD7x0JdiipwrLD6IM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "258815783580-ibvtkqc87c1iflrln11b8dfkdmf2ls8u.apps.googleusercontent.com",
+              "client_id": "165099054831-9cb5bqntob2f6u09617sphpgpbclvbe4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

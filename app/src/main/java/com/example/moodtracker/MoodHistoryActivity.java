@@ -1,71 +1,139 @@
 package com.example.moodtracker;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
 
-
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.moodtracker.bean.ResUtil;
-
-
-
-
-
-
+import com.example.DB.MoodWriter;
+import com.example.moodtracker.recycle.FooterViewHolder;
+import com.example.moodtracker.recycle.HeaderViewHolder;
+import com.example.moodtracker.recycle.ItemViewHolder;
+import com.example.moodtracker.recycle.MyRecycleAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * This activity is to allow the user view his/her history events.
- *
- * @author xuhf0429
- */
 
 public class MoodHistoryActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView1 = null;
 
     private MyRecycleAdapter<MoodEvent> recycleAdapter1 = null;
-    private List<MoodEvent> recycleList1 = new ArrayList<MoodEvent>();
+    private List<MoodEvent> moodEventList = new ArrayList<>();
+    private List<MoodEvent> displayList = new ArrayList<>();
+
+    private EditText searchField;
+
+    //private String userpath;
+    private String email;
+    //private String moodpath;
+
+    public final static String EXTRA_MOOD = "com.example.moodtracker.EXTRA_MOOD";
+
+    //private FirebaseFirestore db;
+
+    private MoodWriter moodWriter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood_history);
 
-        ((TextView) findViewById(R.id.idAdd)).setOnClickListener(new View.OnClickListener() {
+
+        findViewById(R.id.create_mood_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(MoodHistoryActivity.this, AddActivity.class);
+                //intent.putExtra(LoginActivity.EXTRA_USERPATH, userpath);
+                intent.putExtra(LoginActivity.EXTRA_USER, email);
+                startActivity(intent);
+            }
+        });
+        findViewById(R.id.view_on_map_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MoodHistoryActivity.this, MapsActivity.class);
+                intent.putExtra("email", email);
                 startActivity(intent);
             }
         });
 
         initRecycleView1();
+
+        searchField = findViewById(R.id.search_field);
+        searchField.addTextChangedListener(new TextChangedListener<EditText>(searchField) {
+            @Override
+            public void onTextChanged(EditText target, Editable s) {
+                //System.out.println(s.toString());
+                filterMoods(s.toString());
+            }
+        });
+
+        Intent intent = getIntent();
+        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
+        email = intent.getStringExtra(LoginActivity.EXTRA_USER);
+        //moodpath = userpath + email + "/" + "Moods/";
+
+        //db = FirebaseFirestore.getInstance();
+        moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
+        moodWriter.init(email);
+
+        moodWriter.getMoodEvents().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                moodEventList.clear();
+                moodEventList.addAll((ArrayList<MoodEvent>)o);
+                filterMoods(searchField.getText().toString());
+            }
+        });
+
+    }
+
+    public abstract class TextChangedListener<T> implements TextWatcher {
+        // code from: https://stackoverflow.com/questions/11134144/android-edittext-onchange-listener
+        private T target;
+
+        public TextChangedListener(T target) {
+            this.target = target;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            this.onTextChanged(target, s);
+        }
+
+        public abstract void onTextChanged(T target, Editable s);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        recycleList1.clear();
-
-        recycleList1.addAll(ResUtil.list);
-        recycleAdapter1.notifyDataSetChanged();
+        //moodEventList.clear();
+        //moodEventList.addAll(ResUtil.list);
+        //recycleAdapter1.notifyDataSetChanged();
     }
 
     public void initRecycleView1() {
         //1.获取控件
-        mRecyclerView1 = (RecyclerView) findViewById(R.id.recycler_view1);
+        mRecyclerView1 = findViewById(R.id.friends_list);
 
         //2.设置布局方式
         mRecyclerView1.setLayoutManager(new LinearLayoutManager(this));  //线性布局
@@ -76,7 +144,7 @@ public class MoodHistoryActivity extends AppCompatActivity {
         mRecyclerView1.setAdapter(recycleAdapter1 = new MyRecycleAdapter<MoodEvent>(this,
                 -1, null,
                 -1, null,
-                R.layout.item_mood_history, recycleList1) {
+                R.layout.item_mood_history, displayList) {
 
             @Override
             public void convertHeader(HeaderViewHolder helper, Object obj) {
@@ -88,10 +156,10 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
             @Override
             public void convertItem(ItemViewHolder helper, MoodEvent item) {
-                helper.setText(R.id.idName, item.getEventName());
+                helper.setText(R.id.name_field, item.getName() + "\n" + MoodEvent.longFormat.format(item.getDate().getTime()));
 
-                helper.setText(R.id.idImage, item.getEmoji());
-                helper.getView(R.id.idName).setBackgroundColor(item.getColor());
+                helper.setText(R.id.idImage, new String(Character.toChars(item.getEmoji())));
+                helper.getView(R.id.name_field).setBackgroundColor(item.getColor());
                 /*
                 if (item.getEmotion().toLowerCase().equals("angry")) {
                     helper.setText(R.id.idImage, item.getEmoji());
@@ -118,7 +186,9 @@ public class MoodHistoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(MoodHistoryActivity.this, EditActivity.class);
-                intent.putExtra("bean", recycleList1.get(position).getId());
+                //intent.putExtra(LoginActivity.EXTRA_USERPATH, userpath);
+                intent.putExtra(LoginActivity.EXTRA_USER, email);
+                intent.putExtra(EXTRA_MOOD, displayList.get(position).getId() + "");
                 startActivity(intent);
             }
         });
@@ -129,6 +199,24 @@ public class MoodHistoryActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void filterMoods(String text){
+        if(text == null || text.isEmpty()){ displayList.clear(); displayList.addAll(moodEventList); recycleAdapter1.notifyDataSetChanged(); return;}
+
+        displayList.clear();
+
+        for(MoodEvent mood : moodEventList){
+            if(mood.getEmotion().equalsIgnoreCase(text)){
+                //System.out.println("adding match");
+                displayList.add(mood);
+            }
+        }
+
+        //System.out.println(displayList);
+        //System.out.println();
+
+        recycleAdapter1.notifyDataSetChanged();
     }
 
 }

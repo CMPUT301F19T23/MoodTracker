@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context=".FriendEditActivity">
+
+    <RelativeLayout
+        android:id="@+id/idTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/idSense2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:padding="5dp"
+            android:text="hello"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/idMiddle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idTop"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="40dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/idName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:hint="Event name"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/colorGray" />
+
+        <TextView
+            android:id="@+id/idDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:hint="2019-01-01"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/colorGray" />
+
+        <TextView
+            android:id="@+id/idTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:hint="16:35"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/colorGray" />
+
+        <TextView
+            android:id="@+id/idSense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:hint="16:35"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/colorGray" />
+
+        <TextView
+            android:id="@+id/idSituation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:hint="16:35"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/colorGray" />
+
+        <TextView
+            android:id="@+id/idReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/text_border"
+            android:gravity="center"
+            android:hint="16:35"
+            android:lines="3"
+            android:maxLines="3"
+            android:padding="10dp"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/colorGray" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/idViewImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/buttonstyle"
+                android:padding="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="View Picture"
+                android:textColor="#000000"
+                android:textSize="17sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

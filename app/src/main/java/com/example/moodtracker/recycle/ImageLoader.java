@@ -1,4 +1,4 @@
-package com.example.moodtracker;
+package com.example.moodtracker.recycle;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

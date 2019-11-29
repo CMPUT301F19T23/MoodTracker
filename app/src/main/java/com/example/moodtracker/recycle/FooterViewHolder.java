@@ -1,4 +1,4 @@
-package com.example.moodtracker;
+package com.example.moodtracker.recycle;
 
 import android.graphics.Bitmap;
 
@@ -10,12 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class HeaderViewHolder extends RecyclerView.ViewHolder {
+public class FooterViewHolder extends RecyclerView.ViewHolder {
     private final SparseArray<View> mViews;
 
     private View mConvertView;
 
-    public HeaderViewHolder(@NonNull View itemView) {
+    public FooterViewHolder(@NonNull View itemView) {
         super(itemView);
 
         this.mConvertView = itemView;

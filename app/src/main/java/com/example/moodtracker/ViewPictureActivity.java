@@ -10,15 +10,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-/**
- * This is the activity that allows the user to see the photograph
- * by clicking on "view picture" button
- *
- * @author xuhf0429
- */
-
 public class ViewPictureActivity extends AppCompatActivity {
-
     ImageView ivImage;
 
     private Handler handler = new Handler() {

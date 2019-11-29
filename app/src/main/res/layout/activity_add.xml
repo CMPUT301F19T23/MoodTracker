@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    tools:context=".MainActivity">
+    tools:context=".AddActivity">
 
     <CheckBox
         android:id="@+id/idAttach"
@@ -15,7 +15,9 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/buttonstyle"
         android:padding="5dp"
-        android:text="Attach location" />
+        android:text="Attach location"
+        android:checked="false" />
+
 
     <LinearLayout
         android:id="@+id/idMiddle"
@@ -29,7 +31,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/idName"
+            android:id="@+id/name_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -41,7 +43,7 @@
             android:textColorHint="@color/colorGray" />
 
         <TextView
-            android:id="@+id/idDate"
+            android:id="@+id/date_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -53,7 +55,7 @@
             android:textColorHint="@color/colorGray" />
 
         <TextView
-            android:id="@+id/idTime"
+            android:id="@+id/time_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -65,7 +67,7 @@
             android:textColorHint="@color/colorGray" />
 
         <Spinner
-            android:id="@+id/idSense"
+            android:id="@+id/mood_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -74,7 +76,7 @@
             android:spinnerMode="dialog" />
 
         <Spinner
-            android:id="@+id/idSituation"
+            android:id="@+id/situation_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -83,7 +85,7 @@
             android:spinnerMode="dialog" />
 
         <TextView
-            android:id="@+id/idOption"
+            android:id="@+id/option_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -99,7 +101,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/idConfirm"
+        android:id="@+id/confirm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/idMiddle"
@@ -113,5 +115,6 @@
         android:text="Confirm Adding"
         android:textColor="#000000"
         android:textSize="17sp" />
+
 
 </RelativeLayout>

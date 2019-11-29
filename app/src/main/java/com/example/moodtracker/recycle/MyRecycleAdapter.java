@@ -1,4 +1,4 @@
-package com.example.moodtracker;
+package com.example.moodtracker.recycle;
 
 import android.content.Context;
 
@@ -10,10 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-/**
- * This is to set the layout of each a screen.
- * @param <T> the datas into memory
- */
 public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener, View.OnLongClickListener {
 
     protected Context context;
@@ -96,6 +92,7 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
 
     private void bindViewForFooter(RecyclerView.ViewHolder holder) {
         FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
+        //footerViewHolder.tv_footer.setText("啊哈哈，这不是无底洞......");
 
         convertFooter(footerViewHolder, foot);
     }
@@ -119,7 +116,7 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
     @Override
     public int getItemCount() {
         //return mDatas.size();
-        return mDatas == null ? (iHeader + iFooter) : mDatas.size() + (iHeader + iFooter);
+        return mDatas == null ? (iHeader + iFooter) : mDatas.size() + (iHeader + iFooter); //控制position的数目，因为加了一头一尾，所以这里的总数是我的新闻数+2
     }
 
     protected T getItem(int position) {
@@ -173,6 +170,7 @@ public abstract class MyRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerV
             mOnLongClickListener.onLongClick(view, (int) view.getTag());
         }
 
+        // 消耗事件，否则长按逻辑执行完成后还会进入点击事件的逻辑处理
         return true;
     }
 
