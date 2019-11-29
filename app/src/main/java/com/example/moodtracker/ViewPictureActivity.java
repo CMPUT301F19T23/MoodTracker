@@ -28,7 +28,7 @@ public class ViewPictureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_picture);
 
         final String image = this.getIntent().getStringExtra("image");
-        ivImage = (ImageView) findViewById(R.id.idImage);
+        ivImage = findViewById(R.id.idImage);
 
         //Glide.with(ViewPictureActivity.this.getApplicationContext()).load(image).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivImage);
 
