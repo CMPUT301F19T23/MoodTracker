@@ -22,12 +22,13 @@ public class MoodEventTest {
     void testSetDate(){
 
         MoodEvent moodEvent = mockMoodEvent();
+        assertEquals(0,moodEvent.getDate().compareTo(Calendar.getInstance()));
 
 
         moodEvent.setDate(2015, 01, 19, 06, 32);
-        Calendar cal = Calendar.getInstance();
-        cal.set(2015, 01, 19, 06,32);
-        assertEquals(0, moodEvent.getDate().compareTo(cal));
+
+
+        assertEquals(-1, moodEvent.getDate().compareTo(Calendar.getInstance()));
     }
 
 
