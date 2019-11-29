@@ -24,7 +24,8 @@ public class RegisterActivity extends AppCompatActivity {
     private String email;
     private String username;
     private String password;
-    private int failCount = 0;
+    private int writerFailCount = 0;
+    private int registerFailCount = 0;
 
     private RegisterManager registerManager;
     private UserWriter userWriter;
@@ -60,16 +61,16 @@ public class RegisterActivity extends AppCompatActivity {
                 Boolean b = (Boolean)o;
                 if(b.booleanValue()){
                     if(!userWriter.passDueToSearch()){
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    intent.putExtra(si_EMAIL, email);
-                    intent.putExtra(si_PASSWORD, password);
-                    startActivity(intent);
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        intent.putExtra(si_EMAIL, email);
+                        intent.putExtra(si_PASSWORD, password);
+                        startActivity(intent);
                     }else{
                         registerManager.registerParticipant(email, password);
                     }
                 }
                 else{
-                    if(failCount >= 1){
+                    if(writerFailCount >= 1){
                         // a bit janky, but have to do because false is returned on create
 
                         if(userWriter.failDueToNotUnique()){
@@ -78,7 +79,23 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "Couldn't register you. Check your connection.", Toast.LENGTH_SHORT).show();
                         }
                     }
-                    ++failCount;
+                    ++writerFailCount;
+                }
+            }
+        });
+
+
+        registerManager.getSuccess().observe(this, new Observer(){
+            @Override
+            public void onChanged(Object o) {
+                Boolean b = (Boolean)o;
+                if(b.booleanValue()){
+
+                }else{
+                    if(registerFailCount >= 1){
+                        Toast.makeText(RegisterActivity.this, "Failed to create account. An account with that email may already exist.", Toast.LENGTH_SHORT).show();
+                    }
+                    ++registerFailCount;
                 }
             }
         });
