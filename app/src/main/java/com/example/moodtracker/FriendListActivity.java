@@ -139,19 +139,6 @@ public class FriendListActivity extends AppCompatActivity {
         initRecycleView1();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        //recycleList1.clear();
-
-        //friendRequestNumberDisplay.setText(String.valueOf(DataUtil.getAskByUsername(username)));
-
-        // TODO updates friend list
-        //DataUtil.getFriends(username, recycleList1);
-        //recycleAdapter1.notifyDataSetChanged();
-    }
-
     public void initRecycleView1() {
         //1.获取控件
         mRecyclerView1 = findViewById(R.id.friends_list);

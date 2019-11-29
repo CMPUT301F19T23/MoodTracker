@@ -46,11 +46,8 @@ public class AddActivity extends AppCompatActivity {
     private String reason = "";
     private String image = "";
 
-    //private String userpath;
     private String email;
-    //private String moodpath;
     private MoodWriter moodWriter;
-    //private FirebaseFirestore db;
 
     private int failCount = 0;
 
@@ -59,21 +56,10 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
-        //long start = System.currentTimeMillis();
-
         Intent intent = getIntent();
-        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
         email = intent.getStringExtra(LoginActivity.EXTRA_USER);
-        //moodpath = userpath + email + "/" + "Moods/";
         moodWriter =  ViewModelProviders.of(this).get(MoodWriter.class);
         moodWriter.init(email);
-
-        //db = FirebaseFirestore.getInstance();
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 0 " + (System.currentTimeMillis()-start)/1000.0);
-
-
-
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 1 " + (System.currentTimeMillis()-start)/1000.0);
 
         cal = Calendar.getInstance();
 
@@ -86,18 +72,13 @@ public class AddActivity extends AppCompatActivity {
         dateField.setText(MoodEvent.dayFormat.format(cal.getTime()));
         timeField.setText(MoodEvent.timeFormat.format(cal.getTime()));
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 2 " + (System.currentTimeMillis()-start)/1000.0);
-
         initSpinnerData();
-
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 3 " + (System.currentTimeMillis()-start)/1000.0);
 
         moodSpinner = findViewById(R.id.mood_spinner);
         moodSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
-                    //String keshi = moodList.get(position);
                     s1 = position;
                 }
             }
@@ -121,13 +102,12 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 4 " + (System.currentTimeMillis()-start)/1000.0);
-
 
         // 声明一个ArrayAdapter用于存放简单数据
         moodAdapter = new MyAdapter<>(
                 AddActivity.this, android.R.layout.simple_spinner_item,
                 moodList);
+
         // 把定义好的Adapter设定到spinner中
         moodSpinner.setAdapter(moodAdapter);
         moodSpinner.setSelection(moodList.size() - 1, true);
@@ -140,7 +120,6 @@ public class AddActivity extends AppCompatActivity {
         situationSpinner.setAdapter(situationAdapter);
         situationSpinner.setSelection(situationList.size() - 1, true);
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 5 " + (System.currentTimeMillis()-start)/1000.0);
 
         findViewById(R.id.option_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,8 +129,6 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 6 " + (System.currentTimeMillis()-start)/1000.0);
-
         findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +136,6 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 7 " + (System.currentTimeMillis()-start)/1000.0);
         moodWriter.getSuccess().observe(this, new Observer(){
             @Override
             public void onChanged(Object o) {
@@ -175,8 +151,7 @@ public class AddActivity extends AppCompatActivity {
                 }
             }
         });
-        //System.out.println("ADD ACTIVITY ON CREATE MARKER 9 " + (System.currentTimeMillis()-start)/1000.0);
-        //System.out.println("ADD ACTIVITY ON CREATE FINAL MARKER " + (System.currentTimeMillis()-start)/1000.0);
+
     }
 
     class MyAdapter<T> extends ArrayAdapter {
@@ -239,43 +214,6 @@ public class AddActivity extends AppCompatActivity {
         }
 
         moodWriter.createAndWriteMood(name, cal, situationList.get(s2), moodList.get(s1), reason);
-        //TODO add next lines to createANdWriteMood
-        //me.setAttach(attach);
-        //me.setImage(image);
-
-
-        //writeMoodToDB(me);
-
-        //ResUtil.list.add(me);
-
-        //finish();
     }
-
-//    private void writeMoodToDB(MoodEvent mood){
-//        HashMap<String, String> moodData = new HashMap<>();
-//        moodData.put("mood_name", mood.getName());
-//        moodData.put("mood_date", MoodEvent.longFormat.format(mood.getDate().getTime()));
-//        moodData.put("mood_situation", mood.getSituation()+"");
-//        moodData.put("mood_reason_str", mood.getReasonString());
-//        moodData.put("mood_emotion", mood.getEmotion());
-//
-//        db.document(moodpath + mood.getId())
-//                .set(moodData)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "Data addition successful");
-//                        Toast.makeText(AddActivity.this, "Data addition successful.", Toast.LENGTH_SHORT).show();
-//                        finish();
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.d(TAG, "Data addition failed " + e.toString());
-//                        Toast.makeText(AddActivity.this, "Data addition failed", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
 
 }

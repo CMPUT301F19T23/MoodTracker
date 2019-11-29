@@ -54,14 +54,12 @@ public class EditActivity extends AppCompatActivity {
 
     private MoodEvent selectedMoodEvent = null;
 
-    //private String userpath;
     private String email;
-    //private String moodpath;
+
     private long id;
 
     private RelativeLayout relativeLayout;
 
-    //private FirebaseFirestore db;
 
     private MoodWriter moodWriter;
 
@@ -74,11 +72,9 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         Intent intent = getIntent();
-        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
-        email = intent.getStringExtra(LoginActivity.EXTRA_USER);
-        //moodpath = userpath + email + "/" + "Moods/";
 
-        //db = FirebaseFirestore.getInstance();
+        email = intent.getStringExtra(LoginActivity.EXTRA_USER);
+
         moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
         moodWriter.init(email);
 
@@ -125,14 +121,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-        //selectedMoodEvent = (MoodEvent) this.getIntent().getSerializableExtra("selectedMoodEvent");
         id = Long.parseLong(intent.getStringExtra(MoodHistoryActivity.EXTRA_MOOD));
-//        for (int i = 0; i < ResUtil.list.size(); i++) {
-//            if (ResUtil.list.get(i).getId() == id) {
-//                selectedMoodEvent = ResUtil.list.get(i);
-//                break;
-//            }
-//        }
 
         moodWriter.getMoodEvent(id);
 

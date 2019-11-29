@@ -90,7 +90,6 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
                 recycleList1.clear();
                 recycleList1.addAll((ArrayList<MoodEvent>)o);
                 recycleAdapter1.notifyDataSetChanged();
-                //System.out.println("DATA SET CHANGING");
             }
         });
 
@@ -102,16 +101,6 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
         });
 
         initRecycleView1();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//
-//        recycleList1.clear();
-//
-//        DataUtil.getAll(friendUsername, recycleList1);
-//        recycleAdapter1.notifyDataSetChanged();
     }
 
     public void initRecycleView1() {

@@ -34,13 +34,9 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
     private EditText searchField;
 
-    //private String userpath;
     private String email;
-    //private String moodpath;
 
     public final static String EXTRA_MOOD = "com.example.moodtracker.EXTRA_MOOD";
-
-    //private FirebaseFirestore db;
 
     private MoodWriter moodWriter;
 
@@ -55,7 +51,6 @@ public class MoodHistoryActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(MoodHistoryActivity.this, AddActivity.class);
-                //intent.putExtra(LoginActivity.EXTRA_USERPATH, userpath);
                 intent.putExtra(LoginActivity.EXTRA_USER, email);
                 startActivity(intent);
             }
@@ -67,17 +62,13 @@ public class MoodHistoryActivity extends AppCompatActivity {
         searchField.addTextChangedListener(new TextChangedListener<EditText>(searchField) {
             @Override
             public void onTextChanged(EditText target, Editable s) {
-                //System.out.println(s.toString());
                 filterMoods(s.toString());
             }
         });
 
         Intent intent = getIntent();
-        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
         email = intent.getStringExtra(LoginActivity.EXTRA_USER);
-        //moodpath = userpath + email + "/" + "Moods/";
 
-        //db = FirebaseFirestore.getInstance();
         moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
         moodWriter.init(email);
 
@@ -152,25 +143,6 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
                 helper.setText(R.id.idImage, new String(Character.toChars(item.getEmoji())));
                 helper.getView(R.id.name_field).setBackgroundColor(item.getColor());
-                /*
-                if (item.getEmotion().toLowerCase().equals("angry")) {
-                    helper.setText(R.id.idImage, item.getEmoji());
-                    helper.getView(R.id.idName).setBackgroundColor(item.getColor());
-
-                } else if (item.getEmotion().toLowerCase().equals("happy")) {
-                    helper.setText(R.id.idImage, item.getEmoji());
-                    helper.getView(R.id.idName).setBackgroundColor(item.getColor());
-
-                } else if (item.getEmotion().toLowerCase().equals("sad")) {
-                    helper.setText(R.id.idImage, item.getEmoji());
-                    helper.getView(R.id.idName).setBackgroundColor(item.getColor());
-
-                } else if (item.getEmotion().toLowerCase().equals("neutral")) {
-                    helper.setText(R.id.idImage, item.getEmoji());
-                    helper.getView(R.id.idName).setBackgroundColor(item.getColor());
-
-                }
-                */
             }
         });
 
@@ -178,7 +150,6 @@ public class MoodHistoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(MoodHistoryActivity.this, EditActivity.class);
-                //intent.putExtra(LoginActivity.EXTRA_USERPATH, userpath);
                 intent.putExtra(LoginActivity.EXTRA_USER, email);
                 intent.putExtra(EXTRA_MOOD, displayList.get(position).getId() + "");
                 startActivity(intent);
@@ -200,13 +171,9 @@ public class MoodHistoryActivity extends AppCompatActivity {
 
         for(MoodEvent mood : moodEventList){
             if(mood.getEmotion().equalsIgnoreCase(text)){
-                //System.out.println("adding match");
                 displayList.add(mood);
             }
         }
-
-        //System.out.println(displayList);
-        //System.out.println();
 
         recycleAdapter1.notifyDataSetChanged();
     }
