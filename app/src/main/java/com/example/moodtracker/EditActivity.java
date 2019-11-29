@@ -54,9 +54,7 @@ public class EditActivity extends AppCompatActivity {
 
     private MoodEvent selectedMoodEvent = null;
 
-    //private String userpath;
     private String email;
-    //private String moodpath;
     private long id;
 
     private RelativeLayout relativeLayout;
@@ -77,11 +75,8 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         Intent intent = getIntent();
-        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
         email = intent.getStringExtra(LoginActivity.EXTRA_USER);
-        //moodpath = userpath + email + "/" + "Moods/";
-
-        //db = FirebaseFirestore.getInstance();
+        
         moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
         moodWriter.init(email);
 
@@ -128,14 +123,8 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-        //selectedMoodEvent = (MoodEvent) this.getIntent().getSerializableExtra("selectedMoodEvent");
         id = Long.parseLong(intent.getStringExtra(MoodHistoryActivity.EXTRA_MOOD));
-//        for (int i = 0; i < ResUtil.list.size(); i++) {
-//            if (ResUtil.list.get(i).getId() == id) {
-//                selectedMoodEvent = ResUtil.list.get(i);
-//                break;
-//            }
-//        }
+
 
         moodWriter.getMoodEvent(id);
 
@@ -206,26 +195,6 @@ public class EditActivity extends AppCompatActivity {
 
         tvSense2.setText(new String(Character.toChars(selectedMoodEvent.getEmoji())));
         tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        /*
-        if (selectedMoodEvent.getEmotion().toLowerCase().equals(EmotionData.ANGRY_DATA)) {
-            tvSense2.setText(selectedMoodEvent.getEmoji());
-            tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        } else if (selectedMoodEvent.getEmotion().toLowerCase().equals(EmotionData.HAPPY_DATA)) {
-            tvSense2.setText(selectedMoodEvent.getEmoji());
-            tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        } else if (selectedMoodEvent.getEmotion().toLowerCase().equals(EmotionData.SAD_DATA)) {
-            tvSense2.setText(selectedMoodEvent.getEmoji());
-            tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        } else if (selectedMoodEvent.getEmotion().toLowerCase().equals(EmotionData.NEUTRAL_DATA)) {
-            tvSense2.setText(selectedMoodEvent.getEmoji());
-            tvSense2.setBackgroundColor(selectedMoodEvent.getColor());
-
-        }
-        */
     }
 
     class MyAdapter<T> extends ArrayAdapter {
@@ -246,7 +215,6 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0) {
-                    //String keshi = moodList.get(position);
                     moodPos = position;
                     sens22();
 
@@ -331,14 +299,6 @@ public class EditActivity extends AppCompatActivity {
         findViewById(R.id.idChangeImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                MultiImageSelector.create()
-                        .showCamera(false)
-                        //.count(IMAGE_SIZE - originImages.size() + 1)
-                        .count(1)
-                        .multi()
-                        .start(EditActivity.this, REQUEST_IMAGE_PHOTO);
-                        */
 
                 Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, REQUEST_IMAGE_PHOTO);
@@ -382,20 +342,6 @@ public class EditActivity extends AppCompatActivity {
 
                 moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason, latitude, longitude);
 
-//                for (int i = 0; i < ResUtil.list.size(); i++) {
-//                    if (ResUtil.list.get(i).getId() == selectedMoodEvent.getId()) {
-//                        MoodEvent mood = ResUtil.list.get(i);
-//                        mood.setAttach(attach);
-//                        mood.setName(name);
-//                        mood.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-//                        mood.setEmotion(moodList.get(moodPos));
-//                        mood.setSituation(MoodEvent.situationToInt(situationList.get(sitPos)));
-//                        mood.setReasonString(reason);
-//                        mood.setImage(image);
-//                        updateMood(mood);
-//                        break;
-//                    }
-//                }
             }
         });
 
