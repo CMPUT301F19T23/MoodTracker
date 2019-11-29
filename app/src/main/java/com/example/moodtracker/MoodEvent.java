@@ -1,5 +1,7 @@
 package com.example.moodtracker;
 
+import android.location.Location;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,6 +36,8 @@ public class MoodEvent implements Serializable{
     private int situation;
     private String image;
     private long id;
+    private double latitude;
+    private double longitude;
 
     final public static EmotionData[] MOOD_DATA = {ANGRY_DATA, HAPPY_DATA, SAD_DATA, NEUTRAL_DATA};
 
@@ -44,17 +48,19 @@ public class MoodEvent implements Serializable{
         this.date = d;
         this.setEmotion(emotion);
         this.reasonString = "";
-        this.image = "";
     }
 
-    public MoodEvent(String name, long id, int situation, Calendar d, String emotion, String rstr, String img){
+
+    public MoodEvent(String name, long id, int situation, Calendar d, String emotion, String rstr, String image, double lat, double lon){
         this.name = name;
         this.id = id;
         this.situation = situation;
         this.date = d;
         this.setEmotion(emotion);
         this.reasonString = rstr;
-        this.image = img;
+        image = image;
+        this.latitude = lat;
+        this.longitude = lon;
     }
 
     /**
@@ -79,7 +85,7 @@ public class MoodEvent implements Serializable{
      * @return
      *          the date Calendar object
      */
-    public Calendar getDate(){
+    public Calendar getDate(){ 
         return this.date;
     }
 
@@ -191,6 +197,14 @@ public class MoodEvent implements Serializable{
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public static int situationToInt(String situation){

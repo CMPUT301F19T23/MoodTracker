@@ -55,6 +55,14 @@ public class MoodHistoryActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        findViewById(R.id.view_on_map_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MoodHistoryActivity.this, MapsActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            }
+        });
 
         initRecycleView1();
 
@@ -108,10 +116,6 @@ public class MoodHistoryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        //moodEventList.clear();
-        //moodEventList.addAll(ResUtil.list);
-        //recycleAdapter1.notifyDataSetChanged();
     }
 
     public void initRecycleView1() {

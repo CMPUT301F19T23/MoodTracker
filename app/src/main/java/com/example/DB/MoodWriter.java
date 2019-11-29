@@ -113,8 +113,8 @@ public class MoodWriter extends DBCommunicator {
      * @return
      *      the created MoodEvent
      */
-    public MoodEvent createMoodEvent(String name, Calendar cal, String situation, String emotion, String reason, String image){
-        return new MoodEvent(name, Calendar.getInstance().getTimeInMillis(), MoodEvent.situationToInt(situation), cal, emotion, reason, image);
+    public MoodEvent createMoodEvent(String name, Calendar cal, String situation, String emotion, String reason, String image, double lat, double lon){
+        return new MoodEvent(name, Calendar.getInstance().getTimeInMillis(), MoodEvent.situationToInt(situation), cal, emotion, reason, image, lat, lon);
     }
 
     /**
@@ -154,8 +154,14 @@ public class MoodWriter extends DBCommunicator {
 
          if(map.get("mood_image") == null){return null;}
          String image = (String) map.get("mood_image");
+        
+        if(map.get("mood_latitiude") == null){return null;}
+         double lat = Double.parseDouble((String) map.get("mood_latitude"));
+        
+        if(map.get("mood_longitude") == null){return null;}
+         double lon = Double.parseDouble((String) map.get("mood_longitude"));
             
-         return new MoodEvent(name, id, situation, date, emotion, reason, image);
+         return new MoodEvent(name, id, situation, date, emotion, reason, image, lat, lon);
     }
 
 
@@ -186,8 +192,8 @@ public class MoodWriter extends DBCommunicator {
      * @param image
      *      String representing URL of this MoodEvent's attached image
      */
-    public void createAndWriteMood(String name, Calendar cal, String situation, String emotion, String reason, String image){
-         MoodEvent moodEvent = createMoodEvent(name, cal, situation, emotion, reason, image);
+    public void createAndWriteMood(String name, Calendar cal, String situation, String emotion, String reason, String image, double lat, double lon){
+         MoodEvent moodEvent = createMoodEvent(name, cal, situation, emotion, reason, image, lat, lon);
          HashMap<String, String> moodData = new HashMap<>();
          moodData.put("mood_name", moodEvent.getName());
          moodData.put("mood_date", MoodEvent.longFormat.format(moodEvent.getDate().getTime()));
@@ -195,6 +201,8 @@ public class MoodWriter extends DBCommunicator {
          moodData.put("mood_reason_str", moodEvent.getReasonString());
          moodData.put("mood_emotion", moodEvent.getEmotion());
          moodData.put("mood_image", moodEvent.getImage());
+         moodData.put("mood_latitude", moodEvent.getLatitude());
+         moodData.put("mood_longitude", moodEvent.getLongitude());
 
         setData(moodpath + moodEvent.getId(), moodData);
     }
@@ -219,7 +227,7 @@ public class MoodWriter extends DBCommunicator {
      * @return
      *      the created MoodEvent
      */
-    public void updateMood(String name, long id, String situation, Calendar cal, String emotion, String reason, String image){
+    public void updateMood(String name, long id, String situation, Calendar cal, String emotion, String reason, String image, double lat, double lon){
         MoodEvent moodEvent = new MoodEvent(name, id, MoodEvent.situationToInt(situation), cal, emotion, reason, image);
         HashMap<String, String> moodData = new HashMap<>();
         moodData.put("mood_name", moodEvent.getName());
@@ -228,6 +236,8 @@ public class MoodWriter extends DBCommunicator {
         moodData.put("mood_reason_str", moodEvent.getReasonString());
         moodData.put("mood_emotion", moodEvent.getEmotion());
         moodData.put("mood_image", moodEvent.getImage());
+        moodData.put("mood_latitude", moodEvent.getLatitude());
+        moodData.put("mood_longitude", moodEvent.getLongitude());
 
         setData(moodpath + moodEvent.getId(), moodData);
     }

@@ -3,10 +3,16 @@ package com.example.moodtracker;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 
-
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +33,9 @@ import com.example.DB.MoodWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -45,11 +54,18 @@ public class AddActivity extends AppCompatActivity {
 
     private String reason = "";
     private String image = "";
-
     private String email;
     private MoodWriter moodWriter;
 
     private int failCount = 0;
+
+    // for map get current location
+    private double latitude;
+    private double longitude;
+    private Location mlocation;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +87,7 @@ public class AddActivity extends AppCompatActivity {
 
         dateField.setText(MoodEvent.dayFormat.format(cal.getTime()));
         timeField.setText(MoodEvent.timeFormat.format(cal.getTime()));
-
+        
         initSpinnerData();
 
         moodSpinner = findViewById(R.id.mood_spinner);
@@ -102,12 +118,10 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
-
         // 声明一个ArrayAdapter用于存放简单数据
         moodAdapter = new MyAdapter<>(
                 AddActivity.this, android.R.layout.simple_spinner_item,
                 moodList);
-
         // 把定义好的Adapter设定到spinner中
         moodSpinner.setAdapter(moodAdapter);
         moodSpinner.setSelection(moodList.size() - 1, true);
@@ -120,13 +134,10 @@ public class AddActivity extends AppCompatActivity {
         situationSpinner.setAdapter(situationAdapter);
         situationSpinner.setSelection(situationList.size() - 1, true);
 
-
         findViewById(R.id.option_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddActivity.this, OptionActivity.class);
-                intent.putExtra("image", image);
-                intent.putExtra("reason", reason);
                 startActivityForResult(intent, 1001);
             }
         });
@@ -154,7 +165,75 @@ public class AddActivity extends AppCompatActivity {
             }
         });
 
+
+        //to retrieve a LocationManager for controlling location updates.
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cb.isChecked()){
+                    getLocation();
+
+                    Toast.makeText(AddActivity.this, "Latitude: " +latitude
+                            + ", Longitude "+longitude, Toast.LENGTH_SHORT).show();
+                    Log.d("Latitude", latitude+"");
+                    Log.d("Longitude", longitude+"");
+                }
+            }
+
+        });
+
     }
+
+    private void getLocation() {
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                mlocation = location;
+                latitude = mlocation.getLatitude();
+                longitude = mlocation.getLongitude();
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+                if (checkCallingOrSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(AddActivity.this, "Need GPS Permission!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                latitude = locationManager.getLastKnownLocation(s).getLongitude();
+                longitude = locationManager.getLastKnownLocation(s).getLatitude();
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+                return;
+            }
+        };
+        getCurrentLocation();
+    }
+
+    public void getCurrentLocation() {
+        // if no permission
+        if (checkCallingOrSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(AddActivity.this, "Need GPS Permission!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // TODO: check network permission
+        Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        latitude = currentLocation.getLatitude();
+        longitude = currentLocation.getLongitude();
+        Log.d("getCurrent_latitude", latitude+"");
+        Log.d("getCurrent_longitude", longitude+"");
+
+        // get the location every 2 seconds
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 8, locationListener);
+    }
+
 
     class MyAdapter<T> extends ArrayAdapter {
         public MyAdapter(@NonNull Context context, int resource, @NonNull List<T> objects) {
@@ -199,6 +278,9 @@ public class AddActivity extends AppCompatActivity {
         boolean attach = false;
         if (cb.isChecked()) {
             attach = true;
+        }else{
+            latitude = 0;
+            longitude = 0;
         }
 
         String name = nameField.getEditableText().toString();
@@ -215,7 +297,7 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-        moodWriter.createAndWriteMood(name, cal, situationList.get(s2), moodList.get(s1), reason, image);
+        moodWriter.createAndWriteMood(name, cal, situationList.get(s2), moodList.get(s1), reason, image, latitude, longitude);
     }
 
 }

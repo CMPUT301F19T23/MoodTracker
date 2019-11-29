@@ -129,14 +129,12 @@ public class FriendListActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.view_on_map_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ;
-            }
-        });
-
         initRecycleView1();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void initRecycleView1() {

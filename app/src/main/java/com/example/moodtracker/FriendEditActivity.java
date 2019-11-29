@@ -105,7 +105,6 @@ public class FriendEditActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void sens2() {
