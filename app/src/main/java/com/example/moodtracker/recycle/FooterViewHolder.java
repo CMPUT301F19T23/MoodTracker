@@ -10,6 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * This handles with the footer of
+ * the view of activities
+ */
+
 public class FooterViewHolder extends RecyclerView.ViewHolder {
     private final SparseArray<View> mViews;
 

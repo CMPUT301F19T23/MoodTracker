@@ -10,6 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * This activity handles with item in a list
+ */
+
 public class ItemViewHolder extends RecyclerView.ViewHolder {
     private final SparseArray<View> mViews;
 

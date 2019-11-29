@@ -10,6 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * This handles with the header of
+ * the view of activities
+ */
 public class HeaderViewHolder extends RecyclerView.ViewHolder {
     private final SparseArray<View> mViews;
 
