@@ -74,17 +74,9 @@ public class FriendAcceptActivity extends AppCompatActivity {
             }
         });
 
-
-        //final List<String> list = DataUtil.getAskListByUsername(username);
-
-
         findViewById(R.id.view_following_request_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                DataUtil.insertFriendAccept(username, list.get(0));
-//                DataUtil.insertFriendAccept(list.get(0), username);
-//                DataUtil.deleteFriendAsk(username, list.get(0));
-//                finish();
                 if(friendUsername.equals("")){
                 }else{
                     adding = true;
@@ -97,8 +89,6 @@ public class FriendAcceptActivity extends AppCompatActivity {
         findViewById(R.id.idDecline).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                DataUtil.deleteFriendAsk(username, list.get(0));
-//                finish();
                 if(friendUsername.equals("")){
                 }else{
                     adding = false;
