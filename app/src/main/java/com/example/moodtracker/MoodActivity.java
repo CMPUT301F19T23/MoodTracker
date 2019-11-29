@@ -3,67 +3,52 @@ package com.example.moodtracker;
 import android.content.Intent;
 import android.os.Bundle;
 
+
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
-import com.example.DB.UserWriter;
-
-import java.util.HashMap;
+import com.google.android.gms.tasks.OnCompleteListener;	
+import com.google.android.gms.tasks.Task;	
+import com.google.firebase.firestore.DocumentReference;	
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MoodActivity extends AppCompatActivity {
     TextView viewProfileButton;
     TextView logoutButton;
     TextView followingButton;	
     TextView  username_text_view;	
-    String userpath, email, username;
-    private UserWriter userWriter;
-    private HashMap<String, String>  map;
-    private int failCount = 0;
+    String userpath, email;
+    private FirebaseFirestore db;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mood);
-
         viewProfileButton = findViewById(R.id.view_profile_button);
         logoutButton = findViewById(R.id.log_out_button);
         followingButton = findViewById(R.id.view_friends_mood_button);
         username_text_view = findViewById(R.id.hello_username_text_view);	
-
+        db = FirebaseFirestore.getInstance();
 
         Intent oldIntent = getIntent();	
         userpath = oldIntent.getStringExtra(LoginActivity.EXTRA_USERPATH);	
         email = oldIntent.getStringExtra(LoginActivity.EXTRA_USER);
-
-        userWriter = ViewModelProviders.of(this).get(UserWriter.class);
-        userWriter.getUsernameFromId(email);
-
-        userWriter.getReturnVal().observe(this, new Observer(){
+        DocumentReference docRef = db.document(userpath + email);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onChanged(Object o) {
-                map = (HashMap)o;
-                username = map.get("userName");
-                username_text_view.setText(username);
-            }
-        });
-
-        userWriter.getSuccess().observe(this, new Observer(){
-            @Override
-            public void onChanged(Object o) {
-                Boolean b = (Boolean)o;
-                if(b.booleanValue()){
-
-                }else{
-                    if(failCount >= 1){
-                        Toast.makeText(MoodActivity.this, "Couldn't find that user. Check your connection.", Toast.LENGTH_SHORT).show();
-                        finish();
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        Log.i("LOGGER", "First " + document.getString("first"));
+                        String username_from_login = document.getString("userName");
+                        username_text_view.setText(username_from_login);
                     }
-                    ++failCount;
                 }
             }
         });
@@ -91,7 +76,7 @@ public class MoodActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 Intent intent = new Intent(MoodActivity.this, FriendListActivity.class);
-                intent.putExtra("username", username);
+                intent.putExtra("username", username_text_view.getText().toString());
                 intent.putExtra("email", email);
                 startActivity(intent);
             }

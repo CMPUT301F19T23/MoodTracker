@@ -15,16 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import static android.content.ContentValues.TAG;
 
-/**
- * The AuthCommunicator class holds several methods designed to deal with the logging in and Users of the database.
- *
- * Usage: the class extending AuthCommunicator needs to wrap one or more of the query methods and call it (probably publicly)
- * These methods create an Asynchronous object and execute it. In these objects, the actual Firebase queries are run.
- * At certain points inside the async objects, usually on success or failure of the query, mid-query methods are called.
- * These can and often should be overriden to more accurately log relevant information, and modify data as required by your
- * program. Asynchronous objects run in the background so as not to slow down the UI thread. Because of this, the mid-query
- * methods update a LiveData object representing the success of the operation.
- */
 public abstract class AuthCommunicator extends AndroidViewModel {
     protected FirebaseAuth auth;
 
@@ -36,40 +26,14 @@ public abstract class AuthCommunicator extends AndroidViewModel {
         success = new MutableLiveData<>(false);
     }
 
-
-
-    // Query Methods:
-    /**
-     * Create a User's account
-     * @param email
-     *      the email address of the new user
-     * @param password
-     *      the password of the new user
-     */
     protected void createAccount(String email, String password){
         new CreateAccountAsync(auth,this).execute(email, password);
     }
 
-    /**
-     * Log a user in
-     * @param email
-     *      the email address of the user
-     * @param password
-     *      the password of the user
-     */
     protected void logUserIn(String email, String password){
         new LoginAsync(auth, this).execute(email, password);
     }
 
-
-
-
-
-    /**
-     * @return
-     *      changing object representing the successes and failures of this object's queries. Meant for UI classes to be able to know
-     *      that operations have finished.
-     */
     public MutableLiveData<Boolean> getSuccess() {
         return success;
     }
@@ -77,36 +41,22 @@ public abstract class AuthCommunicator extends AndroidViewModel {
 
 
 
-    // Mid-Query methods:
-    /**
-     * called when an operation that creates a user account terminates without encountering an error
-     * @param email
-     *      the email address
-     */
+
     protected void onSuccessfulAccountCreation(String email){
         Log.d(TAG, "Successfully created user " + email);
         success.setValue(new Boolean(true));
     }
 
-    /**
-     * called when an operation that creates a user account encounters an error
-     */
     protected void onFailedAccountCreation(@NonNull Exception e){
         Log.d(TAG, "Failed to create user " + e.toString());
         success.setValue(new Boolean(false));
     }
 
-    /**
-     * called when an operation logs a user in without encountering an error
-     */
     protected  void onSuccessfulLogin(){
         Log.d(TAG, "Successfully Logged user in");
         success.setValue(new Boolean(true));
     }
 
-    /**
-     * called when an operation that logs a user in encounters an error
-     */
     protected  void onFailedLogin(@NonNull Exception e){
         Log.d(TAG, "Failed to log user in " + e.toString());
         success.setValue(new Boolean(false));
@@ -115,10 +65,7 @@ public abstract class AuthCommunicator extends AndroidViewModel {
 
 
 
-    // Asynchronous Objects:
-    /**
-     * The object created by the createAccount method
-     */
+
     private static class CreateAccountAsync extends AsyncTask<String, Void, Void> {
         private FirebaseAuth auth;
         AuthCommunicator ac;
@@ -126,11 +73,9 @@ public abstract class AuthCommunicator extends AndroidViewModel {
         private CreateAccountAsync(FirebaseAuth auth, AuthCommunicator ac){
             this.auth = auth;
             this.ac = ac;
+            //System.out.println("Successful Async construction.");
         }
 
-        /**
-         * Method that is called in this class's .execute(). Runs the Firebase query to create an account.
-         */
         @Override
         protected Void doInBackground(final String... strings) {
             // strings[0] = email
@@ -151,9 +96,6 @@ public abstract class AuthCommunicator extends AndroidViewModel {
         }
     }
 
-    /**
-     * The object created by the logUserIn method
-     */
     private static class LoginAsync extends AsyncTask<String, Void, Void> {
         private FirebaseAuth auth;
         AuthCommunicator ac;
@@ -161,11 +103,9 @@ public abstract class AuthCommunicator extends AndroidViewModel {
         private LoginAsync(FirebaseAuth auth, AuthCommunicator ac){
             this.auth = auth;
             this.ac = ac;
+            //System.out.println("Successful Async construction.");
         }
 
-        /**
-         * Method that is called in this class's .execute(). Runs the Firebase query to log in an account.
-         */
         @Override
         protected Void doInBackground(final String... strings) {
             // strings[0] = email
@@ -177,7 +117,9 @@ public abstract class AuthCommunicator extends AndroidViewModel {
                             if (task.isSuccessful()) {
                                 ac.onSuccessfulLogin();
                             } else {
+                                // If sign in fails, display a message to the user.
                                 ac.onFailedLogin(task.getException());
+
                             }
                         }
                     });

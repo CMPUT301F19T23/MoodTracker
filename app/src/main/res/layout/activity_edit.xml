@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#000000"
     android:id="@+id/relativelayout"
-    tools:context=".MainActivity">
+    tools:context=".EditActivity">
 
     <RelativeLayout
         android:id="@+id/idTop"
@@ -25,14 +25,6 @@
             android:textColor="#000000"
             android:textSize="30dp" />
 
-        <CheckBox
-            android:id="@+id/idAttach"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/buttonstyle"
-            android:padding="5dp"
-            android:text="Attach location again" />
     </RelativeLayout>
 
     <LinearLayout

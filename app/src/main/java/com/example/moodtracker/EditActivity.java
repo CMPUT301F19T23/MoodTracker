@@ -54,17 +54,22 @@ public class EditActivity extends AppCompatActivity {
 
     private MoodEvent selectedMoodEvent = null;
 
+    //private String userpath;
     private String email;
-
+    //private String moodpath;
     private long id;
 
     private RelativeLayout relativeLayout;
 
+    //private FirebaseFirestore db;
 
     private MoodWriter moodWriter;
 
     private int failCount = 0;
     private boolean retrieveFlag = false;
+
+    private double latitude;
+    private double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +77,11 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         Intent intent = getIntent();
-
+        //userpath = intent.getStringExtra(LoginActivity.EXTRA_USERPATH);
         email = intent.getStringExtra(LoginActivity.EXTRA_USER);
+        //moodpath = userpath + email + "/" + "Moods/";
 
+        //db = FirebaseFirestore.getInstance();
         moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
         moodWriter.init(email);
 
@@ -121,7 +128,14 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+        //selectedMoodEvent = (MoodEvent) this.getIntent().getSerializableExtra("selectedMoodEvent");
         id = Long.parseLong(intent.getStringExtra(MoodHistoryActivity.EXTRA_MOOD));
+//        for (int i = 0; i < ResUtil.list.size(); i++) {
+//            if (ResUtil.list.get(i).getId() == id) {
+//                selectedMoodEvent = ResUtil.list.get(i);
+//                break;
+//            }
+//        }
 
         moodWriter.getMoodEvent(id);
 
@@ -366,8 +380,22 @@ public class EditActivity extends AppCompatActivity {
                     return;
                 }
 
-                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason, image);
+                moodWriter.updateMood(name, id, situationList.get(sitPos), cal, moodList.get(moodPos), reason, latitude, longitude);
 
+//                for (int i = 0; i < ResUtil.list.size(); i++) {
+//                    if (ResUtil.list.get(i).getId() == selectedMoodEvent.getId()) {
+//                        MoodEvent mood = ResUtil.list.get(i);
+//                        mood.setAttach(attach);
+//                        mood.setName(name);
+//                        mood.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+//                        mood.setEmotion(moodList.get(moodPos));
+//                        mood.setSituation(MoodEvent.situationToInt(situationList.get(sitPos)));
+//                        mood.setReasonString(reason);
+//                        mood.setImage(image);
+//                        updateMood(mood);
+//                        break;
+//                    }
+//                }
             }
         });
 
@@ -408,7 +436,7 @@ public class EditActivity extends AppCompatActivity {
 
             image = images.get(0);
             */
-            image = data.getStringExtra("image");
+
             showPic(resultCode, data);
         }
     }

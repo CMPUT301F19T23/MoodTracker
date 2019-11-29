@@ -129,14 +129,20 @@ public class FriendListActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.view_on_map_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ;
-            }
-        });
-
         initRecycleView1();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //recycleList1.clear();
+
+        //friendRequestNumberDisplay.setText(String.valueOf(DataUtil.getAskByUsername(username)));
+
+        // TODO updates friend list
+        //DataUtil.getFriends(username, recycleList1);
+        //recycleAdapter1.notifyDataSetChanged();
     }
 
     public void initRecycleView1() {

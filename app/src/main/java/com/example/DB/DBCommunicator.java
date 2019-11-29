@@ -24,17 +24,6 @@ import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
-/**
- * The DBCommunicator class holds several methods designed to insert data into and retrieve data from the database.
- * It is highly modular and overridable and supports several types of queries.
- *
- * Usage: the class extending DBCommunicator needs to wrap one or more of the query methods and call it (probably publicly)
- * These methods create an Asynchronous object and execute it. In these objects, the actual Firebase queries are run.
- * At certain points inside the async objects, usually on success or failure of the query, mid-query methods are called.
- * These can and often should be overriden to more accurately log relevant information, and modify data as required by your
- * program. Asynchronous objects run in the background so as not to slow down the UI thread. Because of this, the mid-query
- * methods update a LiveData object representing the success of the query, and others representing the return values(HashMaps) of these queries.
- */
 public abstract class DBCommunicator extends AndroidViewModel {
     protected FirebaseFirestore db;
 
@@ -53,32 +42,11 @@ public abstract class DBCommunicator extends AndroidViewModel {
     }
 
 
-    // Query Methods:
-    /**
-     * Write some data into a document. Will overwrite any data present.
-     * @param docName
-     *      the document location to write into
-     * @param data
-     *      key, value pairs to be written into document
-     */
     protected void setData(String docName, HashMap data){
+        //System.out.println("calling set data");
         new SetDataAsync(db, docName, this).execute(data);
     }
 
-    /**
-     * Check to see if 1 or more of a document with a certain key, value pair exists.
-     * If not, then write data into that document or a child of the document.
-     * @param docName
-     *      the document location to write into
-     * @param field
-     *      the key to search
-     * @param searchTerm
-     *      the value to look for
-     * @param id
-     *      the location to write into from the docName. (Location is docName + id)
-     * @param data
-     *      the data to write
-     */
     protected void addIfUnique(String docName, String field, String searchTerm, String id, HashMap data){
         HashMap fieldMap = new HashMap();
         fieldMap.put("field", field);
@@ -92,50 +60,19 @@ public abstract class DBCommunicator extends AndroidViewModel {
         new UniqueAddDataAsync(db, docName, this).execute(fieldMap, searchTermMap, idMap, data);
     }
 
-    /**
-     * Run a query to return all key, value pairs from the specified location
-     * @param docName
-     *      the document location to write into
-     * @param element
-     *      the offset from the document (Location is docName + element)
-     */
     protected void getData(String docName, String element){
         new GetDataAsync(db, docName, this).execute(element);
     }
 
-    /**
-     * Deletes all key, value pairs at the specified location
-     * @param docName
-     *      the document location to write into
-     * @param element
-     *      the offset from the document (Location is docName + element)
-     */
     protected void deleteData(String docName, String element){
         new DeleteDataAsync(db, docName, this).execute(element);
     }
 
-    /**
-     * Check to see if a key value pair exists at a specified location
-     * @param docName
-     *      the document location to write into
-     * @param field
-     *      the key to search
-     * @param searchTerm
-     *      the value to look for
-     */
     protected void searchFor(String docName, String field, String searchTerm){
         new SearchDataAsync(db, docName, this).execute(field, searchTerm);
     }
 
 
-
-
-    // Mid-Query execution methods:
-    /**
-     * called when a search query does not encounter errors
-     * @param qs
-     *      QuerySnapshot of found search item so we can look at data we searched for
-     */
     protected void onSuccessfulSearch(QuerySnapshot qs){
         ArrayList<HashMap<String,String>> mapList = new ArrayList<>();
         for (QueryDocumentSnapshot document : qs) {
@@ -148,20 +85,12 @@ public abstract class DBCommunicator extends AndroidViewModel {
         success.setValue(new Boolean(true));
     }
 
-    /**
-     * called when a search query encounters errors
-     */
     protected void onFailedSearch(@NonNull Exception e){
         Log.d(TAG, "Error getting documents: " + e.toString());
         multipleReturnVals.setValue(new ArrayList<HashMap<String, String>>());
         success.setValue(new Boolean(false));
     }
 
-    /**
-     * called when a search query determining uniqueness does not encounter errors
-     * @param qs
-     *      QuerySnapshot of found search item so we can look at data we searched for
-     */
     protected boolean onSuccessfulSearchForAdd(QuerySnapshot qs){
         if(qs.size() != 0){
             Log.d(TAG, "Search result already exists");
@@ -173,19 +102,11 @@ public abstract class DBCommunicator extends AndroidViewModel {
         return true;
     }
 
-    /**
-     * called when a search query determining uniqueness encounters errors
-     */
     protected void onFailedSearchForAdd(@NonNull Exception e){
         Log.d(TAG, "Error getting documents: " + e.toString());
         success.setValue(new Boolean(false));
     }
 
-    /**
-     * called when a query fetching data does not encounter errors and finds data
-     * @param map
-     *      object with all the document's data
-     */
     protected void onSuccessfulDataRetrieval(Map<String, Object> map){
         Log.d(TAG, "Data successfully retrieved");
         HashMap<String,String> hashMap = (HashMap) map;
@@ -193,94 +114,49 @@ public abstract class DBCommunicator extends AndroidViewModel {
         success.setValue(new Boolean(true));
     }
 
-    /**
-     * called when a query fetching data does not encounter errors but finds no data
-     */
     protected void onEmptyDataRetrieval(){
         Log.d(TAG, "No such document");
         returnVal.setValue(null);
         success.setValue(new Boolean(false));
     }
 
-    /**
-     * called when a query fetching data encounters errors
-     */
     protected void onFailedDataRetrieval(@NonNull Exception e){
         Log.d(TAG, "Retrieval failed: " + e.toString());
         returnVal.setValue(null);
         success.setValue(new Boolean(false));
     }
 
-    /**
-     * called when a query setting data does not encounter errors
-     */
     protected void onSuccessfulAddition(){
         Log.d(TAG, "Data addition successful");
         success.setValue(new Boolean(true));
     }
 
-    /**
-     * called when a query setting data encounters errors
-     */
     protected void onFailedAddition(@NonNull Exception e){
         Log.d(TAG, "Data addition failed " + e.toString());
         success.setValue(new Boolean(false));
     }
 
-    /**
-     * called when a query deleting data does not encounter errors
-     */
     protected void onSuccessfulDelete(){
         Log.d(TAG, "Data deletion successful");
         success.setValue(new Boolean(true));
     }
-
-    /**
-     * called when a query setting data encounters errors
-     */
     protected void onFailedDelete(@NonNull Exception e){
         Log.d(TAG, "Data deletion failed " + e.toString());
         success.setValue(new Boolean(false));
     }
 
-
-
-
-
-    /**
-     * @return
-     *      changing object representing the successes and failures of this object's queries. Meant for UI classes to be able to know
-     *      that operations have finished.
-     */
     public LiveData<Boolean> getSuccess(){
         return success;
     }
 
-    /**
-     * @return
-     *      changing object that holds the result of this object's queries that return single objects,
-     *      such as the default getData operation. Meant for UI classes to be able to get data when operations complete.
-     */
     public LiveData<HashMap<String, String>> getReturnVal() {
         return returnVal;
     }
 
-    /**
-     * @return
-     *      changing object that holds the result of this object's queries that return multiple objects, such as the default getData operation
-     *      Meant for UI classes to be able to get data when operations complete.
-     */
     public LiveData<ArrayList<HashMap<String, String>>> getMultipleReturnVals() {
         return multipleReturnVals;
     }
 
-
-
-
-    // Asynchronous objects:
-    /**
-     * The object created by the setData method
-     */
     private static class SetDataAsync extends AsyncTask<HashMap, Void, Void>{
         private FirebaseFirestore db;
         String path;
@@ -290,13 +166,12 @@ public abstract class DBCommunicator extends AndroidViewModel {
             this.db = db;
             this.path = path;
             this.dbc = dbc;
+            //System.out.println("Successful Async construction.");
         }
 
-        /**
-         * Method that is called in this class's .execute(). Runs the Firebase query for setting some data
-         */
         @Override
         protected Void doInBackground(HashMap... hashMaps) {
+            //System.out.println("About to send to database");
             db.document(path)
                     .set(hashMaps[0])
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -315,9 +190,6 @@ public abstract class DBCommunicator extends AndroidViewModel {
         }
     }
 
-    /**
-     * The object created by the getData method
-     */
     private static class GetDataAsync extends AsyncTask<String, Void, Void>{
         private FirebaseFirestore db;
         String path;
@@ -327,11 +199,9 @@ public abstract class DBCommunicator extends AndroidViewModel {
             this.db = db;
             this.path = path;
             this.dbc = dbc;
+            //System.out.println("Successful Async construction.");
         }
 
-        /**
-         * Method that is called in this class's .execute(). Runs the Firebase query to get data.
-         */
         @Override
         protected Void doInBackground(String... strings) {
             db.document(path + strings[0]).get()
@@ -355,9 +225,6 @@ public abstract class DBCommunicator extends AndroidViewModel {
         }
     }
 
-    /**
-     * The object created by the deleteData method
-     */
     private static class DeleteDataAsync extends AsyncTask<String, Void, Void>{
         private FirebaseFirestore db;
         String path;
@@ -367,11 +234,9 @@ public abstract class DBCommunicator extends AndroidViewModel {
             this.db = db;
             this.path = path;
             this.dbc = dbc;
+            //System.out.println("Successful Async construction.");
         }
 
-        /**
-         * Method that is called in this class's .execute(). Runs the Firebase query to delete data.
-         */
         @Override
         protected Void doInBackground(String... strings) {
             db.document(path + strings[0])
@@ -392,9 +257,6 @@ public abstract class DBCommunicator extends AndroidViewModel {
         }
     }
 
-    /**
-     * The object created by the searchData method
-     */
     private static class SearchDataAsync extends AsyncTask<String, Void, Void>{
         private FirebaseFirestore db;
         String path;
@@ -404,12 +266,9 @@ public abstract class DBCommunicator extends AndroidViewModel {
             this.db = db;
             this.path = path;
             this.dbc = dbc;
+            //System.out.println("Successful Async construction.");
         }
 
-        /**
-         * Method that is called in this class's .execute(). Runs the Firebase query to get data,
-         * but with a whereEqual clause making sure that a certain key, value pair is found.
-         */
         @Override
         protected Void doInBackground(final String... strings) {
             db.collection(path)
@@ -419,6 +278,8 @@ public abstract class DBCommunicator extends AndroidViewModel {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
+//                                System.out.println(path);
+//                                System.out.println(strings[0] + ", " + strings[1] + "\n");
                                 dbc.onSuccessfulSearch(task.getResult());
                             } else {
                                 dbc.onFailedSearch(task.getException());
@@ -429,9 +290,6 @@ public abstract class DBCommunicator extends AndroidViewModel {
         }
     }
 
-    /**
-     * The object created by the addIfUnique method
-     */
     private static class UniqueAddDataAsync extends AsyncTask<HashMap, Void, Void>{
         private FirebaseFirestore db;
         String path;
@@ -441,13 +299,9 @@ public abstract class DBCommunicator extends AndroidViewModel {
             this.db = db;
             this.path = path;
             this.dbc = dbc;
+            //System.out.println("Successful Async construction.");
         }
 
-        /**
-         * Method that is called in this class's .execute(). Runs the Firebase query to get data,
-         * but with a whereEqual clause making sure that a certain key, value pair is found. If the
-         * pair is not found, then the data is written into database.
-         */
         @Override
         protected Void doInBackground(final HashMap... hashMaps) {
             db.collection(path)

@@ -1,5 +1,7 @@
 package com.example.moodtracker;
 
+import android.location.Location;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,15 +27,24 @@ public class MoodEvent implements Serializable{
 
 
     private Calendar date; // date of event, formatted to include specific day and time of day fields
+    /*I suspect you'll need to read up on Calendar objects especially for the UI
+    https://docs.oracle.com/javase/8/docs/api/java/util/Calendar.html
+    https://www.mkyong.com/java/java-date-and-calendar-examples/
+    Calendars are abstract, instantiate with GregorianCalendar (see examples in MoodEventTest)
+    */
 
     private String reasonString;
+    //private type reasonImg; // cannot yet implement. More research needed
     private EmotionData emotionData;
+    //private Location location; // cannot yet implement. More research needed
 
     private String name;
     private boolean attach;
     private int situation;
     private String image;
     private long id;
+    private double latitude;
+    private double longitude;
 
     final public static EmotionData[] MOOD_DATA = {ANGRY_DATA, HAPPY_DATA, SAD_DATA, NEUTRAL_DATA};
 
@@ -44,17 +55,18 @@ public class MoodEvent implements Serializable{
         this.date = d;
         this.setEmotion(emotion);
         this.reasonString = "";
-        this.image = "";
     }
 
-    public MoodEvent(String name, long id, int situation, Calendar d, String emotion, String rstr, String img){
+
+    public MoodEvent(String name, long id, int situation, Calendar d, String emotion, String rstr, double lat, double lon){
         this.name = name;
         this.id = id;
         this.situation = situation;
         this.date = d;
         this.setEmotion(emotion);
         this.reasonString = rstr;
-        this.image = img;
+        this.latitude = lat;
+        this.longitude = lon;
     }
 
     /**
@@ -160,6 +172,22 @@ public class MoodEvent implements Serializable{
         this.reasonString = reasonString;
     }
 
+    /*public Type getReasonImg() {
+        return reasonImg;
+    }
+
+    public void setReasonString(Type reasonImg) {
+        this.reasonImg = reasonImg;
+    }*/
+
+   /*public Type getLocation() {
+        return location;
+    }
+
+    public void setLocation(Type location) {
+        this.location = location;
+    }*/
+
     public String getName() {
         return name;
     }
@@ -191,6 +219,14 @@ public class MoodEvent implements Serializable{
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public static int situationToInt(String situation){
