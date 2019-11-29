@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,48 +7,74 @@
     android:background="#000000"
     tools:context=".MoodFriendHistoryActivity">
 
-    <RelativeLayout
-        android:id="@+id/id1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/stop_following_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginRight="48dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/buttonstyle"
+        android:gravity="center"
 
-        <TextView
-            android:id="@+id/stop_following_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/buttonstyle"
-            android:gravity="center"
-            android:padding="5dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:text="Stop\nfollowing"
-            android:textColor="@color/colorBlue"
-            android:textSize="18sp" />
+        android:padding="20dp"
+        android:text="Stop Following"
+        android:textColor="@color/colorBlue"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/view_on_map_button" />
 
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/view_on_map_button"
+        android:layout_width="140dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/buttonstyle"
+        android:gravity="center"
+        android:padding="20dp"
+        android:text="View on Map"
+        android:textColor="@color/colorBlue"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/stop_following_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/idAcceptBelow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/id1"
+        android:layout_width="411dp"
+        android:layout_height="60dp"
         android:background="@drawable/text_border"
         android:gravity="center"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:text="Event History"
         android:textColor="@color/colorBlue"
-        android:textSize="18sp" />
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friends_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/idAcceptBelow"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="10dp"
-        android:background="#000000" />
+        android:background="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/idAcceptBelow" />
 
-</RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

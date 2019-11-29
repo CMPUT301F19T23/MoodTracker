@@ -101,6 +101,13 @@ public class MoodFriendHistoryActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.view_on_map_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+
         initRecycleView1();
     }
 

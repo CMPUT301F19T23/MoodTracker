@@ -1,11 +1,9 @@
 package com.example.moodtracker;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
@@ -13,29 +11,24 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
-
 import com.example.DB.MoodWriter;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-
 import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, OnMapReadyCallback {
     GoogleMap gMap;
+
     private MoodWriter moodWriter;
-    private String email;
-    private ArrayList<MoodEvent> moodEvents = new ArrayList<>();
+    private String myEmail;
+    private String friendEmail;
+    private ArrayList<MoodEvent> myMoodEvents = new ArrayList<>();
+    private ArrayList<MoodEvent> friendMoodEvents = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,57 +39,75 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        myEmail = null;
+        friendEmail = null;
+
         Intent intent =  getIntent();
-        email = intent.getStringExtra("email");
+        myEmail = intent.getStringExtra("email");
+        friendEmail = intent.getStringExtra("friend_email");
 
         moodWriter = ViewModelProviders.of(this).get(MoodWriter.class);
-        moodWriter.init(email);
+        moodWriter.init(myEmail);
+        moodWriter.init(friendEmail);
 
         moodWriter.getMoodEvents().observe(this, new Observer(){
             @Override
             public void onChanged(Object o) {
-                moodEvents.clear();
-                moodEvents.addAll((ArrayList<MoodEvent>) o);
-                for(int i=0; i < moodEvents.size(); i++){
-                    MoodEvent moodEvent = moodEvents.get(i);
-                    if (moodEvent.getLatitude() != 0 && moodEvent.getLongitude() != 0){
-                        //switch statement
-                        switch(moodEvents.get(i).getEmotion())
-                        {
-                            case "happy" :
-                                gMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(moodEvent.getLatitude(), moodEvent.getLongitude()))
-                                        .title("0x1F620")
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                                break;
-
-                            case "sad" :
-                                gMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(moodEvent.getLatitude(), moodEvent.getLongitude()))
-                                        .title("0x1F620")
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-                                break;
-
-                            case "angry" :
-                                gMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(moodEvent.getLatitude(), moodEvent.getLongitude()))
-                                        .title("0x1F620")
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                                break;
-
-                            case "neutral" :
-                                gMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(moodEvent.getLatitude(), moodEvent.getLongitude()))
-                                        .title("0x1F620")
-                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-                                break;
-                        }
-                    }
-
+                if (myEmail != null){
+                    myMoodEvents.clear();
+                    myMoodEvents.addAll((ArrayList<MoodEvent>) o);
+                    createMarkersOnMap(myMoodEvents);
                 }
+                if (friendEmail != null){
+                    friendMoodEvents.clear();
+                    friendMoodEvents.addAll((ArrayList<MoodEvent>) o);
+                    createMarkersOnMap(friendMoodEvents);
+                }
+
             }
         });
     }
+
+    public void createMarkersOnMap(ArrayList<MoodEvent> moodEvents){
+        for(int i=0; i < moodEvents.size(); i++){
+            MoodEvent moodEvent = moodEvents.get(i);
+            if (moodEvent.getLatitude() != 0 && moodEvent.getLongitude() != 0){
+                //switch statement
+                switch(moodEvents.get(i).getEmotion())
+                {
+                    case "happy" :
+                        gMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(moodEvent.getLatitude(), moodEvent.getLongitude()))
+                                .title(moodEvents.get(i).getName())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                        break;
+
+                    case "sad" :
+                        gMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(moodEvent.getLatitude(), moodEvent.getLongitude()))
+                                .title(moodEvents.get(i).getName())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                        break;
+
+                    case "angry" :
+                        gMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(moodEvent.getLatitude(), moodEvent.getLongitude()))
+                                .title(moodEvents.get(i).getName())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        break;
+
+                    case "neutral" :
+                        gMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(moodEvent.getLatitude(), moodEvent.getLongitude()))
+                                .title(moodEvents.get(i).getName())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        break;
+                }
+            }
+
+        }
+    }
+
 
 
     /**
@@ -111,6 +122,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
+
         // TODO: Before enabling the My Location layer, you must request
         // location permission from the user. This sample does not include
         // a request for location permission.
@@ -141,6 +153,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void onMyLocationClick(@NonNull Location location) {
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
+
+
+
 }
 
 
