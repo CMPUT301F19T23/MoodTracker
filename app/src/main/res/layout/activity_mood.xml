@@ -76,17 +76,6 @@
             android:textSize="17sp" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/buttonstyle"
-        android:padding="10dp"
-        android:text="Edit profile"
-        android:textSize="17sp"
-        app:layout_constraintBottom_toBottomOf="parent"	      
-        app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
